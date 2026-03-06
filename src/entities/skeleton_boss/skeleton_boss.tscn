@@ -1,0 +1,112 @@
+[gd_scene format=3 uid="uid://bj1eqfaq27o2y"]
+
+[ext_resource type="PackedScene" uid="uid://g48744kbi62f" path="res://src/entities/skeleton/scene.tscn" id="1_h8m84"]
+[ext_resource type="AudioStream" uid="uid://wmrcrhj2w6fo" path="res://src/audio/impact_general/earth_spirit_impact1.mp3" id="2_ihhcy"]
+[ext_resource type="AudioStream" uid="uid://c6nk3b240ml5t" path="res://src/audio/impact_general/earth_spirit_impact2.mp3" id="3_5egra"]
+[ext_resource type="AudioStream" uid="uid://ccyio52mukpq0" path="res://src/audio/impact_general/earth_spirit_impact3.mp3" id="4_k1nuv"]
+[ext_resource type="AudioStream" uid="uid://ciubt6t3r1w73" path="res://src/audio/preattack/light_preattack3.mp3" id="5_j5bjs"]
+[ext_resource type="AudioStream" uid="uid://mkj5wf2ywg62" path="res://src/audio/preattack/light_preattack4.mp3" id="6_41jli"]
+[ext_resource type="AudioStream" uid="uid://o173me7uh610" path="res://src/audio/preattack/light_preattack5.mp3" id="7_xhhym"]
+[ext_resource type="AudioStream" uid="uid://b64ukaobnksmd" path="res://src/audio/preattack/light_preattack6.mp3" id="8_igw5b"]
+[ext_resource type="AudioStream" uid="uid://dukvil4fqtg4y" path="res://src/audio/preattack/light_preattack7.mp3" id="9_qehkn"]
+[ext_resource type="AudioStream" uid="uid://bvbr3t0efiu8y" path="res://src/audio/preattack/light_preattack8.mp3" id="10_6obcx"]
+[ext_resource type="AudioStream" uid="uid://dib6tvd6dky2j" path="res://src/audio/footsteps_general/footstep_hero_general1.mp3" id="11_mdquo"]
+[ext_resource type="AudioStream" uid="uid://cvn6k4mk8wslm" path="res://src/audio/footsteps_general/footstep_hero_general2.mp3" id="12_hfn5c"]
+[ext_resource type="AudioStream" uid="uid://df6iqsut44wx1" path="res://src/audio/footsteps_general/footstep_hero_general3.mp3" id="13_qv0cn"]
+[ext_resource type="AudioStream" uid="uid://bupvw4feqjeqa" path="res://src/audio/footsteps_general/footstep_hero_general4.mp3" id="14_rsgko"]
+[ext_resource type="AudioStream" uid="uid://budxdebim8xna" path="res://src/audio/footsteps_general/footstep_hero_general5.mp3" id="15_tmbd3"]
+[ext_resource type="AudioStream" uid="uid://cnjfcgjkpy2ag" path="res://src/audio/footsteps_general/footstep_hero_general6.mp3" id="16_fexau"]
+[ext_resource type="AudioStream" uid="uid://n1hbv36ct8sg" path="res://src/audio/footsteps_general/footstep_hero_general7.mp3" id="17_t2fm7"]
+[ext_resource type="PackedScene" uid="uid://djlnelowb05hc" path="res://src/entities/skeleton/animated_model.tscn" id="18_mf5xd"]
+[ext_resource type="Script" uid="uid://rck36o34a5md" path="res://src/components/r_unit_properties.gd" id="19_tqp47"]
+[ext_resource type="AudioStream" uid="uid://c0habr2qbyjcx" path="res://src/audio/dubstepDIKI.mp3" id="20_5egra"]
+
+[sub_resource type="Resource" id="Resource_pm0bh"]
+script = ExtResource("19_tqp47")
+_name = "Skeleton"
+base_health = 800.0
+base_mana = 250.0
+base_attack_speed = 25.0
+base_attack_interval = 0.5
+base_attack_damage = 120.0
+strength = 126.0
+agility = 85.0
+intelligence = 54.0
+base_movespeed = 285.0
+base_rotation_speed = 7.03
+base_magic_resistance = 40.0
+attack_swing_sounds = Array[AudioStream]([ExtResource("5_j5bjs"), ExtResource("6_41jli"), ExtResource("7_xhhym"), ExtResource("8_igw5b"), ExtResource("9_qehkn"), ExtResource("10_6obcx")])
+attack_hit_sounds = Array[AudioStream]([ExtResource("2_ihhcy"), ExtResource("3_5egra"), ExtResource("4_k1nuv")])
+footsteps_sounds = Array[AudioStream]([ExtResource("11_mdquo"), ExtResource("12_hfn5c"), ExtResource("13_qv0cn"), ExtResource("14_rsgko"), ExtResource("15_tmbd3"), ExtResource("16_fexau"), ExtResource("17_t2fm7")])
+portrait_scene = ExtResource("18_mf5xd")
+portrait_model_position = Vector3(0.8, -0.7, 0.8)
+portrait_model_rotation = Vector3(0, 0.535, 0)
+metadata/_custom_type_script = "uid://rck36o34a5md"
+
+[sub_resource type="Animation" id="Animation_fdjgc"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_6nvbi"]
+resource_name = "animation"
+length = 0.15
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(-2, -0.5),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_udupq"]
+_data = {
+&"RESET": SubResource("Animation_fdjgc"),
+&"animation": SubResource("Animation_6nvbi")
+}
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_h8m84"]
+height = 3.0412598
+radius = 0.6826172
+
+[node name="skeleton_boss" unique_id=31208219 instance=ExtResource("1_h8m84")]
+death_experience = 2424.0
+death_money = 688.0
+unit_resource = SubResource("Resource_pm0bh")
+
+[node name="AnimatedModel" parent="." index="0"]
+transform = Transform3D(-2, 0, 3.019916e-07, 0, 2, 0, -3.019916e-07, 0, -2, 0, 0, 0)
+
+[node name="AttackComponent" parent="." index="4" unique_id=1260897870]
+distance_treshold = 2.6
+
+[node name="NavigationAgent3D" parent="." index="6" unique_id=1769817548]
+target_desired_distance = 0.5
+
+[node name="AnimationPlayer" parent="current_unit_mesh" parent_id_path=PackedInt32Array(1444289440) index="0" unique_id=462717701]
+libraries/ = SubResource("AnimationLibrary_udupq")
+
+[node name="Debug" parent="." index="9" unique_id=200260478]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.79231, 0)
+
+[node name="CollisionShape3D" parent="." index="11"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5318854, 0)
+shape = SubResource("CylinderShape3D_h8m84")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." index="12" unique_id=86434442]
+stream = ExtResource("20_5egra")

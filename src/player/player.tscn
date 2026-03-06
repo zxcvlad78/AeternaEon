@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://cuwtseyeofu18"]
+
+[ext_resource type="Script" uid="uid://cps1nnxx4h8eo" path="res://src/scripts/player.gd" id="1_4anbu"]
+[ext_resource type="PackedScene" uid="uid://2vpr6kpr0ao1" path="res://src/ui/player/player_ui.tscn" id="2_rxibo"]
+
+[node name="Player" type="Node3D" unique_id=1671861560]
+script = ExtResource("1_4anbu")
+custom_ui = ExtResource("2_rxibo")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=683685566]
+transform = Transform3D(1, 0, 0, 0, 0.88579094, 0.46408474, 0, -0.46408474, 0.88579094, 0, 0, 0)
+current = true

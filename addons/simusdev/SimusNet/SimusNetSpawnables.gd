@@ -1,0 +1,2 @@
+extends SimusNetSingletonChild
+class_name SimusNetSpawnables

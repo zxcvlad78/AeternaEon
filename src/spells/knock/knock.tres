@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3 uid="uid://bk6mj1ij3i4eu"]
+
+[ext_resource type="Texture2D" uid="uid://fx0bdfn3xxb" path="res://addons/simusdev/icons/EditPivot.svg" id="1_s40dj"]
+[ext_resource type="Script" uid="uid://dlodw7gliq14w" path="res://src/components/particles/R_ParticlesSettings.gd" id="2_cgu6k"]
+[ext_resource type="AudioStream" uid="uid://cujtvns4j235q" path="res://src/spells/knock/audio/Dragon_Knight_Dragon_Tail_2.mp3" id="2_e0n2f"]
+[ext_resource type="AudioStream" uid="uid://dkjyc6cyia4rk" path="res://src/spells/knock/audio/Dragon_Knight_Dragon_Tail_1.mp3" id="4_fokph"]
+[ext_resource type="Script" uid="uid://ou2rf4s5xniw" path="res://src/spells/knock/resource.gd" id="5_e0n2f"]
+
+[sub_resource type="Resource" id="Resource_cu3f8"]
+script = ExtResource("2_cgu6k")
+metadata/_custom_type_script = "uid://dlodw7gliq14w"
+
+[resource]
+script = ExtResource("5_e0n2f")
+damage = Array[float]([0.0, 70.0, 150.0, 220.0, 300.0])
+_name = &"knock"
+_icon = ExtResource("1_s40dj")
+target_type = 1
+particles = SubResource("Resource_cu3f8")
+precast_sound = ExtResource("4_fokph")
+cast_sound = ExtResource("2_e0n2f")
+precast_time = 0.1
+cast_range = Array[float]([0.0, 1.5])
+swing_animation_names = Array[StringName]([&"swing_cast_stun"])
+cooldown = Array[float]([0.0, 17.0, 14.0, 13.0, 9.0])
+mana_cost = Array[float]([0.0, 40.0])
+metadata/_custom_type_script = "uid://qk4xoa7h53xp"

@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://cucpgarj3fat2"]
+
+[ext_resource type="Script" uid="uid://m4sbeki1gh1" path="res://src/scripts/base_entity.gd" id="1_76sfa"]
+[ext_resource type="Script" uid="uid://pbs5mfl3fv1m" path="res://src/components/health_component.gd" id="2_qqgqf"]
+
+[node name="BaseEntity" type="Node3D"]
+script = ExtResource("1_76sfa")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("2_qqgqf")
+metadata/_custom_type_script = "uid://pbs5mfl3fv1m"

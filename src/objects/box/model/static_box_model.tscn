@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://wybux71nxilf"]
+
+[ext_resource type="Texture2D" uid="uid://ba613ikwiqx1y" path="res://src/objects/box/textures/wood.jpg" id="1_e7i0n"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tr2ad"]
+albedo_texture = ExtResource("1_e7i0n")
+metallic = 1.0
+roughness = 0.95
+texture_filter = 0
+
+[node name="static_box_model" type="CSGBox3D"]
+material = SubResource("StandardMaterial3D_tr2ad")

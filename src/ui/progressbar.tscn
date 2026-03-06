@@ -1,0 +1,108 @@
+[gd_scene format=3 uid="uid://b2yrvh45kc3ti"]
+
+[ext_resource type="Script" uid="uid://ds0glmf8t2wf1" path="res://src/scripts/ui/progress_bar.gd" id="1_jdqkp"]
+[ext_resource type="Shader" uid="uid://dmh2ombl20hia" path="res://src/ui/progressbar.gdshader" id="2_b1e5f"]
+[ext_resource type="Script" uid="uid://c6rjp5xqe4hp" path="res://src/scripts/ui_cellular_noise.gd" id="2_oxfg7"]
+[ext_resource type="FontFile" uid="uid://bofcb815ysn51" path="res://addons/simusdev/fonts/Allods.ttf" id="3_b1e5f"]
+[ext_resource type="Texture2D" uid="uid://fuu1kf7ux5uk" path="res://src/textures/white_pixel.png" id="3_vwwsf"]
+[ext_resource type="Texture2D" uid="uid://cpm6ae1e18swk" path="res://src/textures/ui_border4.png" id="4_vwwsf"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_oxfg7"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_40oac"]
+bg_color = Color(0.10809515, 0.10809515, 0.10809515, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sbfaf"]
+bg_color = Color(0.3849572, 0.694958, 0, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_b1e5f"]
+shader = ExtResource("2_b1e5f")
+shader_parameter/time = 0.0
+shader_parameter/frequency = 0.038
+shader_parameter/octaves = 3
+shader_parameter/lacunarity = 2.0
+shader_parameter/gain = 0.5
+shader_parameter/noise_seed = 0
+shader_parameter/alpha = 0.5
+shader_parameter/contrast = 1.0
+shader_parameter/brightness = 0.0
+shader_parameter/color1 = Vector3(0, 0, 0)
+shader_parameter/color2 = Vector3(1, 1, 1)
+shader_parameter/animation_speed = 1.0
+shader_parameter/fractal_type = 0
+shader_parameter/fractal_weight = 1.0
+shader_parameter/fractal_offset = 1.0
+shader_parameter/fractal_threshold = 0.5
+shader_parameter/fractal_invert = false
+shader_parameter/movement_direction = Vector2(1, 0.1)
+shader_parameter/enable_rotation = true
+shader_parameter/rotation_speed = 0.035
+shader_parameter/enable_scaling = false
+shader_parameter/scale_speed = 0.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_tkskf"]
+font = ExtResource("3_b1e5f")
+font_size = 18
+outline_size = 4
+outline_color = Color(0.18870407, 0.18870407, 0.18870407, 1)
+shadow_size = 4
+shadow_color = Color(0, 0, 0, 0.6)
+shadow_offset = Vector2(0.8, 0.8)
+
+[node name="health" type="ProgressBar" unique_id=67191665]
+material = SubResource("ShaderMaterial_oxfg7")
+anchors_preset = -1
+anchor_right = 0.4123264
+anchor_bottom = 0.041666668
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_40oac")
+theme_override_styles/fill = SubResource("StyleBoxFlat_sbfaf")
+value = 45.0
+show_percentage = false
+script = ExtResource("1_jdqkp")
+metadata/_edit_use_anchors_ = true
+
+[node name="noise" type="TextureRect" parent="." unique_id=1154872165]
+texture_repeat = 2
+material = SubResource("ShaderMaterial_b1e5f")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -261.25
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_vwwsf")
+expand_mode = 1
+stretch_mode = 1
+script = ExtResource("2_oxfg7")
+
+[node name="Label" type="Label" parent="." unique_id=866655729]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "1000/1000"
+label_settings = SubResource("LabelSettings_tkskf")
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="border" type="TextureRect" parent="." unique_id=1886202830]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.0063157897
+anchor_top = -0.074074075
+anchor_right = 1.0063158
+anchor_bottom = 1.074074
+offset_right = -3.0517578e-05
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_vwwsf")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true

@@ -1,0 +1,153 @@
+[gd_scene format=3 uid="uid://pa5oyxiv7bk8"]
+
+[ext_resource type="Script" uid="uid://dtw88gtxnw5gb" path="res://src/scripts/base_unit.gd" id="1_tvown"]
+[ext_resource type="Script" uid="uid://pbs5mfl3fv1m" path="res://src/components/health_component.gd" id="2_hup52"]
+[ext_resource type="Script" uid="uid://0iuvgu48xd2b" path="res://src/components/mana_component.gd" id="3_b2fsq"]
+[ext_resource type="Script" uid="uid://bd2mnnm8h53gq" path="res://src/components/controllable_component.gd" id="3_hup52"]
+[ext_resource type="Script" uid="uid://bnldsrquib2oo" path="res://src/components/attack_component.gd" id="5_b2fsq"]
+[ext_resource type="Script" uid="uid://2a6t1n8pst52" path="res://src/components/spell_container.gd" id="5_fdjgc"]
+[ext_resource type="Shader" uid="uid://b4or1t03isxru" path="res://resources/spell_cast_range.gdshader" id="6_5br0g"]
+[ext_resource type="Script" uid="uid://b1q8rkwhld80p" path="res://addons/simusdev/statemachine/SD_NodeStateMachine.gd" id="6_udupq"]
+[ext_resource type="Script" uid="uid://b2fidrwvgnri2" path="res://addons/simusdev/statemachine/SD_State.gd" id="7_b2fsq"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5br0g"]
+render_priority = 0
+shader = ExtResource("6_5br0g")
+shader_parameter/line_color = Color(0, 1, 0, 1)
+shader_parameter/radius = 0.5
+shader_parameter/thickness = 0.010000000475
+shader_parameter/dash_count = 13.134000623865
+shader_parameter/animation_speed = 1.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_h7dx2"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hup52"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0, 1, 0, 0.30588236)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_ig4wb"]
+material = SubResource("StandardMaterial3D_hup52")
+height = 0.05
+radial_segments = 16
+
+[sub_resource type="Animation" id="Animation_fdjgc"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_6nvbi"]
+resource_name = "animation"
+length = 0.15
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(-2, -0.5),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_udupq"]
+_data = {
+&"RESET": SubResource("Animation_fdjgc"),
+&"animation": SubResource("Animation_6nvbi")
+}
+
+[node name="base_unit" type="CharacterBody3D" unique_id=987696528]
+collision_layer = 4
+collision_mask = 4
+script = ExtResource("1_tvown")
+metadata/_custom_type_script = "uid://dtw88gtxnw5gb"
+
+[node name="HealthComponent" type="Node" parent="." unique_id=1641220706]
+script = ExtResource("2_hup52")
+metadata/_custom_type_script = "uid://pbs5mfl3fv1m"
+
+[node name="ManaComponent" type="Node" parent="." unique_id=61426251]
+script = ExtResource("3_b2fsq")
+metadata/_custom_type_script = "uid://0iuvgu48xd2b"
+
+[node name="Controllable" type="Node" parent="." unique_id=1958056087]
+script = ExtResource("3_hup52")
+metadata/_custom_type_script = "uid://bd2mnnm8h53gq"
+
+[node name="AttackComponent" type="Node" parent="." unique_id=1260897870]
+script = ExtResource("5_b2fsq")
+metadata/_custom_type_script = "uid://bnldsrquib2oo"
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=1769817548]
+path_max_distance = 500.01
+avoidance_enabled = true
+debug_enabled = true
+
+[node name="chosed_spell_cast_range" type="MeshInstance3D" parent="." unique_id=568574711]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+visible = false
+material_override = SubResource("ShaderMaterial_5br0g")
+mesh = SubResource("PlaneMesh_h7dx2")
+
+[node name="current_unit_mesh" type="MeshInstance3D" parent="." unique_id=1444289440]
+transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+transparency = 0.6
+mesh = SubResource("CylinderMesh_ig4wb")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="current_unit_mesh" unique_id=462717701]
+libraries/ = SubResource("AnimationLibrary_udupq")
+
+[node name="SpellContainer" type="Node3D" parent="." unique_id=1568682235]
+script = ExtResource("5_fdjgc")
+metadata/_custom_type_script = "uid://2a6t1n8pst52"
+
+[node name="Debug" type="Node3D" parent="." unique_id=200260478]
+
+[node name="mana" type="Label3D" parent="Debug" unique_id=128794271]
+billboard = 1
+modulate = Color(0, 0.36078432, 1, 1)
+text = "mana:"
+
+[node name="health" type="Label3D" parent="Debug" unique_id=1792238448]
+billboard = 1
+modulate = Color(0, 0.8745098, 0, 1)
+text = "health:"
+
+[node name="StateMachine" type="Node" parent="." unique_id=1617165572 node_paths=PackedStringArray("initial_state")]
+script = ExtResource("6_udupq")
+initial_state = NodePath("idle")
+metadata/_custom_type_script = "uid://b1q8rkwhld80p"
+
+[node name="idle" type="Node" parent="StateMachine" unique_id=984485248]
+process_mode = 4
+script = ExtResource("7_b2fsq")
+metadata/_custom_type_script = "uid://b2fidrwvgnri2"
+
+[node name="moving" type="Node" parent="StateMachine" unique_id=832801590]
+process_mode = 4
+script = ExtResource("7_b2fsq")
+metadata/_custom_type_script = "uid://b2fidrwvgnri2"
+
+[node name="attacking" type="Node" parent="StateMachine" unique_id=1100735648]
+process_mode = 4
+script = ExtResource("7_b2fsq")
+metadata/_custom_type_script = "uid://b2fidrwvgnri2"
+
+[node name="casting" type="Node" parent="StateMachine" unique_id=909529923]
+process_mode = 4
+script = ExtResource("7_b2fsq")
+metadata/_custom_type_script = "uid://b2fidrwvgnri2"
+
+[connection signal="input_event" from="." to="." method="_on_input_event"]

@@ -1,0 +1,18 @@
+[gd_scene load_steps=5 format=3 uid="uid://dydufh3vv866r"]
+
+[ext_resource type="Script" uid="uid://v672tb3jsnj7" path="res://src/components/unit_spawner.gd" id="1_otrxb"]
+[ext_resource type="Script" uid="uid://bskeqkfwhnif5" path="res://src/components/r_unit_spawner_properties.gd" id="2_g2qfm"]
+[ext_resource type="Texture2D" uid="uid://bjf5r0010tkn3" path="res://icon.svg" id="2_nmu1w"]
+
+[sub_resource type="Resource" id="Resource_nmu1w"]
+script = ExtResource("2_g2qfm")
+_name = "sex1"
+icon = ExtResource("2_nmu1w")
+metadata/_custom_type_script = "uid://bskeqkfwhnif5"
+
+[node name="creep_camp" type="Node3D"]
+
+[node name="UnitSpawner" type="Node" parent="."]
+script = ExtResource("1_otrxb")
+resource = SubResource("Resource_nmu1w")
+metadata/_custom_type_script = "uid://v672tb3jsnj7"

@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://y1wqyqysyvp7"]
+
+[ext_resource type="PackedScene" uid="uid://b0vteee6b3s08" path="res://maps/test/test_map.tscn" id="1_xq6wo"]
+[ext_resource type="PackedScene" uid="uid://cuwtseyeofu18" path="res://src/player/player.tscn" id="3_xq6wo"]
+[ext_resource type="PackedScene" uid="uid://g48744kbi62f" path="res://src/entities/skeleton/scene.tscn" id="4_bs6l1"]
+[ext_resource type="PackedScene" uid="uid://n6s2lwx77au0" path="res://src/entities/knight/knight.tscn" id="4_kc8ui"]
+[ext_resource type="PackedScene" uid="uid://bj1eqfaq27o2y" path="res://src/entities/skeleton_boss/skeleton_boss.tscn" id="5_bs6l1"]
+
+[sub_resource type="GDScript" id="GDScript_bs6l1"]
+script/source = "extends Area3D
+
+
+func _on_body_entered(body: Node3D) -> void:
+	var boss:BaseUnit = ($\"../skeleton_boss\" as BaseUnit)
+	if body == boss:
+		return
+	if body is BaseUnit:
+		print(body)
+		if body.controllable.can_controll:
+			
+			boss.attack_component.attack(body)
+			boss.get_node(\"AudioStreamPlayer3D\").play()
+			
+"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pk08u"]
+size = Vector3(25.998566, 7.492676, 34.24311)
+
+[node name="game" type="Node" unique_id=1690886609]
+
+[node name="TestMap" parent="." unique_id=972431479 instance=ExtResource("1_xq6wo")]
+
+[node name="Player" parent="TestMap" unique_id=407520806 instance=ExtResource("3_xq6wo")]
+transform = Transform3D(-0.6347, -0.37048, 0.67816, 0, 0.877583, 0.479425, -0.772758, 0.304291, -0.557002, 4.5862365, 7.2413692, -14.028518)
+
+[node name="knight" parent="TestMap" unique_id=288657074 instance=ExtResource("4_kc8ui")]
+transform = Transform3D(0.5764465, 0, -0.8171349, 0, 1, 0, 0.8171349, 0, 0.5764465, 1.5591044, 0.9296012, -13.18441)
+
+[node name="knight2" parent="TestMap" unique_id=1324968740 instance=ExtResource("4_kc8ui")]
+transform = Transform3D(-0.70998883, 0, -0.7042129, 0, 1, 0, 0.7042129, 0, -0.70998883, -3.6594996, 0.9296012, -2.2591279)
+
+[node name="knight4" parent="TestMap" unique_id=1476556027 instance=ExtResource("4_kc8ui")]
+transform = Transform3D(-0.70998883, 0, -0.7042129, 0, 1, 0, 0.7042129, 0, -0.70998883, -4.0376215, 0.9296012, -5.1407914)
+
+[node name="knight3" parent="TestMap" unique_id=731155590 instance=ExtResource("4_kc8ui")]
+transform = Transform3D(-0.10961303, 0, -0.9939743, 0, 1, 0, 0.9939743, 0, -0.10961303, -3.6594996, 0.9296012, -3.6565185)
+
+[node name="skeleton" parent="TestMap" unique_id=776432542 instance=ExtResource("4_bs6l1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.8000195, 0.9296012, 0.57883406)
+
+[node name="skeleton_boss" parent="TestMap" unique_id=690945846 instance=ExtResource("5_bs6l1")]
+transform = Transform3D(-0.8784671, 0, 0.47780287, 0, 1, 0, -0.47780287, 0, -0.8784671, 0, 0.9296012, -46.301285)
+
+[node name="Area3D" type="Area3D" parent="TestMap" unique_id=1798097049]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -34.66205)
+collision_layer = 5
+collision_mask = 5
+input_ray_pickable = false
+script = SubResource("GDScript_bs6l1")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TestMap/Area3D" unique_id=1952327781]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.36357117, 3.246338, -2.9044228)
+shape = SubResource("BoxShape3D_pk08u")
+
+[connection signal="body_entered" from="TestMap/Area3D" to="TestMap/Area3D" method="_on_body_entered"]

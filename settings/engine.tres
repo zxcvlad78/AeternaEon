@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="SD_EngineSettings" format=3 uid="uid://bkinwbaqw7u2t"]
+
+[ext_resource type="Script" uid="uid://b6d1d4yh6pph6" path="res://addons/simusdev/multiplayer/SD_MultiplayerSettings.gd" id="1_2wia1"]
+[ext_resource type="Script" uid="uid://csh6u4mneo3rh" path="res://addons/simusdev/editor/SD_PluginViewSettings.gd" id="1_7ruvr"]
+[ext_resource type="Script" uid="uid://chrfdjatuxh2l" path="res://addons/simusdev/network/SD_NetworkCacheSettings.gd" id="2_me2gm"]
+[ext_resource type="Script" uid="uid://c0f8kiwsqu61s" path="res://addons/simusdev/Game/build/SD_GameBuildSettings.gd" id="2_tfge0"]
+[ext_resource type="Script" uid="uid://ta36ebtpvxq7" path="res://addons/simusdev/localization/SD_LocalizationResource.gd" id="3_aioq7"]
+[ext_resource type="Script" uid="uid://bsn5pysgtogq7" path="res://addons/simusdev/network/SD_NetworkSettings.gd" id="3_m7xkw"]
+[ext_resource type="Script" uid="uid://bpr665ltjd8ed" path="res://addons/simusdev/popups/SD_PopupAnimationResource.gd" id="4_7ruvr"]
+[ext_resource type="Script" uid="uid://c0ux46dsfilvl" path="res://addons/simusdev/settings/SD_EngineSettings.gd" id="5_tfge0"]
+
+[sub_resource type="Resource" id="Resource_ojtp8"]
+script = ExtResource("1_7ruvr")
+
+[sub_resource type="Resource" id="Resource_mmju0"]
+script = ExtResource("2_tfge0")
+
+[sub_resource type="Resource" id="Resource_aioq7"]
+script = ExtResource("1_2wia1")
+
+[sub_resource type="Resource" id="Resource_cxv7n"]
+script = ExtResource("2_me2gm")
+
+[sub_resource type="Resource" id="Resource_3krnf"]
+script = ExtResource("3_m7xkw")
+cache = SubResource("Resource_cxv7n")
+
+[resource]
+script = ExtResource("5_tfge0")
+developer = "zxcvlxd"
+game = Dictionary[String, Variant]({
+"minimize_feature": false,
+"minimize_feature_on_release": true,
+"mute_audio_when_minimized": false,
+"pause_when_minimized": false
+})
+gamebuild = SubResource("Resource_mmju0")
+network = SubResource("Resource_3krnf")
+multiplayer = SubResource("Resource_aioq7")
+editor_view = SubResource("Resource_ojtp8")

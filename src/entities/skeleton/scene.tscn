@@ -1,0 +1,78 @@
+[gd_scene load_steps=23 format=3 uid="uid://g48744kbi62f"]
+
+[ext_resource type="PackedScene" uid="uid://jjfx4dnsay1a" path="res://src/entities/creep/creep.tscn" id="1_37dq1"]
+[ext_resource type="Script" uid="uid://rck36o34a5md" path="res://src/components/r_unit_properties.gd" id="2_hst4x"]
+[ext_resource type="AudioStream" uid="uid://wmrcrhj2w6fo" path="res://src/audio/impact_general/earth_spirit_impact1.mp3" id="2_yomd0"]
+[ext_resource type="AudioStream" uid="uid://c6nk3b240ml5t" path="res://src/audio/impact_general/earth_spirit_impact2.mp3" id="3_gnfhv"]
+[ext_resource type="PackedScene" uid="uid://djlnelowb05hc" path="res://src/entities/skeleton/animated_model.tscn" id="3_q6a7a"]
+[ext_resource type="AudioStream" uid="uid://ccyio52mukpq0" path="res://src/audio/impact_general/earth_spirit_impact3.mp3" id="4_v2efo"]
+[ext_resource type="AudioStream" uid="uid://ciubt6t3r1w73" path="res://src/audio/preattack/light_preattack3.mp3" id="5_380u4"]
+[ext_resource type="AudioStream" uid="uid://mkj5wf2ywg62" path="res://src/audio/preattack/light_preattack4.mp3" id="6_5mb6i"]
+[ext_resource type="AudioStream" uid="uid://o173me7uh610" path="res://src/audio/preattack/light_preattack5.mp3" id="7_c8jpe"]
+[ext_resource type="AudioStream" uid="uid://b64ukaobnksmd" path="res://src/audio/preattack/light_preattack6.mp3" id="8_ubmao"]
+[ext_resource type="AudioStream" uid="uid://dukvil4fqtg4y" path="res://src/audio/preattack/light_preattack7.mp3" id="9_rl3tk"]
+[ext_resource type="AudioStream" uid="uid://bvbr3t0efiu8y" path="res://src/audio/preattack/light_preattack8.mp3" id="10_0ai6u"]
+[ext_resource type="AudioStream" uid="uid://dib6tvd6dky2j" path="res://src/audio/footsteps_general/footstep_hero_general1.mp3" id="11_y1pmu"]
+[ext_resource type="AudioStream" uid="uid://cvn6k4mk8wslm" path="res://src/audio/footsteps_general/footstep_hero_general2.mp3" id="12_6y17h"]
+[ext_resource type="AudioStream" uid="uid://df6iqsut44wx1" path="res://src/audio/footsteps_general/footstep_hero_general3.mp3" id="13_13pya"]
+[ext_resource type="AudioStream" uid="uid://bupvw4feqjeqa" path="res://src/audio/footsteps_general/footstep_hero_general4.mp3" id="14_qe86f"]
+[ext_resource type="AudioStream" uid="uid://budxdebim8xna" path="res://src/audio/footsteps_general/footstep_hero_general5.mp3" id="15_nh5vx"]
+[ext_resource type="AudioStream" uid="uid://cnjfcgjkpy2ag" path="res://src/audio/footsteps_general/footstep_hero_general6.mp3" id="16_vj8ks"]
+[ext_resource type="AudioStream" uid="uid://n1hbv36ct8sg" path="res://src/audio/footsteps_general/footstep_hero_general7.mp3" id="17_r2jnl"]
+[ext_resource type="Script" uid="uid://cdo0cty1gvg5h" path="res://src/components/footstep_component.gd" id="20_gnfhv"]
+
+[sub_resource type="Resource" id="Resource_fulpr"]
+script = ExtResource("2_hst4x")
+_name = "Skeleton"
+base_health = 250.0
+base_mana = 100.0
+base_attack_damage = 32.0
+strength = 12.0
+intelligence = 24.0
+base_movespeed = 285.0
+attack_swing_sounds = Array[AudioStream]([ExtResource("5_380u4"), ExtResource("6_5mb6i"), ExtResource("7_c8jpe"), ExtResource("8_ubmao"), ExtResource("9_rl3tk"), ExtResource("10_0ai6u")])
+attack_hit_sounds = Array[AudioStream]([ExtResource("2_yomd0"), ExtResource("3_gnfhv"), ExtResource("4_v2efo")])
+footsteps_sounds = Array[AudioStream]([ExtResource("11_y1pmu"), ExtResource("12_6y17h"), ExtResource("13_13pya"), ExtResource("14_qe86f"), ExtResource("15_nh5vx"), ExtResource("16_vj8ks"), ExtResource("17_r2jnl")])
+portrait_scene = ExtResource("3_q6a7a")
+portrait_model_position = Vector3(0.8, -0.7, 0.8)
+portrait_model_rotation = Vector3(0, 0.535, 0)
+metadata/_custom_type_script = "uid://rck36o34a5md"
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_yomd0"]
+height = 1.5307617
+radius = 0.33691406
+
+[node name="creep" node_paths=PackedStringArray("model_root") instance=ExtResource("1_37dq1")]
+unit_resource = SubResource("Resource_fulpr")
+model_root = NodePath("AnimatedModel")
+
+[node name="AnimatedModel" parent="." index="0" node_paths=PackedStringArray("target") instance=ExtResource("3_q6a7a")]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
+target = NodePath("..")
+state_machine_properties = Dictionary[String, String]({
+"moving": "blend_position"
+})
+
+[node name="HealthComponent" parent="." index="1" node_paths=PackedStringArray("target")]
+target = NodePath("..")
+
+[node name="ManaComponent" parent="." index="2" node_paths=PackedStringArray("target")]
+target = NodePath("..")
+
+[node name="AttackComponent" parent="." index="4"]
+animation_names = Array[StringName]([&"attack"])
+distance_treshold = 1.6
+
+[node name="FootstepComponent" type="Node" parent="." index="5"]
+script = ExtResource("20_gnfhv")
+metadata/_custom_type_script = "uid://cdo0cty1gvg5h"
+
+[node name="NavigationAgent3D" parent="." index="6"]
+path_max_distance = 5.0
+
+[node name="Debug" parent="." index="9"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="11"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.76538086, 0)
+shape = SubResource("CylinderShape3D_yomd0")

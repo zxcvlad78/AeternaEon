@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://jjfx4dnsay1a"]
+
+[ext_resource type="PackedScene" uid="uid://pa5oyxiv7bk8" path="res://src/entities/base_unit/base_unit.tscn" id="1_3615y"]
+[ext_resource type="Script" uid="uid://bgleya0hsikc2" path="res://src/scripts/base_creep.gd" id="2_2dald"]
+[ext_resource type="Script" uid="uid://rck36o34a5md" path="res://src/components/r_unit_properties.gd" id="2_nfoy7"]
+[ext_resource type="Script" uid="uid://h5e3tnoqc8d6" path="res://src/spells/reverse_polarity/reverse_polarity.gd" id="3_uko8v"]
+[ext_resource type="Resource" uid="uid://c5p3vw14dpdua" path="res://src/spells/reverse_polarity/reverse_polarity.tres" id="4_2dald"]
+
+[sub_resource type="Resource" id="Resource_dmbpy"]
+script = ExtResource("2_nfoy7")
+strength = 25.0
+agility = 15.0
+intelligence = 16.0
+metadata/_custom_type_script = "uid://rck36o34a5md"
+
+[node name="creep" unique_id=801489880 instance=ExtResource("1_3615y")]
+script = ExtResource("2_2dald")
+death_experience = 1.0
+death_money = 1.0
+unit_resource = SubResource("Resource_dmbpy")
+
+[node name="HealthComponent" parent="." index="0" unique_id=1641220706]
+free_on_death = true
+
+[node name="AttackComponent" parent="." index="3" unique_id=1260897870]
+distance_treshold = 1.0
+
+[node name="chosed_spell_cast_range" parent="." index="5" unique_id=568574711]
+visible = false
+
+[node name="current_unit_mesh" parent="." index="6" unique_id=1444289440]
+visible = false
+
+[node name="SpellReversePolarity" type="Node3D" parent="SpellContainer" parent_id_path=PackedInt32Array(1568682235) index="0" unique_id=1394653210]
+script = ExtResource("3_uko8v")
+resource = ExtResource("4_2dald")
+spell_level = 1
+metadata/_custom_type_script = "uid://h5e3tnoqc8d6"
+
+[node name="mana" parent="Debug" parent_id_path=PackedInt32Array(200260478) index="0" unique_id=128794271]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+
+[node name="health" parent="Debug" parent_id_path=PackedInt32Array(200260478) index="1" unique_id=1792238448]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
