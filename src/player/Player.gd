@@ -31,6 +31,8 @@ func select_unit(unit:Unit) -> void:
 	#print(selected_units)
 
 func get_main_unit() -> Unit:
+	if selected_units.is_empty():
+		return null
 	return selected_units.front()
 
 func get_or_create_camera() -> Camera3D:

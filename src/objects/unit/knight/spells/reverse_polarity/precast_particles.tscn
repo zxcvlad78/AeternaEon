@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://brrg8ynwrodvn"]
+
+[ext_resource type="Script" uid="uid://cve2k5vcx86mj" path="res://src/components/particles/W_Particles.gd" id="1_t7ieo"]
+[ext_resource type="Shader" uid="uid://hnnv0sqgvd87" path="res://resources/shaders/electricity.gdshader" id="2_1uepk"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_b5li3"]
+render_priority = 0
+shader = ExtResource("2_1uepk")
+shader_parameter/core_color = Color(0.05, 0, 0.1, 0.6)
+shader_parameter/lightning_color = Color(0.39999998, 0.7326288, 1, 1)
+shader_parameter/speed = 10.0
+shader_parameter/transparency = 0.5
+
+[sub_resource type="Curve" id="Curve_yqow7"]
+_data = [Vector2(0, 0), 0.0, 23.855135, 0, 0, Vector2(0.057553954, 1), -0.065488234, -0.065488234, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="TubeTrailMesh" id="TubeTrailMesh_d88t6"]
+radius = 1.0
+radial_steps = 16
+section_rings = 6
+curve = SubResource("Curve_yqow7")
+
+[node name="PrecastParticles" type="Node3D" unique_id=1545653158]
+script = ExtResource("1_t7ieo")
+metadata/_custom_type_script = "uid://cve2k5vcx86mj"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=2008464283]
+material_override = SubResource("ShaderMaterial_b5li3")
+mesh = SubResource("TubeTrailMesh_d88t6")

@@ -31,7 +31,34 @@ metadata/_custom_type_script = "uid://imhh1kugqh4m"
 [node name="Players" type="Node3D" parent="." unique_id=322654969]
 
 [node name="CT_SpawnPointUnit" type="Node3D" parent="." unique_id=1945869821 node_paths=PackedStringArray("root")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0)
+script = ExtResource("10_aikvj")
+root = NodePath("../NetworkedObjects")
+unit = ExtResource("4_kc8ui")
+metadata/_custom_type_script = "uid://b50n6cwhbx034"
+
+[node name="CT_SpawnPointUnit2" type="Node3D" parent="." unique_id=374380579 node_paths=PackedStringArray("root")]
+script = ExtResource("10_aikvj")
+root = NodePath("../NetworkedObjects")
+unit = ExtResource("4_kc8ui")
+metadata/_custom_type_script = "uid://b50n6cwhbx034"
+
+[node name="CT_SpawnPointUnit3" type="Node3D" parent="." unique_id=1815624253 node_paths=PackedStringArray("root")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
+script = ExtResource("10_aikvj")
+root = NodePath("../NetworkedObjects")
+unit = ExtResource("4_kc8ui")
+metadata/_custom_type_script = "uid://b50n6cwhbx034"
+
+[node name="CT_SpawnPointUnit4" type="Node3D" parent="." unique_id=275327099 node_paths=PackedStringArray("root")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 0)
+script = ExtResource("10_aikvj")
+root = NodePath("../NetworkedObjects")
+unit = ExtResource("4_kc8ui")
+metadata/_custom_type_script = "uid://b50n6cwhbx034"
+
+[node name="CT_SpawnPointUnit5" type="Node3D" parent="." unique_id=942053737 node_paths=PackedStringArray("root")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 0)
 script = ExtResource("10_aikvj")
 root = NodePath("../NetworkedObjects")
 unit = ExtResource("4_kc8ui")

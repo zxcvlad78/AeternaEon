@@ -3,10 +3,12 @@ class_name SpellChanneling extends RefCounted
 signal finished(is_success: bool)
 
 var spell_machine: SpellMachine
+var spell:Spell
 var is_active: bool = false
 
-func _init(p_spell_machine:SpellMachine = null) -> void:
+func _init(p_spell_machine:SpellMachine = null, p_spell:Spell = null) -> void:
 	spell_machine = p_spell_machine
+	spell = p_spell
 
 func start(time: float) -> void:
 	is_active = true

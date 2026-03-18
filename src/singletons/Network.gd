@@ -21,7 +21,7 @@ func _ready() -> void:
 	
 	#region Console Commands
 	var commands_exec: Array[SD_ConsoleCommand] = [
-		SD_ConsoleCommand.get_or_create("connect"),
+		SD_ConsoleCommand.get_or_create("connect", "localhost:8080"),
 		SD_ConsoleCommand.get_or_create("disconnect"),
 		SD_ConsoleCommand.get_or_create("start.server"),
 		SD_ConsoleCommand.get_or_create("start.dedicated")

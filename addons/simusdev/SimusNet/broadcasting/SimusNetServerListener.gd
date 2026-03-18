@@ -20,6 +20,9 @@ func _ready():
 	if parent is Control:
 		parent.visibility_changed.connect(_update)
 		_update()
+		
+		while not parent.visible:
+			await parent.visibility_changed
 	
 	if SimusNetConnection.is_dedicated_server():
 		return
