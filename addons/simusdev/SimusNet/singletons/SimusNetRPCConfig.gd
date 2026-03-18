@@ -4,40 +4,42 @@ class_name SimusNetRPCConfig
 var _channel: int = 0
 var _transfer_mode: SimusNetRPC.TRANSFER_MODE = SimusNetRPC.TRANSFER_MODE.RELIABLE
 
-var unique_id: int = -1
-var unique_id_bytes: PackedByteArray
-
 var is_ready: bool = false
 signal on_ready()
 
-var object: Object
 #//////////////////////////////////////////////////////////////
 
 #//////////////////////////////////////////////////////////////
 
 func _initialize(handler: SimusNetRPCConfigHandler, callable: Callable) -> void:
-	#self.callable = callable
-	self.object = callable.get_object()
-	
 	handler._list_by_name[callable.get_method()] = self
 	
-	handler._list.set(callable, self)
-	
-	SimusNetMethods.cache(callable)
-	
-	unique_id_bytes = await SimusNetMethods.serialize(callable)
-	unique_id = SimusNetMethods.get_id(callable)
-	
-	handler._list_by_unique_id.set(unique_id, self)
+	_initialize_dynamic(handler)
+
+func _initialize_dynamic(handler: SimusNetRPCConfigHandler) -> void:
+	flag_set_channel(_channel)
 	
 	is_ready = true
 	on_ready.emit()
 	
+
+func _deinitialize_dynamic(handler: SimusNetRPCConfigHandler) -> void:
+	if !is_ready:
+		return
+	
+	is_ready = false
+
+func _network_ready(handler: SimusNetRPCConfigHandler) -> void:
+	_initialize_dynamic(handler)
+
+func _network_disconnect(handler: SimusNetRPCConfigHandler) -> void:
+	_deinitialize_dynamic(handler)
+
 #//////////////////////////////////////////////////////////////
 
 static func try_find_in(callable: Callable) -> SimusNetRPCConfig:
 	var handler: SimusNetRPCConfigHandler = SimusNetRPCConfigHandler.get_or_create(callable.get_object())
-	return handler._list.get(callable)
+	return handler._list_by_name.get(callable.get_method())
 
 static func _append_to(callable: Callable, config: SimusNetRPCConfig) -> void:
 	var handler: SimusNetRPCConfigHandler = SimusNetRPCConfigHandler.get_or_create(callable.get_object())
@@ -120,12 +122,12 @@ func flag_serialization(value: bool = true) -> SimusNetRPCConfig:
 
 #//////////////////////////////////////////////////////////////
 
-func _validate(callable: Callable, to_peer: int = -1) -> bool:
+func _validate(handler: SimusNetRPCConfigHandler, callable: Callable, to_peer: int = -1) -> bool:
 	if !is_ready:
 		await on_ready
 	
 	if _mode == MODE.AUTHORITY:
-		var a: bool = SimusNet.is_network_authority(object)
+		var a: bool = SimusNet.is_network_authority(handler.get_object())
 		
 		if !a:
 			SimusNetRPC._instance.logger.debug_error("failed to validate AUTHORITY rpc: %s" % callable)
@@ -143,7 +145,7 @@ func _validate(callable: Callable, to_peer: int = -1) -> bool:
 	
 	return true
 
-func _validate_on_recieve(callable: Callable, from_peer: int = -1) -> bool:
+func _validate_on_recieve(handler: SimusNetRPCConfigHandler, callable: Callable, from_peer: int = -1) -> bool:
 	if !is_ready:
 		await on_ready
 	
@@ -154,7 +156,7 @@ func _validate_on_recieve(callable: Callable, from_peer: int = -1) -> bool:
 				return false
 	
 	if _mode == MODE.AUTHORITY:
-		var a: bool = SimusNet.get_network_authority(object) == SimusNetRemote.sender_id
+		var a: bool = SimusNet.get_network_authority(handler.get_object()) == SimusNetRemote.sender_id
 		if !a:
 			SimusNetRPC._instance.logger.debug_error("failed to recieve AUTHORITY rpc from peer: %s, %s" % [SimusNetRemote.sender_id, callable])
 		return a

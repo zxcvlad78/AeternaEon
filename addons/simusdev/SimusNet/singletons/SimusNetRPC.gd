@@ -31,6 +31,7 @@ func initialize() -> void:
 func _validate_callable(callable: Callable, on_recieve: bool = false, peer: int = -1) -> SimusNetRPCConfig:
 	var object: Object = callable.get_object()
 	var config: SimusNetRPCConfig = SimusNetRPCConfig.try_find_in(callable)
+	var handler: SimusNetRPCConfigHandler = SimusNetRPCConfigHandler.get_or_create(object)
 	if !config:
 		logger.push_error("cant invoke rpc (%s), failed to find rpc config for %s" % [callable, object])
 		return null
@@ -38,9 +39,9 @@ func _validate_callable(callable: Callable, on_recieve: bool = false, peer: int 
 	var rpc_valide: bool = false
 	
 	if on_recieve:
-		rpc_valide = await config._validate_on_recieve(callable, peer)
+		rpc_valide = await config._validate_on_recieve(handler, callable, peer)
 	else:
-		rpc_valide = await config._validate(callable, peer)
+		rpc_valide = await config._validate(handler, callable, peer)
 	
 	if rpc_valide:
 		return config
@@ -52,8 +53,8 @@ static func invoke(callable: Callable, ...args: Array) -> void:
 	_instance._invoke(callable, args)
 
 static func invoke_all(callable: Callable, ...args: Array) -> void:
-	callable.callv(args)
 	_instance._invoke(callable, args)
+	callable.callv(args)
 
 func _invoke(callable: Callable, args: Array) -> void:
 	if !SimusNetConnection.is_active():

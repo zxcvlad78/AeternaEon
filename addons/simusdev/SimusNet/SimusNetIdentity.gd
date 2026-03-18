@@ -50,7 +50,8 @@ func _initialize() -> void:
 	_net_settings = SimusNetSettings.get_or_create()
 	
 	if SimusNetConnection.is_server():
-		_unique_id = SimusNetIdentitySettings._generate_instance_int()
+		if _unique_id == -1:
+			_unique_id = SimusNetIdentitySettings._generate_instance_int()
 	
 	if owner is Node:
 		if !owner.is_node_ready():
@@ -62,6 +63,9 @@ func _initialize() -> void:
 	
 	_initialize_dynamic()
 	
+
+static func generate_instance_unique_id_int() -> int:
+	return SimusNetIdentitySettings._generate_instance_int()
 
 func _renamed() -> void:
 	get_dictionary_by_generated_id().erase(get_generated_unique_id())

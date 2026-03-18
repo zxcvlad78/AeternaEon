@@ -1,0 +1,1 @@
+class_name CT_Mana extends CT_PointCounter

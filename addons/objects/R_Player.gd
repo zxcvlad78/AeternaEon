@@ -1,0 +1,1 @@
+class_name R_Player extends R_LivingEntity

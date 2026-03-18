@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="R_Unit" format=3 uid="uid://byprm4cq8wq0h"]
+
+[ext_resource type="Script" uid="uid://rck36o34a5md" path="res://src/components/unit/R_Unit.gd" id="1_co2dg"]
+[ext_resource type="PackedScene" uid="uid://6j2ki7l57a2m" path="res://src/objects/unit/knight/UnitKnight.tscn" id="1_xrwt8"]
+
+[resource]
+script = ExtResource("1_co2dg")
+name = "Knight"
+prefab = ExtResource("1_xrwt8")
+base_health = 400.0
+strength = 15.0
+agility = 8.0
+intelligence = 7.0
+metadata/_custom_type_script = "uid://rck36o34a5md"

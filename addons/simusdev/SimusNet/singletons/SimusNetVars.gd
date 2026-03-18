@@ -92,7 +92,9 @@ var _queue_replicate_server: Dictionary = {}
 
 var _queue_send: Dictionary = {}
 
-var _queue_send_types: Dictionary = {}
+var _queue_send_synced_types: Dictionary[SimusNetSyncedType, Array] = {}
+var _queue_replicate_synced_types: Array[SimusNetSyncedType] = []
+var _queue_replicate_send_synced_types: Dictionary = {}
 
 func _physics_process(delta: float) -> void:
 	if !_queue_replicate.is_empty():
@@ -110,6 +112,18 @@ func _physics_process(delta: float) -> void:
 	if !_queue_send.is_empty():
 		_handle_send(_queue_send)
 		_queue_send.clear()
+	
+	if !_queue_send_synced_types.is_empty():
+		_handle_send_synced_types(_queue_send_synced_types)
+		_queue_send_synced_types.clear()
+	
+	if !_queue_replicate_synced_types.is_empty():
+		_handle_replicate_synced_types(_queue_replicate_synced_types)
+		_queue_replicate_synced_types.clear()
+	
+	if !_queue_replicate_send_synced_types.is_empty():
+		_handle_send_replicate_synced_types(_queue_replicate_send_synced_types)
+		_queue_replicate_send_synced_types.clear()
 	
 	on_tick.emit(delta)
 	
@@ -350,6 +364,153 @@ func _recieve_send_packet_local(packet: PackedByteArray, from_peer: int) -> void
 				SimusNetProfiler._instance._put_var_traffic(var_to_bytes(s_p).size() + var_to_bytes(data[id][s_p]).size(), identity, property, true)
 				identity.owner.set(property, value)
 				
+
+func _replicate_synced_type(type: SimusNetSyncedType) -> void:
+	if SimusNetConnection.is_server():
+		return
+	
+	if !type.is_ready:
+		await type.on_ready
+	
+	_queue_replicate_synced_types.append(type)
+	
+
+func _handle_replicate_synced_types(data: Array[SimusNetSyncedType]) -> void:
+	var packet: Dictionary = {}
+	for i in data:
+		if i.get_owner():
+			packet.set(i.identity.get_unique_id(), i.network_id)
+	
+	if packet.is_empty():
+		return
+	
+	var bytes: PackedByteArray = var_to_bytes(packet)
+	var size: int = bytes.size()
+	bytes = bytes.compress(FileAccess.CompressionMode.COMPRESSION_ZSTD)
+	_server_receive_synced_types_from_client.rpc_id(SimusNet.SERVER_ID, bytes, size)
+
+@rpc("any_peer", "call_remote", "reliable", SimusNetChannels.BUILTIN.SYNCED_TYPES)
+func _server_receive_synced_types_from_client(bytes: PackedByteArray, uncompressed_size: int) -> void:
+	bytes = bytes.decompress(uncompressed_size, FileAccess.CompressionMode.COMPRESSION_ZSTD)
+	var packet: Dictionary = bytes_to_var(bytes)
+	
+	for id in packet:
+		var identity: SimusNetIdentity = SimusNetIdentity.get_dictionary_by_unique_id().get(id)
+		if !identity:
+			continue
+		
+		if !identity.owner:
+			continue
+		
+		SimusNetVisibility.set_visible_for(multiplayer.get_remote_sender_id(), identity.owner, true)
+		
+		var handler: SimusNetSyncedTypeHandler = SimusNetSyncedTypeHandler.get_or_create(identity.owner)
+		var synced_type: SimusNetSyncedType = handler.get_synced_type_by_id(packet[id])
+		if !synced_type:
+			continue
+		
+		var to_peer_data: Dictionary = _queue_replicate_send_synced_types.get_or_add(multiplayer.get_remote_sender_id(), {})
+		var identity_data: Dictionary = to_peer_data.get_or_add(identity.get_unique_id(), {})
+		identity_data.set(synced_type.network_id, synced_type._start_replicate_serialize())
+	
+
+func _handle_send_replicate_synced_types(data: Dictionary) -> void:
+	if !SimusNetConnection.is_server():
+		return
+	
+	for p_id: int in data:
+		var peer_data: Dictionary = data[p_id]
+		var bytes: PackedByteArray = var_to_bytes(peer_data)
+		var size: int = bytes.size()
+		bytes = bytes.compress(FileAccess.CompressionMode.COMPRESSION_ZSTD)
+		_receive_replication_from_server.rpc_id(p_id, bytes, size)
+		
+
+@rpc("authority", "call_remote", "reliable", SimusNetChannels.BUILTIN.SYNCED_TYPES)
+func _receive_replication_from_server(bytes: PackedByteArray, uncompressed_size: int) -> void:
+	bytes = bytes.decompress(uncompressed_size, FileAccess.CompressionMode.COMPRESSION_ZSTD)
+	var data: Dictionary = bytes_to_var(bytes)
+	
+	for identity_id: int in data:
+		var identity: SimusNetIdentity = SimusNetIdentity.get_dictionary_by_unique_id().get(identity_id)
+		if !identity:
+			continue
+		
+		if !identity.owner:
+			continue
+		
+		var handler: SimusNetSyncedTypeHandler = SimusNetSyncedTypeHandler.get_or_create(identity.owner)
+		
+		for sync_id: int in data[identity_id]:
+			var synced_type: SimusNetSyncedType = handler.get_synced_type_by_id(sync_id)
+			if !synced_type:
+				continue
+			
+			var serialized: Variant = data[identity_id][sync_id]
+			synced_type._on_replication_received(synced_type._start_replicate_deserialize(serialized))
+
+func _update_send_synced_type(type: SimusNetSyncedType) -> void:
+	if !type.is_ready:
+		await type.on_ready
+	
+	var changes: Array = _queue_send_synced_types.get_or_add(type, [])
+	changes.append_array(type.___changes)
+
+func _handle_send_synced_types(data: Dictionary[SimusNetSyncedType, Array]) -> void:
+	var packet: Dictionary = {}
+	
+	for i in data:
+		if i.get_owner():
+			var changes: Array = data[i]
+			var visible: SimusNetVisible = SimusNetVisible.get_or_create(i.get_owner())
+			
+			for peer_id in SimusNetConnection.get_connected_peers():
+				if !visible.is_visible_for(peer_id):
+					continue
+				
+				if i._validate_send(peer_id):
+					var peer_data: Dictionary = packet.get_or_add(peer_id, {})
+					var identity_data: Dictionary = peer_data.get_or_add(i.identity.get_unique_id(), {})
+					identity_data.set(i.network_id, changes)
+	
+	if packet.is_empty():
+		return
+	
+	for p_id: int in packet:
+		var bytes: PackedByteArray = var_to_bytes(packet[p_id])
+		var size: int = bytes.size()
+		bytes = bytes.compress(FileAccess.CompressionMode.COMPRESSION_ZSTD)
+		_receive_sent_synced_types.rpc_id(p_id, bytes, size)
+
+@rpc("any_peer", "call_remote", "reliable", SimusNetChannels.BUILTIN.SYNCED_TYPES)
+func _receive_sent_synced_types(bytes: PackedByteArray, uncompressed_size: int) -> void:
+	var sender: int = multiplayer.get_remote_sender_id()
+	bytes = bytes.decompress(uncompressed_size, FileAccess.CompressionMode.COMPRESSION_ZSTD)
+	
+	var data: Dictionary = bytes_to_var(bytes)
+	
+	for id: int in data:
+		var identity: SimusNetIdentity = SimusNetIdentity.get_dictionary_by_unique_id().get(id)
+		if !identity:
+			continue
+		
+		if !identity.owner:
+			continue
+		
+		var handler: SimusNetSyncedTypeHandler = SimusNetSyncedTypeHandler.get_or_create(identity.owner)
+		
+		for sync_id: int in data[id]:
+			var synced_type: SimusNetSyncedType = handler.get_synced_type_by_id(sync_id)
+			if !synced_type:
+				continue
+			
+			if !synced_type._validate_receive(sender):
+				continue
+			
+			var changes: Array = data[id][sync_id]
+			synced_type._on_changes_received(changes)
+		
+	
 
 static func cache(property: String) -> void:
 	if SimusNetConnection.is_server():

@@ -1,0 +1,1 @@
+class_name R_LivingEntity extends R_WorldObject

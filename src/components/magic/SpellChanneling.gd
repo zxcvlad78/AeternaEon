@@ -1,0 +1,26 @@
+class_name SpellChanneling extends RefCounted
+
+signal finished(is_success: bool)
+
+var spell_machine: SpellMachine
+var is_active: bool = false
+
+func _init(p_spell_machine:SpellMachine = null) -> void:
+	spell_machine = p_spell_machine
+
+func start(time: float) -> void:
+	is_active = true
+	var timer = spell_machine.get_tree().create_timer(time)
+	
+	await timer.timeout
+	
+	if is_active:
+		_finish(true)
+
+func interrupt() -> void:
+	if is_active:
+		_finish(false)
+
+func _finish(is_success: bool) -> void:
+	is_active = false
+	finished.emit(is_success)

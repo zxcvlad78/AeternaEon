@@ -35,6 +35,7 @@ game = Dictionary[String, Variant]({
 "pause_when_minimized": false
 })
 gamebuild = SubResource("Resource_mmju0")
+tools = Array[PackedScene]([null])
 network = SubResource("Resource_3krnf")
 multiplayer = SubResource("Resource_aioq7")
 editor_view = SubResource("Resource_ojtp8")

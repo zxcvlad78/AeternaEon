@@ -6,6 +6,10 @@ static var _settings: SimusNetSettings
 
 const ARRAY_SIZE: int = 2
 
+static func is_object_has_custom_serialization(object: Object) -> bool:
+	return object.has_method(SimusNetCustomSerialization.METHOD_SERIALIZE) and \
+	object.has_method(SimusNetCustomSerialization.METHOD_DESERIALIZE)
+
 static func _throw_error(...args: Array) -> void:
 	if _settings.debug_enable:
 		printerr("[SimusNetSerializer]: ")
@@ -23,6 +27,7 @@ enum TYPE {
 	NODE_FROM,
 	ARRAY,
 	DICTIONARY,
+	CUSTOM,
 }
 
 static var __class_and_method: Dictionary[StringName, Callable] = {
@@ -65,10 +70,19 @@ static func parse(variant: Variant, try: bool = true) -> Variant:
 	
 	if parsed.size() <= 1:
 		_throw_error("failed to serialize: (%s), %s" % [type_string, variant])
+		#print(parsed)
 		return variant
 	return parsed
 
+static func _parse_custom(variant: Object) -> Variant:
+	var serialization := SimusNetCustomSerialization.new()
+	variant.call(SimusNetCustomSerialization.METHOD_SERIALIZE, serialization)
+	return _create_parsed(SimusNetSerializer.TYPE.CUSTOM, serialization._net_serialize(variant))
+
 static func parse_object(variant: Object) -> Variant:
+	if is_object_has_custom_serialization(variant):
+		return _parse_custom(variant)
+
 	if variant is Node:
 		return parse_node(variant)
 	

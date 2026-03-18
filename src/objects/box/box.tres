@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="R_WorldObject" format=3 uid="uid://dne1uqwbgk12p"]
+
+[ext_resource type="Script" uid="uid://ca0buqjqwvih8" path="res://addons/objects/R_WorldObject.gd" id="1_au0si"]
+[ext_resource type="Texture2D" uid="uid://bwretx2xncvqb" path="res://addons/simusdev/icons/Groups.svg" id="1_s7y1a"]
+[ext_resource type="Script" uid="uid://bbirapw4otxie" path="res://addons/objects/R_ViewModel.gd" id="3_p7de4"]
+[ext_resource type="PackedScene" uid="uid://cxb7m7mavhga2" path="res://src/objects/box/static_box.tscn" id="4_kq6l4"]
+
+[sub_resource type="Resource" id="Resource_xfddi"]
+script = ExtResource("3_p7de4")
+world = ExtResource("4_kq6l4")
+metadata/_custom_type_script = "uid://bbirapw4otxie"
+
+[resource]
+script = ExtResource("1_au0si")
+_icon = ExtResource("1_s7y1a")
+viewmodel = SubResource("Resource_xfddi")
+metadata/_custom_type_script = "uid://ca0buqjqwvih8"

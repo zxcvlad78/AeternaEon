@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://n6s2lwx77au0"]
+
+[ext_resource type="PackedScene" uid="uid://pa5oyxiv7bk8" path="res://src/entities/base_unit/base_unit.tscn" id="1_2uyx7"]
+[ext_resource type="FontFile" uid="uid://bofcb815ysn51" path="res://addons/simusdev/fonts/Allods.ttf" id="2_bygx2"]
+[ext_resource type="AudioStream" uid="uid://bp0dqcfdu17rh" path="res://src/audio/knight/hit/hit1.mp3" id="2_ekhm6"]
+[ext_resource type="PackedScene" uid="uid://dbhbggfmmurcx" path="res://src/models/knight/animated_model.tscn" id="2_gufft"]
+[ext_resource type="Script" uid="uid://rck36o34a5md" path="res://src/components/unit/R_Unit.gd" id="2_pa0et"]
+[ext_resource type="AudioStream" uid="uid://dqjsmi4a7loy0" path="res://src/audio/knight/hit/hit2.mp3" id="3_1hlbe"]
+[ext_resource type="AudioStream" uid="uid://dpi7ux2oigngm" path="res://src/audio/knight/hit/hit3.mp3" id="4_aomp4"]
+[ext_resource type="AudioStream" uid="uid://dnhaak5yaw1j7" path="res://src/audio/knight/hit/hit4.mp3" id="5_f24qm"]
+[ext_resource type="Resource" path="res://src/spells/knock/knock.tres" id="5_nm0fu"]
+[ext_resource type="AudioStream" uid="uid://dd4jveqfgqw78" path="res://src/audio/knight/hit/hit5.mp3" id="6_rrci3"]
+[ext_resource type="AudioStream" uid="uid://bb7wkf3u8k1qj" path="res://src/audio/preattack/large_blade_woosh1.mp3" id="7_b4ht2"]
+[ext_resource type="AudioStream" uid="uid://c17of8ccmrb02" path="res://src/audio/preattack/large_blade_woosh2.mp3" id="8_460ec"]
+[ext_resource type="AudioStream" uid="uid://ciyd2syna236d" path="res://src/audio/preattack/large_blade_woosh3.mp3" id="9_1it5d"]
+[ext_resource type="Script" path="res://src/components/footstep_component.gd" id="19_b4ht2"]
+[ext_resource type="Script" path="res://src/spells/knock/knock.gd" id="20_s4bsr"]
+
+[sub_resource type="Resource" id="Resource_ddoho"]
+script = ExtResource("2_pa0et")
+attack_swing_sounds = Array[AudioStream]([ExtResource("7_b4ht2"), ExtResource("8_460ec"), ExtResource("9_1it5d")])
+attack_hit_sounds = Array[AudioStream]([ExtResource("2_ekhm6"), ExtResource("3_1hlbe"), ExtResource("4_aomp4"), ExtResource("5_f24qm"), ExtResource("6_rrci3")])
+metadata/_custom_type_script = "uid://rck36o34a5md"
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_bygx2"]
+
+[node name="knight" unique_id=1774659189 node_paths=PackedStringArray("model_root") instance=ExtResource("1_2uyx7")]
+resource = SubResource("Resource_ddoho")
+model_root = NodePath("AnimatedModel")
+
+[node name="AnimatedModel" parent="." index="0" unique_id=287102916 node_paths=PackedStringArray("target") instance=ExtResource("2_gufft")]
+target = NodePath("..")
+state_exceptions = Array[String](["attacking"])
+
+[node name="AttackComponent" parent="." index="4" unique_id=1260897870]
+animation_names = Array[StringName]([&"attack", &"attack2"])
+distance_treshold = 1.5
+
+[node name="FootstepComponent" type="Node" parent="." index="5" unique_id=916310477]
+script = ExtResource("19_b4ht2")
+metadata/_custom_type_script = "uid://cdo0cty1gvg5h"
+
+[node name="collision" type="CollisionShape3D" parent="." index="6" unique_id=1057269437]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CylinderShape3D_bygx2")
+
+[node name="SpellKnock" type="Node3D" parent="SpellContainer" parent_id_path=PackedInt32Array(1568682235) index="0" unique_id=1816349990]
+script = ExtResource("20_s4bsr")
+resource = ExtResource("5_nm0fu")
+spell_level = 1
+metadata/_custom_type_script = "uid://crhc0um752hiv"
+
+[node name="Debug" parent="." index="11" unique_id=200260478]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, 0)
+
+[node name="mana" parent="Debug" index="0" unique_id=128794271]
+font = ExtResource("2_bygx2")
+
+[node name="health" parent="Debug" index="1" unique_id=1792238448]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.19999993, 0)
+font = ExtResource("2_bygx2")

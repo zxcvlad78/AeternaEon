@@ -1,0 +1,72 @@
+[gd_scene format=3 uid="uid://7arywqvet7ru"]
+
+[ext_resource type="Script" uid="uid://dtw88gtxnw5gb" path="res://src/components/unit/Unit.gd" id="1_pkw2p"]
+[ext_resource type="Script" uid="uid://d1b2q70d8cwlq" path="res://src/components/points/CT_Health.gd" id="2_w0g2k"]
+[ext_resource type="Script" uid="uid://d1jwapkumdp1u" path="res://addons/simusdev/SimusNet/SimusNetTransform.gd" id="2_xerr7"]
+[ext_resource type="Script" uid="uid://bhnptgumb630v" path="res://src/components/points/CT_Mana.gd" id="3_62vqr"]
+[ext_resource type="Script" uid="uid://hso2ju3bqqww" path="res://addons/simusdev/SimusNet/SimusNetIdentity.gd" id="3_o83l0"]
+[ext_resource type="Script" uid="uid://de567i2tbcvyq" path="res://src/components/movement/CT_Movement.gd" id="4_62vqr"]
+[ext_resource type="Script" uid="uid://b1q8rkwhld80p" path="res://addons/simusdev/statemachine/SD_NodeStateMachine.gd" id="6_vb5u6"]
+[ext_resource type="Script" uid="uid://c85p6hiq2wm53" path="res://src/components/magic/SpellMachine.gd" id="7_mbpmj"]
+[ext_resource type="Script" uid="uid://b2fidrwvgnri2" path="res://addons/simusdev/statemachine/SD_State.gd" id="7_xyafo"]
+
+[sub_resource type="Resource" id="Resource_36mmn"]
+script = ExtResource("3_o83l0")
+
+[node name="Unit" type="CharacterBody3D" unique_id=907328648 node_paths=PackedStringArray("state_machine")]
+script = ExtResource("1_pkw2p")
+state_machine = NodePath("StateMachine")
+metadata/_custom_type_script = "uid://dtw88gtxnw5gb"
+metadata/simusnet_var_config = Object(RefCounted,"script":Resource("res://addons/simusdev/SimusNet/SimusNetVarConfigHandler.gd"))
+
+metadata/SimusNetIdentity = SubResource("Resource_36mmn")
+
+[node name="SimusNetTransform" type="Node" parent="." unique_id=1977621246 node_paths=PackedStringArray("node")]
+script = ExtResource("2_xerr7")
+node = NodePath("..")
+interpolate_speed = 128.0
+metadata/_custom_type_script = "uid://d1jwapkumdp1u"
+
+[node name="CT_Health" type="Node" parent="." unique_id=1232407360 node_paths=PackedStringArray("root")]
+script = ExtResource("2_w0g2k")
+root = NodePath("..")
+metadata/_custom_type_script = "uid://d1b2q70d8cwlq"
+
+[node name="CT_Mana" type="Node" parent="." unique_id=1831672166 node_paths=PackedStringArray("root")]
+script = ExtResource("3_62vqr")
+root = NodePath("..")
+metadata/_custom_type_script = "uid://bhnptgumb630v"
+
+[node name="CT_Movement" type="Node" parent="." unique_id=1479135991 node_paths=PackedStringArray("unit")]
+script = ExtResource("4_62vqr")
+unit = NodePath("..")
+metadata/_custom_type_script = "uid://de567i2tbcvyq"
+
+[node name="SpellMachine" type="Node3D" parent="." unique_id=832120988 node_paths=PackedStringArray("unit")]
+script = ExtResource("7_mbpmj")
+unit = NodePath("..")
+metadata/_custom_type_script = "uid://c85p6hiq2wm53"
+
+[node name="StateMachine" type="Node" parent="." unique_id=14134217]
+script = ExtResource("6_vb5u6")
+metadata/_custom_type_script = "uid://b1q8rkwhld80p"
+
+[node name="idle" type="Node" parent="StateMachine" unique_id=698389641]
+process_mode = 4
+script = ExtResource("7_xyafo")
+metadata/_custom_type_script = "uid://b2fidrwvgnri2"
+
+[node name="moving" type="Node" parent="StateMachine" unique_id=520519347]
+process_mode = 4
+script = ExtResource("7_xyafo")
+metadata/_custom_type_script = "uid://b2fidrwvgnri2"
+
+[node name="attack" type="Node" parent="StateMachine" unique_id=10928396]
+process_mode = 4
+script = ExtResource("7_xyafo")
+metadata/_custom_type_script = "uid://b2fidrwvgnri2"
+
+[node name="casting" type="Node" parent="StateMachine" unique_id=186059187]
+process_mode = 4
+script = ExtResource("7_xyafo")
+metadata/_custom_type_script = "uid://b2fidrwvgnri2"

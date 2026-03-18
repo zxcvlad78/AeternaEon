@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="R_Spell" format=3 uid="uid://c0r6kg6p0lilk"]
+
+[ext_resource type="Texture2D" uid="uid://cyvdhm4snb8qj" path="res://addons/simusdev/icons/Timer.svg" id="1_27h7y"]
+[ext_resource type="AudioStream" uid="uid://ctm72g0syrlkk" path="res://src/audio/magnus/Reverse_Polarity_cast.mp3" id="1_c7qhw"]
+[ext_resource type="Script" uid="uid://bt7y70x0v0561" path="res://src/components/magic/R_Spell.gd" id="1_hcwe4"]
+[ext_resource type="Script" uid="uid://dlodw7gliq14w" path="res://src/components/particles/R_ParticlesSettings.gd" id="2_4cfka"]
+[ext_resource type="AudioStream" uid="uid://1e0fdarwisfy" path="res://src/audio/magnus/Reverse_Polarity_pre_cast.mp3" id="4_pe3fq"]
+
+[sub_resource type="Resource" id="Resource_nrbxk"]
+script = ExtResource("2_4cfka")
+metadata/_custom_type_script = "uid://dlodw7gliq14w"
+
+[sub_resource type="GDScript" id="GDScript_4cfka"]
+script/source = "extends Spell
+
+func cast(target:Variant = null) -> void:
+	super()
+	print(\"Sex)\")
+"
+
+[resource]
+script = ExtResource("1_hcwe4")
+name = &"Reverse Polarity"
+icon = ExtResource("1_27h7y")
+particles = SubResource("Resource_nrbxk")
+precast_sound = ExtResource("4_pe3fq")
+cast_sound = ExtResource("1_c7qhw")
+spell_script = SubResource("GDScript_4cfka")
+base_precast_time = 0.2
+metadata/_custom_type_script = "uid://bt7y70x0v0561"

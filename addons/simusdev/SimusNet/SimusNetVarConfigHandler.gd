@@ -11,6 +11,12 @@ var _properties_for: Dictionary[SimusNetVarConfig, PackedStringArray]
 
 var _properties_time: Dictionary[int, float] = {}
 
+func get_all_properties() -> PackedStringArray:
+	var result: PackedStringArray = []
+	for i in _list:
+		result.append(i)
+	return result
+
 func get_properties_for(cfg: SimusNetVarConfig) -> PackedStringArray:
 	return _properties_for.get(cfg, PackedStringArray())
 

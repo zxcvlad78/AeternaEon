@@ -1,8 +1,6 @@
 extends RefCounted
 class_name SimusNetRPCConfigHandler
 
-var _list: Dictionary[Callable, SimusNetRPCConfig] = {}
-var _list_by_unique_id: Dictionary[int, SimusNetRPCConfig] = {}
 var _list_by_name: Dictionary[String, SimusNetRPCConfig] = {}
 
 var _object: Object : get = get_object
@@ -25,4 +23,25 @@ static func get_or_create(object: Object) -> SimusNetRPCConfigHandler:
 	var handler := SimusNetRPCConfigHandler.new()
 	handler._object = object 
 	object.set_meta(META, handler)
+	handler._initialize()
 	return handler
+
+func _initialize() -> void:
+	SimusNetConnection.connect_network_node_callables(
+		self,
+		_network_ready,
+		_network_disconnect,
+		_network_not_connected
+	)
+
+func _network_ready() -> void:
+	for c_name in _list_by_name:
+		SimusNetMethods.cache_by_name(c_name)
+		_list_by_name[c_name]._network_ready(self)
+
+func _network_disconnect() -> void:
+	for c_name in _list_by_name:
+		_list_by_name[c_name]._network_disconnect(self)
+
+func _network_not_connected() -> void:
+	pass

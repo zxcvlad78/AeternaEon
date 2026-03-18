@@ -110,7 +110,7 @@ static func is_client() -> bool:
 
 static func get_peer() -> MultiplayerPeer:
 	if Engine.is_editor_hint():
-		return null
+		return
 	return singleton.api.multiplayer_peer
 
 static func set_peer(peer: MultiplayerPeer) -> SimusNetConnection:
@@ -142,7 +142,7 @@ static func get_unique_id() -> int:
 		return singleton.api.get_unique_id()
 	return SERVER_ID
 
-static func connect_network_node_callables(object: Node, on_ready: Callable, on_disconnect: Callable, on_not_connected: Callable) -> void:
+static func connect_network_node_callables(object: Object, on_ready: Callable, on_disconnect: Callable, on_not_connected: Callable) -> void:
 	if !is_active():
 		on_not_connected.call()
 		await SimusNetEvents.event_connected.published
@@ -152,8 +152,9 @@ static func connect_network_node_callables(object: Node, on_ready: Callable, on_
 	if !is_instance_valid(object):
 		return
 	
-	if !object.is_node_ready():
-		await object.ready
+	if object is Node:
+		if !object.is_node_ready():
+			await object.ready
 	
 	on_ready.call()
 	

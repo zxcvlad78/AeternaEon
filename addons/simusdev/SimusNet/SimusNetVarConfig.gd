@@ -113,6 +113,8 @@ func _network_ready(handler: SimusNetVarConfigHandler) -> void:
 	if !handler.get_object():
 		return
 	
+	await _async_apply_channel(_channel)
+	
 	if _replication and _replicate_on_spawn and !_mode == MODE.TO_SERVER:
 		SimusNetVars.replicate(handler.get_object(), handler.get_properties_for(self), _reliable)
 

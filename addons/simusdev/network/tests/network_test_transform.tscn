@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://l8f71ymamhmx"]
+[gd_scene load_steps=7 format=3 uid="uid://l8f71ymamhmx"]
 
 [ext_resource type="Script" uid="uid://bye5uui4uj2xm" path="res://addons/simusdev/network/tests/network_test_transform.gd" id="1_mrsal"]
 [ext_resource type="Script" uid="uid://cp5hfswiyi4g0" path="res://addons/simusdev/network/SD_NetworkTransform.gd" id="2_m7vfa"]

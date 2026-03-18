@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://g48744kbi62f"]
+
+[ext_resource type="PackedScene" uid="uid://jjfx4dnsay1a" path="res://src/entities/creep/creep.tscn" id="1_37dq1"]
+[ext_resource type="Script" uid="uid://rck36o34a5md" path="res://src/components/unit/R_Unit.gd" id="2_hst4x"]
+[ext_resource type="PackedScene" uid="uid://djlnelowb05hc" path="res://src/models/skeleton/animated_model.tscn" id="3_q6a7a"]
+[ext_resource type="Script" path="res://src/components/footstep_component.gd" id="20_gnfhv"]
+
+[sub_resource type="Resource" id="Resource_q6a7a"]
+script = ExtResource("2_hst4x")
+metadata/_custom_type_script = "uid://rck36o34a5md"
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_yomd0"]
+height = 1.5307617
+radius = 0.33691406
+
+[node name="creep" unique_id=1177609474 node_paths=PackedStringArray("model_root") instance=ExtResource("1_37dq1")]
+resource = SubResource("Resource_q6a7a")
+model_root = NodePath("AnimatedModel")
+
+[node name="AnimatedModel" parent="." index="0" unique_id=556132095 node_paths=PackedStringArray("target") instance=ExtResource("3_q6a7a")]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
+target = NodePath("..")
+state_machine_properties = Dictionary[String, String]({
+"moving": "blend_position"
+})
+
+[node name="HealthComponent" parent="." index="1" unique_id=1641220706 node_paths=PackedStringArray("target")]
+target = NodePath("..")
+
+[node name="ManaComponent" parent="." index="2" unique_id=61426251 node_paths=PackedStringArray("target")]
+target = NodePath("..")
+
+[node name="AttackComponent" parent="." index="4" unique_id=1260897870]
+animation_names = Array[StringName]([&"attack"])
+distance_treshold = 1.6
+
+[node name="FootstepComponent" type="Node" parent="." index="5" unique_id=2134282758]
+script = ExtResource("20_gnfhv")
+metadata/_custom_type_script = "uid://cdo0cty1gvg5h"
+
+[node name="NavigationAgent3D" parent="." index="6" unique_id=1769817548]
+path_max_distance = 5.0
+
+[node name="Debug" parent="." index="10" unique_id=200260478]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="11" unique_id=1624613769]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.76538086, 0)
+shape = SubResource("CylinderShape3D_yomd0")

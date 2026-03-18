@@ -15,6 +15,7 @@ static var __type_and_method: Dictionary[SimusNetSerializer.TYPE, Callable] = {
 	SimusNetSerializer.TYPE.NODE: parse_node,
 	SimusNetSerializer.TYPE.ARRAY: parse_array,
 	SimusNetSerializer.TYPE.DICTIONARY: parse_dictionary,
+	SimusNetSerializer.TYPE.CUSTOM: _parse_custom,
 }
 
 static func _create_parsed(variant: Variant) -> Variant:
@@ -22,6 +23,10 @@ static func _create_parsed(variant: Variant) -> Variant:
 		if variant.size() == SimusNetSerializer.ARRAY_SIZE and typeof(variant[0]) == TYPE_INT:
 			return variant[1]
 	return variant
+
+static func _parse_custom(variant: Variant) -> Variant:
+	variant = _create_parsed(variant)
+	return SimusNetCustomSerialization._net_deserialize(variant)
 
 static func parse_object(data: Variant) -> Object:
 	return _create_parsed(data)

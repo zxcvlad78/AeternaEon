@@ -1,0 +1,1 @@
+class_name R_Entity extends R_WorldObject

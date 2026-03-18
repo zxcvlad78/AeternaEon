@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://bd0x21y3lqptj"]
+
+[ext_resource type="Script" uid="uid://di61dfepalec8" path="res://src/scenes/server_list/server_item.gd" id="1_nav1n"]
+[ext_resource type="Texture2D" uid="uid://bjf5r0010tkn3" path="res://icon.svg" id="1_wmukp"]
+
+[node name="ServerItem" type="Button" unique_id=1101001843]
+custom_minimum_size = Vector2(0, 64)
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.09876543
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_nav1n")
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="." unique_id=1805471479]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.11100001
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 8.127991
+text = "server name"
+vertical_alignment = 1
+
+[node name="Label2" type="Label" parent="." unique_id=1734593086]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "server desc"
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1459371989]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.007
+anchor_right = 0.062000003
+anchor_bottom = 1.0
+offset_left = -0.06400013
+offset_right = 0.5759964
+texture = ExtResource("1_wmukp")
+expand_mode = 1
+stretch_mode = 5

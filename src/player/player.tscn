@@ -1,12 +1,10 @@
-[gd_scene format=3 uid="uid://cuwtseyeofu18"]
+[gd_scene format=3 uid="uid://cowut8v6ido4h"]
 
-[ext_resource type="Script" uid="uid://cps1nnxx4h8eo" path="res://src/scripts/player.gd" id="1_4anbu"]
-[ext_resource type="PackedScene" uid="uid://2vpr6kpr0ao1" path="res://src/ui/player/player_ui.tscn" id="2_rxibo"]
+[ext_resource type="Script" uid="uid://b3lvleae5stmg" path="res://src/player/Player.gd" id="1_tehm3"]
 
-[node name="Player" type="Node3D" unique_id=1671861560]
-script = ExtResource("1_4anbu")
-custom_ui = ExtResource("2_rxibo")
+[node name="PlayerCamera" type="Node3D" unique_id=2033446005]
+script = ExtResource("1_tehm3")
+metadata/_custom_type_script = "uid://b3lvleae5stmg"
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=683685566]
-transform = Transform3D(1, 0, 0, 0, 0.88579094, 0.46408474, 0, -0.46408474, 0.88579094, 0, 0, 0)
-current = true
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1603730212]
+transform = Transform3D(-0.50000006, -0.6730282, 0.5450074, 0, 0.6293204, 0.777146, -0.8660254, 0.38857305, -0.31466022, 0, 0, 0)

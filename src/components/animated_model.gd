@@ -4,7 +4,7 @@ class_name AnimatedModel extends W_AnimatedModel3D
 signal footstep
 signal hit
 
-@export var target:BaseUnit
+@export var target:Unit
 @export var state_machine_name:String = "StateMachine"
 @export var state_machine_properties:Dictionary[String, String]
 @export var state_exceptions:Array[String]
@@ -20,6 +20,12 @@ func _ready() -> void:
 	if target and is_instance_valid(target):
 		await target.ready
 		initialize()
+	
+	SimusNetRPC.register(
+		[
+			play_tree_oneshot_by_name
+		]
+	)
 
 func initialize() -> void:
 	initialized = is_instance_valid(target)
@@ -42,6 +48,9 @@ func set_blend_tree() -> void:
 	for i in state_machine_properties:
 		var _property_path = "parameters/%s/%s/blend_position" % [state_machine_name, i]
 		tree.set(_property_path, target.get(state_machine_properties[i]))
+
+func _net_play_tree_oneshot_by_name(anim_name:StringName) -> void:
+	SimusNetRPC.invoke_all(play_tree_oneshot_by_name, anim_name)
 
 func play_tree_oneshot_by_name(anim_name:StringName) -> void:
 	if not anim_name:
