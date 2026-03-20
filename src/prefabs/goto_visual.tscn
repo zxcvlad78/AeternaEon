@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://5b8sjcc82n24"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y8qeq"]
+albedo_color = Color(0, 0, 0, 1)
+emission_enabled = true
+emission = Color(0, 1, 0, 1)
+emission_energy_multiplier = 5.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_pxitp"]
+top_radius = 0.1
+bottom_radius = 0.1
+height = 0.01
+
+[sub_resource type="Animation" id="Animation_cutku"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:transparency")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.75]
+}
+
+[sub_resource type="Animation" id="Animation_s6mp5"]
+resource_name = "new_animation"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:transparency")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.43333334, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [1.0, 0.72, 1.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_3652h"]
+_data = {
+&"RESET": SubResource("Animation_cutku"),
+&"new_animation": SubResource("Animation_s6mp5")
+}
+
+[node name="GotoVisual" type="Node3D" unique_id=1038803208]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=214920861]
+material_override = SubResource("StandardMaterial3D_y8qeq")
+transparency = 0.75
+mesh = SubResource("CylinderMesh_pxitp")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=155380618]
+libraries/ = SubResource("AnimationLibrary_3652h")

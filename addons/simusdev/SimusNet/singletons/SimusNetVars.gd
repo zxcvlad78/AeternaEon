@@ -163,18 +163,18 @@ static func replicate(object: Object, properties: PackedStringArray, reliable: b
 		
 
 func _handle_replicate(data: Dictionary, reliable: bool) -> void:
-	var compressed: Variant = SimusNetCompressor.parse(data)
+	var compressed: Variant = SimusNetCompressor.parse_if_necessary(data)
 	SimusNetProfiler._put_up_packet()
 	if reliable:
 		_replicate_rpc.rpc_id(SimusNet.SERVER_ID, compressed)
 	else:
 		_replicate_rpc_unreliable.rpc_id(SimusNet.SERVER_ID, compressed)
 
-func _replicate_rpc_server(packet: PackedByteArray, peer: int, reliable: bool) -> void:
+func _replicate_rpc_server(packet: Variant, peer: int, reliable: bool) -> void:
 	SimusNetProfiler._put_down_packet()
 	SimusNetProfiler._instance._put_down_traffic(packet.size())
 	
-	var data: Dictionary = SimusNetDecompressor.parse(packet)
+	var data: Dictionary = SimusNetDecompressor.parse_if_necessary(packet)
 	
 	for identity_id in data:
 		var identity: SimusNetIdentity = SimusNetIdentity.try_deserialize_from_variant(identity_id)
@@ -225,22 +225,28 @@ func _handle_replicate_server(data: Dictionary) -> void:
 				packet_unreliable.merge(peer_data[reliable])
 			
 			if !packet.is_empty():
-				var sent: PackedByteArray = SimusNetCompressor.parse(packet)
+				var sent: Variant = SimusNetCompressor.parse_if_necessary(packet)
 				_replicate_client_recieve.rpc_id(peer, sent)
 				SimusNetProfiler._put_up_packet()
 				SimusNetProfiler._instance._put_up_traffic(var_to_bytes(sent).size())
 			
 			if !packet_unreliable.is_empty():
-				var sent: PackedByteArray = SimusNetCompressor.parse(packet_unreliable)
+				var sent: Variant = SimusNetCompressor.parse_if_necessary(packet_unreliable)
 				_replicate_client_recieve_unreliable.rpc_id(peer, sent)
 				SimusNetProfiler._put_up_packet()
 				SimusNetProfiler._instance._put_up_traffic(var_to_bytes(sent).size())
 
-func _replicate_client(packet: PackedByteArray) -> void:
-	SimusNetProfiler._put_down_packet()
-	SimusNetProfiler._instance._put_down_traffic(packet.size())
+func _replicate_client(packet: Variant) -> void:
+	var bytes: PackedByteArray
+	if packet is PackedByteArray:
+		bytes = packet
+	else:
+		bytes = var_to_bytes(packet)
 	
-	var data: Dictionary = SimusNetDecompressor.parse(packet)
+	SimusNetProfiler._put_down_packet()
+	SimusNetProfiler._instance._put_down_traffic(bytes.size())
+	
+	var data: Dictionary = SimusNetDecompressor.parse_if_necessary(packet)
 	for identity_id in data:
 		var identity: SimusNetIdentity = SimusNetIdentity.try_deserialize_from_variant(identity_id)
 		if identity and identity.owner:
@@ -258,7 +264,7 @@ func _replicate_client(packet: PackedByteArray) -> void:
 			logger.debug_error("_replicate_client() cant find identity by %s ID" % identity_id)
 
 @rpc("authority", "call_remote", "reliable", SimusNetChannels.BUILTIN.VARS_RELIABLE)
-func _replicate_client_recieve(packet: PackedByteArray) -> void:
+func _replicate_client_recieve(packet: Variant) -> void:
 	if multiplayer.get_remote_sender_id() == SimusNet.SERVER_ID:
 		_replicate_client(packet)
 
@@ -277,12 +283,18 @@ func _replicate_rpc_unreliable(packet: Variant) -> void:
 	if SimusNetConnection.is_server():
 		_replicate_rpc_server(packet, multiplayer.get_remote_sender_id(), false)
 
+static func _hook_snapshot(data: Dictionary[StringName, Variant], property: String, object: Object) -> bool:
+	var value: Variant = object.get(property)
+	if (value is Array) or (value is Dictionary):
+		value = value.duplicate()
+	return data.get_or_add(property, value) == object.get(property)
+
 static func send(object: Object, properties: PackedStringArray, reliable: bool = true, log_error: bool = true) -> void:
 	var handler: SimusNetVarConfigHandler = SimusNetVarConfigHandler.get_or_create(object)
 	var changed_properties: Dictionary[StringName, Variant] = SimusNetSynchronization.get_changed_properties(object)
 	for property in properties:
 		
-		if changed_properties.get_or_add(property, object.get(property)) == object.get(property):
+		if _hook_snapshot(changed_properties, property, object):
 			continue
 		
 		var config: SimusNetVarConfig = SimusNetVarConfig.get_config(object, property)
@@ -307,8 +319,8 @@ static func send(object: Object, properties: PackedStringArray, reliable: bool =
 				var p: Variant = try_serialize_into_variant(property)
 				var v: Variant = SimusNetSerializer.parse(identity.owner.get(property), config._serialize)
 				
-				var size: int = var_to_bytes(p).size() + var_to_bytes(v).size()
-				SimusNetProfiler._instance._put_var_traffic(size, identity, property, false)
+				#var size: int = var_to_bytes(p).size() + var_to_bytes(v).size()
+				#SimusNetProfiler._instance._put_var_traffic(size, identity, property, false)
 				
 				identity_data.set(p, v)
 				#_instance._queue_send_peers.append(p_id)
@@ -330,8 +342,14 @@ func _handle_send(_queue: Dictionary) -> void:
 				else:
 					callable = _send_handle_callables.get(channel, Callable(_processor_send, "_r_s_p_l_u%s" % channel))
 				
-				var bytes: PackedByteArray = SimusNetCompressor.parse(identity_data)
-				callable.rpc_id(peer, bytes)
+				var packet: Variant = SimusNetCompressor.parse_if_necessary(identity_data)
+				var bytes: PackedByteArray
+				if packet is PackedByteArray:
+					bytes = packet
+				else:
+					bytes = var_to_bytes(packet)
+				
+				callable.rpc_id(peer, packet)
 				SimusNetProfiler._put_up_packet()
 				SimusNetProfiler._instance._put_up_traffic(bytes.size())
 				
@@ -341,11 +359,17 @@ func _handle_send(_queue: Dictionary) -> void:
 	SimusNetChannels.BUILTIN.VARS_SEND: _processor_send._default_recieve_send_unreliable,
 }
 
-func _recieve_send_packet_local(packet: PackedByteArray, from_peer: int) -> void:
-	SimusNetProfiler._put_down_packet()
-	SimusNetProfiler._instance._put_down_traffic(packet.size())
+func _recieve_send_packet_local(packet: Variant, from_peer: int) -> void:
+	var bytes: PackedByteArray
+	if packet is PackedByteArray:
+		bytes = packet
+	else:
+		bytes = var_to_bytes(packet)
 	
-	var data: Dictionary = SimusNetDecompressor.parse(packet)
+	SimusNetProfiler._put_down_packet()
+	SimusNetProfiler._instance._put_down_traffic(bytes.size())
+	
+	var data: Dictionary = SimusNetDecompressor.parse_if_necessary(packet)
 	
 	for id in data:
 		var identity: SimusNetIdentity = SimusNetIdentity.try_deserialize_from_variant(id)
@@ -384,13 +408,13 @@ func _handle_replicate_synced_types(data: Array[SimusNetSyncedType]) -> void:
 	if packet.is_empty():
 		return
 	
-	var bytes: PackedByteArray = var_to_bytes(packet)
+	var bytes: Variant = var_to_bytes(packet)
 	var size: int = bytes.size()
 	bytes = bytes.compress(FileAccess.CompressionMode.COMPRESSION_ZSTD)
 	_server_receive_synced_types_from_client.rpc_id(SimusNet.SERVER_ID, bytes, size)
 
 @rpc("any_peer", "call_remote", "reliable", SimusNetChannels.BUILTIN.SYNCED_TYPES)
-func _server_receive_synced_types_from_client(bytes: PackedByteArray, uncompressed_size: int) -> void:
+func _server_receive_synced_types_from_client(bytes: Variant, uncompressed_size: int) -> void:
 	bytes = bytes.decompress(uncompressed_size, FileAccess.CompressionMode.COMPRESSION_ZSTD)
 	var packet: Dictionary = bytes_to_var(bytes)
 	
@@ -420,14 +444,14 @@ func _handle_send_replicate_synced_types(data: Dictionary) -> void:
 	
 	for p_id: int in data:
 		var peer_data: Dictionary = data[p_id]
-		var bytes: PackedByteArray = var_to_bytes(peer_data)
+		var bytes: Variant = var_to_bytes(peer_data)
 		var size: int = bytes.size()
 		bytes = bytes.compress(FileAccess.CompressionMode.COMPRESSION_ZSTD)
 		_receive_replication_from_server.rpc_id(p_id, bytes, size)
 		
 
 @rpc("authority", "call_remote", "reliable", SimusNetChannels.BUILTIN.SYNCED_TYPES)
-func _receive_replication_from_server(bytes: PackedByteArray, uncompressed_size: int) -> void:
+func _receive_replication_from_server(bytes: Variant, uncompressed_size: int) -> void:
 	bytes = bytes.decompress(uncompressed_size, FileAccess.CompressionMode.COMPRESSION_ZSTD)
 	var data: Dictionary = bytes_to_var(bytes)
 	
@@ -477,13 +501,13 @@ func _handle_send_synced_types(data: Dictionary[SimusNetSyncedType, Array]) -> v
 		return
 	
 	for p_id: int in packet:
-		var bytes: PackedByteArray = var_to_bytes(packet[p_id])
+		var bytes: Variant = var_to_bytes(packet[p_id])
 		var size: int = bytes.size()
 		bytes = bytes.compress(FileAccess.CompressionMode.COMPRESSION_ZSTD)
 		_receive_sent_synced_types.rpc_id(p_id, bytes, size)
 
 @rpc("any_peer", "call_remote", "reliable", SimusNetChannels.BUILTIN.SYNCED_TYPES)
-func _receive_sent_synced_types(bytes: PackedByteArray, uncompressed_size: int) -> void:
+func _receive_sent_synced_types(bytes: Variant, uncompressed_size: int) -> void:
 	var sender: int = multiplayer.get_remote_sender_id()
 	bytes = bytes.decompress(uncompressed_size, FileAccess.CompressionMode.COMPRESSION_ZSTD)
 	

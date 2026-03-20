@@ -2,43 +2,31 @@ extends RefCounted
 class_name SimusNetCustomSerialization
 
 #methods in objects
+func simusnet_serialize(serialization: SimusNetCustomSerialization) -> void:
+	pass
 
-#func simusnet_serialize(serialization: SimusNetCustomSerialization) -> void:
-	#pass
-#
-
-#static func simusnet_deserialize(serialization: SimusNetCustomSerialization) -> void:
-	#pass
+static func simusnet_deserialize(serialization: SimusNetCustomSerialization) -> void:
+	pass
 
 const METHOD_SERIALIZE: String = "simusnet_serialize"
 const METHOD_DESERIALIZE: String = "simusnet_deserialize"
 
 var _data: Variant
 var _result: Variant
+var _result_def: Variant
 
-func _net_serialize(owner: Object) -> Array:
-	var script: Script = owner.get_script()
-	return [
-		_data,
-		ResourceUID.path_to_uid(script.resource_path).replacen("uid://", "")
-	]
-
-static func _net_deserialize(data: Array) -> Variant:
-	var result: SimusNetCustomSerialization = SimusNetCustomSerialization.new()
-	if data.is_empty():
-		printerr("serialized data array is empty!")
-		return result
+static func find_base_script(script: Script, recursive: bool = true) -> Script:
+	if not script:
+		return script
 	
-	var path: String = "uid://" + data[1]
-	var static_script: Script = load(path)
-	if !static_script:
-		printerr("failed to load script %s!" % [path])
-		return result
+	var base: Script = script.get_base_script()
 	
-	result._data = data[0]
+	if !base:
+		return script
 	
-	static_script.call(METHOD_DESERIALIZE, result)
-	return result._result
+	if recursive:
+		return find_base_script(script.get_base_script())
+	return base
 
 func set_data(new: Variant) -> SimusNetCustomSerialization:
 	_data = new
@@ -54,24 +42,13 @@ func set_result(new: Variant) -> SimusNetCustomSerialization:
 func get_result() -> Variant:
 	return _result
 
-func data_serialize_and_append(value: Variant) -> SimusNetCustomSerialization:
-	if !_data is Array:
-		_data = []
-	_data.append(SimusNetSerializer.parse(value))
-	return self
-
-func data_append(value: Variant) -> SimusNetCustomSerialization:
+func pack(value: Variant) -> SimusNetCustomSerialization:
 	if !_data is Array:
 		_data = []
 	_data.append(value)
 	return self
 
-func data_get() -> Variant:
+func unpack() -> Variant:
 	if _data is Array:
 		return _data.pop_front()
-	return null
-
-func data_deserialize_and_get() -> Variant:
-	if _data is Array:
-		return SimusNetDeserializer.parse(_data.pop_front())
 	return null

@@ -6,7 +6,7 @@
 [ext_resource type="Resource" uid="uid://c0r6kg6p0lilk" path="res://src/objects/unit/knight/spells/reverse_polarity/reverse_polarity.tres" id="3_6pd5l"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_bdw4g"]
-height = 1.8000001
+height = 1.7049682
 radius = 0.4
 
 [node name="UnitKnight" unique_id=907328648 node_paths=PackedStringArray("animated_model") instance=ExtResource("1_sl1ts")]
@@ -19,7 +19,7 @@ interpolate_speed = 64.0
 spells = Array[ExtResource("2_o17hf")]([ExtResource("3_6pd5l")])
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." index="5" unique_id=884630160]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.90000015, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85248417, 0)
 shape = SubResource("CylinderShape3D_bdw4g")
 
 [node name="AnimatedModel" parent="." index="7" unique_id=1035250868 node_paths=PackedStringArray("target") instance=ExtResource("2_bdw4g")]

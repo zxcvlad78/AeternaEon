@@ -27,7 +27,7 @@ buses/default_bus_layout="uid://dplpl4183xu0j"
 
 [autoload]
 
-SimusDev="*res://addons/simusdev/singletons/s_simusdev.tscn"
+SimusDev="*uid://cvfrshw18g5he"
 Network="*uid://tma7vcsghkrd"
 s_Audio="*uid://lsjirat7fjlr"
 s_Particles="*uid://bt1setfi5sr21"

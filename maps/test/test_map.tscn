@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://d0m1dvadykbh4" path="res://addons/objects/ObjectLoader.gd" id="1_xi0o3"]
 [ext_resource type="Texture2D" uid="uid://1okkhwiy2mpg" path="res://src/textures/grass.jpg" id="3_3caeq"]
+[ext_resource type="PackedScene" uid="uid://5b8sjcc82n24" path="res://src/prefabs/goto_visual.tscn" id="3_h8gl5"]
 [ext_resource type="PackedScene" uid="uid://bhbvkdmec6fm7" path="res://src/models/live_tree1/scene.tscn" id="4_1jpei"]
 [ext_resource type="PackedScene" uid="uid://cxb7m7mavhga2" path="res://src/objects/box/static_box.tscn" id="4_ptaqn"]
 [ext_resource type="PackedScene" uid="uid://ltaagu5baotp" path="res://src/models/live_tree2/scene.tscn" id="5_1jpei"]
@@ -66,11 +67,15 @@ shadow_enabled = true
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=927338257]
 navigation_mesh = SubResource("NavigationMesh_pqsq5")
 
-[node name="MapStaticBody3D" type="StaticBody3D" parent="NavigationRegion3D" unique_id=75035315]
+[node name="MapStaticBody3D" type="StaticBody3D" parent="NavigationRegion3D" unique_id=75035315 node_paths=PackedStringArray("goto_visual")]
 script = ExtResource("7_pqsq5")
+goto_visual = NodePath("GotoVisual")
 
 [node name="CSGBakedCollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/MapStaticBody3D" unique_id=1657294714]
 shape = SubResource("ConcavePolygonShape3D_pqsq5")
+
+[node name="GotoVisual" parent="NavigationRegion3D/MapStaticBody3D" unique_id=1038803208 instance=ExtResource("3_h8gl5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 0)
 
 [node name="CSGMesh3D" type="CSGMesh3D" parent="NavigationRegion3D" unique_id=2115896536]
 mesh = SubResource("BoxMesh_hw3r6")

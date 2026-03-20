@@ -12,9 +12,9 @@ const TYPES: Array[int] = [
 enum PACKET_TYPE {
 	ARRAY,
 	DICTIONARY,
-	OBJECT,
-	NODE,
 	RESOURCE,
+	NODE,
+	OBJECT,
 	
 }
 

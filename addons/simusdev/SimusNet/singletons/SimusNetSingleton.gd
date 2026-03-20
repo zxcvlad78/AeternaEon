@@ -3,6 +3,7 @@ class_name SimusNetSingleton
 
 @onready var settings: SimusNetSettings = SimusNetSettings.get_or_create()
 
+@export var garbage_collector: SimusNetGarbageCollector
 @export var profiler: SimusNetProfiler
 @export var events: SimusNetEvents
 @export var cache: SimusNetCache
@@ -26,6 +27,7 @@ var __static_class_list: Array[Object] = [
 	SimusNet.new(),
 	SimusNetSerializer.new(),
 	SimusNetDeserializer.new(),
+	SimusNetArguments.new()
 ]
 
 static var _instance: SimusNetSingleton

@@ -40,7 +40,7 @@ func _play_animation(anim_names:Array[StringName]) -> void:
 		model.play_tree_oneshot_by_name(anim_names.pick_random())
 
 func _spawn_partilces(particles:R_Particles) -> void:
-	pass
+	s_Particles.spawn(self, particles, spell_machine.global_position)
 
 func _local_precast(target:Variant = null) -> void:
 	_play_animation(res.swing_animation_names)

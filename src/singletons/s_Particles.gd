@@ -1,6 +1,10 @@
 extends Node
 
 func spawn(spell:Spell, particles:R_Particles, pos:Vector3) -> void:
+	if not particles:
+		return
+	if not particles.prefab:
+		return
 	var new_pareticles = particles.prefab.instantiate()
 	
 	if new_pareticles is W_Particles:

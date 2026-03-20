@@ -13,6 +13,8 @@ signal on_ready()
 
 func _initialize(handler: SimusNetRPCConfigHandler, callable: Callable) -> void:
 	handler._list_by_name[callable.get_method()] = self
+	handler._list_by_unique_id[handler.get_method_unique_id(callable.get_method())] = self
+	handler._callables[callable.get_method()] = callable
 	
 	_initialize_dynamic(handler)
 
@@ -21,12 +23,8 @@ func _initialize_dynamic(handler: SimusNetRPCConfigHandler) -> void:
 	
 	is_ready = true
 	on_ready.emit()
-	
 
 func _deinitialize_dynamic(handler: SimusNetRPCConfigHandler) -> void:
-	if !is_ready:
-		return
-	
 	is_ready = false
 
 func _network_ready(handler: SimusNetRPCConfigHandler) -> void:
@@ -54,6 +52,13 @@ func flag_get_channel_id() -> int:
 func flag_get_transfer_mode() -> SimusNetRPC.TRANSFER_MODE:
 	return _transfer_mode
 
+func flag_get_transfer_mode_multiplayer_peer() -> MultiplayerPeer.TransferMode:
+	if _transfer_mode == SimusNetRPC.TRANSFER_MODE.RELIABLE:
+		return MultiplayerPeer.TRANSFER_MODE_RELIABLE
+	if _transfer_mode == SimusNetRPC.TRANSFER_MODE.UNRELIABLE:
+		return MultiplayerPeer.TRANSFER_MODE_UNRELIABLE
+	return MultiplayerPeer.TRANSFER_MODE_UNRELIABLE_ORDERED
+
 #//////////////////////////////////////////////////////////////
 
 func flag_set_channel(channel: Variant) -> SimusNetRPCConfig:
@@ -64,10 +69,21 @@ func flag_set_channel(channel: Variant) -> SimusNetRPCConfig:
 
 func _f_s_c_async(channel: Variant) -> void:
 	_channel = await SimusNetChannels.async_parse_and_get_id(channel)
+	_cache_rpc_processor_callable()
 
 func flag_set_transfer_mode(mode: SimusNetRPC.TRANSFER_MODE) -> SimusNetRPCConfig:
 	_transfer_mode = mode
+	_cache_rpc_processor_callable()
 	return self
+
+var _cached_processor_callable: Callable
+
+func _cache_rpc_processor_callable() -> void:
+	var function: String = SimusNetRPCProccessor._parse_and_get_function(flag_get_channel_id(), flag_get_transfer_mode())
+	_cached_processor_callable = Callable(SimusNetRPC._instance._processor, function)
+
+func get_cached_processor_callable() -> Callable:
+	return _cached_processor_callable
 
 #//////////////////////////////////////////////////////////////
 
@@ -115,9 +131,19 @@ func flag_mode_any_peer() -> SimusNetRPCConfig:
 	_mode = MODE.ANY_PEER
 	return self
 
+var _simulate: bool = true
+func flag_simulate_locally(simulate: bool = true) -> SimusNetRPCConfig:
+	_simulate = simulate
+	return self
+
 var _serialization: bool = false
 func flag_serialization(value: bool = true) -> SimusNetRPCConfig:
 	_serialization = value
+	return self
+
+var _async: bool = false
+func flag_async(value: bool = true) -> SimusNetRPCConfig:
+	_async = value
 	return self
 
 #//////////////////////////////////////////////////////////////

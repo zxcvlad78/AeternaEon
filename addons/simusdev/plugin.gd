@@ -13,10 +13,12 @@ const _view_scene: PackedScene = preload("uid://qyvoef4qc0xg")
 var _view: Control
 
 func _enable_plugin() -> void:
+	return
 	for s in AUTOLOAD:
 		add_autoload_singleton(s, AUTOLOAD[s])
 
 func _disable_plugin() -> void:
+	return
 	for s in AUTOLOAD:
 		remove_autoload_singleton(s)
 
@@ -26,6 +28,8 @@ func _enter_tree() -> void:
 		editor_plugins = SD_EditorPlugins.new()
 		add_child(editor_plugins)
 	
+	for s in AUTOLOAD:
+		add_autoload_singleton(s, AUTOLOAD[s])
 	
 	await get_tree().create_timer(1, false).timeout
 	_view = _view_scene.instantiate()
@@ -39,6 +43,8 @@ func _exit_tree() -> void:
 		editor_plugins.queue_free()
 		editor_plugins = null
 	
+	for s in AUTOLOAD:
+		remove_autoload_singleton(s)
 	
 	await get_tree().process_frame
 	if is_instance_valid(_view):

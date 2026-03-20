@@ -19,7 +19,9 @@ func _spawn() -> void:
 		return
 	if not unit.prefab:
 		return
+	
 	var inst = unit.prefab.instantiate()
+	inst.set("res", unit)
 	root.add_child(inst)
 	
 	if inst is Node3D:

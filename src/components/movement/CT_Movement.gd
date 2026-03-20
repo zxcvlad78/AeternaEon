@@ -12,16 +12,18 @@ func _enter_tree() -> void:
 	SD_ECS.append_to(unit, self)
 
 func _exit_tree() -> void:
+	
 	if nav_agent.is_inside_tree():
 		nav_agent.queue_free()
 
 func _ready() -> void:
 	SimusNetRPC.register(
 		[goto, goto_target], 
-		SimusNetRPCConfig.new().flag_mode_to_server()
+		SimusNetRPCConfig.new().flag_mode_to_server().flag_serialization()
 	)
 	
 	if not unit.is_node_ready(): await unit.ready
+	
 	
 	nav_agent.avoidance_enabled = true
 	nav_agent.path_desired_distance = 0.5

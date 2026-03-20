@@ -16,6 +16,11 @@ var _connecting_check: bool = false
 var _is_connected: bool = false
 var _is_connection_canceled: bool = false
 
+signal on_kicked()
+
+static func get_instance() -> SimusNetConnection:
+	return _instance
+
 func initialize() -> void:
 	_instance = self
 	
@@ -109,8 +114,6 @@ static func is_client() -> bool:
 	return !is_dedicated_server()
 
 static func get_peer() -> MultiplayerPeer:
-	if Engine.is_editor_hint():
-		return
 	return singleton.api.multiplayer_peer
 
 static func set_peer(peer: MultiplayerPeer) -> SimusNetConnection:
@@ -159,6 +162,16 @@ static func connect_network_node_callables(object: Object, on_ready: Callable, o
 	on_ready.call()
 	
 	SimusNetEvents.event_disconnected.listen(on_disconnect)
+
+static func kick_peer(peer: int) -> void:
+	if is_server():
+		get_peer()
+		_instance._kick_yourself.rpc_id(peer)
+
+@rpc("authority", "call_remote", "reliable", SimusNetChannels.BUILTIN.HANDSHAKE)
+func _kick_yourself() -> void:
+	try_close_peer()
+	on_kicked.emit()
 
 #static func get_ping(peer: int = get_unique_id()) -> float:
 	#match get_peer().get_class():
