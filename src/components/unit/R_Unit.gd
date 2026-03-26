@@ -7,8 +7,9 @@ enum Attribute {
 }
 
 @export var name:String = "Unit"
-
 @export var prefab:PackedScene
+
+@export var data:Dictionary
 
 @export_category("Variables")
 @export var base_health:float = 100.0
@@ -27,6 +28,17 @@ enum Attribute {
 
 @export var base_movespeed:float = 3.0
 @export var base_rotation_speed:float = 22.0
+
+@export_category("Audio")
+@export var footsteps:Array[AudioStream] = [
+	preload("res://src/audio/footsteps_general/footstep_hero_general1.mp3"),
+	preload("res://src/audio/footsteps_general/footstep_hero_general2.mp3"),
+	preload("res://src/audio/footsteps_general/footstep_hero_general3.mp3"),
+	preload("res://src/audio/footsteps_general/footstep_hero_general4.mp3"),
+	preload("res://src/audio/footsteps_general/footstep_hero_general5.mp3"),
+	preload("res://src/audio/footsteps_general/footstep_hero_general6.mp3"),
+	preload("res://src/audio/footsteps_general/footstep_hero_general7.mp3"),
+]
 
 func get_health_regen() -> float:
 	return strength * 0.09

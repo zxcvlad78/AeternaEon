@@ -21,7 +21,7 @@ func _spawn() -> void:
 		return
 	
 	var inst = unit.prefab.instantiate()
-	inst.set("res", unit)
+	inst.set("resource", unit)
 	root.add_child(inst)
 	
 	if inst is Node3D:

@@ -1,9 +1,22 @@
 class_name PlayerCamera extends Node3D
 
 signal unit_selected(unit:Unit)
+signal point_selected(pos:Vector3)
 
 var camera:Camera3D
 @export var camera_rotation:Vector3 = Vector3(-51.0, 120.0, 0.0)
+
+var target_select_mode:R_Spell.TargetType = R_Spell.TargetType.NO_TARGET :
+	set(val):
+		target_select_mode = val
+		
+
+static var ref_list:Array[PlayerCamera]
+static func find_by_peer(peer_id:int) -> PlayerCamera:
+	for ref in ref_list:
+		if ref.get_multiplayer_authority() == peer_id:
+			return ref
+	return null
 
 static var instance:PlayerCamera
 static func i() -> PlayerCamera:
@@ -12,6 +25,10 @@ static func i() -> PlayerCamera:
 var selected_units:Array[Unit]
 
 func _enter_tree() -> void:
+	if multiplayer.is_server():
+		if not ref_list.has(self):
+			ref_list.append(self)
+	
 	if not is_multiplayer_authority():
 		return
 	
@@ -19,16 +36,38 @@ func _enter_tree() -> void:
 	if not instance:
 		instance = self
 
+func _exit_tree() -> void:
+	if multiplayer.is_server():
+		if ref_list.has(self):
+			ref_list.erase(self)
+
+func _ready() -> void:
+	SimusNetRPC.register(
+		[
+			_local_select_unit,
+			_local_select_point,
+		],
+		SimusNetRPCConfig.new().flag_mode_any_peer()
+	)
+	
+	SimusNetVars.register(
+		self,
+		["ref_list"],
+		SimusNetVarConfig.new().flag_mode_server_only().flag_replication()
+	)
+
+func _local_select_unit(unit:Unit) -> void:
+	if target_select_mode == R_Spell.TargetType.NO_TARGET:
+		selected_units.clear()
+		selected_units.append(unit)
+	unit_selected.emit(unit)
 func select_unit(unit:Unit) -> void:
-	#if selected_units.has(unit):
-		#return
-	
-	selected_units.clear()
-	selected_units.append(unit)
-	
-	unit_selected.emit()
-	
-	#print(selected_units)
+	SimusNetRPC.invoke_all(_local_select_unit, unit)
+
+func _local_select_point(pos:Vector3) -> void:
+	point_selected.emit(pos)
+func select_point(pos:Vector3) -> void:
+	SimusNetRPC.invoke_all(_local_select_point, pos)
 
 func get_main_unit() -> Unit:
 	if selected_units.is_empty():

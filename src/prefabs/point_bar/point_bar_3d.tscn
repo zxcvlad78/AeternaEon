@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://ctkiebybjdmyp"]
+
+[ext_resource type="Script" uid="uid://dep2v6ulheqlo" path="res://src/prefabs/point_bar/point_bar_3d.gd" id="1_pvsqd"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_o83l0"]
+viewport_path = NodePath("SubViewport")
+
+[node name="PointBar3D" type="Node3D" unique_id=1187918641]
+script = ExtResource("1_pvsqd")
+
+[node name="SubViewport" type="SubViewport" parent="." unique_id=1468810486]
+transparent_bg = true
+
+[node name="Sprite3D" type="Sprite3D" parent="." unique_id=2007426741]
+billboard = 1
+texture = SubResource("ViewportTexture_o83l0")

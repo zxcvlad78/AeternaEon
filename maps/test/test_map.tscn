@@ -9,22 +9,23 @@
 [ext_resource type="PackedScene" uid="uid://dx7fw36narv82" path="res://src/models/dead_tree1/scene.tscn" id="6_xi0o3"]
 [ext_resource type="Script" uid="uid://qm8uf8kj23ne" path="res://src/components/MapStaticBody3D.gd" id="7_pqsq5"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ffjg5"]
-sky_top_color = Color(1, 0.57476866, 0.47782165, 1)
-sky_horizon_color = Color(0.9341314, 0.8470297, 0.9241684, 1)
-ground_bottom_color = Color(0.17701516, 0.034001432, 0.054634757, 1)
-ground_horizon_color = Color(0.07198309, 0.019107215, 0.07400114, 1)
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_h8gl5"]
+sky_top_color = Color(0.53116477, 0.39970398, 0.60546875, 1)
+sky_horizon_color = Color(0.66015625, 0.5595856, 0.63265646, 1)
+ground_bottom_color = Color(0.69878703, 0.57414246, 0.76953125, 1)
+ground_horizon_color = Color(0.66015625, 0.5595856, 0.63265646, 1)
 
 [sub_resource type="Sky" id="Sky_tkskf"]
-sky_material = SubResource("ProceduralSkyMaterial_ffjg5")
+sky_material = SubResource("ProceduralSkyMaterial_h8gl5")
 
 [sub_resource type="Environment" id="Environment_ae16m"]
 background_mode = 2
 sky = SubResource("Sky_tkskf")
 ambient_light_source = 3
+reflected_light_source = 2
 tonemap_mode = 3
-fog_enabled = true
-fog_light_color = Color(0.9998446, 0.3224268, 0.27560052, 1)
+fog_mode = 1
+fog_density = 1.0
 volumetric_fog_enabled = true
 volumetric_fog_density = 0.011
 volumetric_fog_anisotropy = 0.9

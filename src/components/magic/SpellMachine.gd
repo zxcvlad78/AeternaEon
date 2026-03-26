@@ -3,6 +3,7 @@ class_name SpellMachine extends Node3D
 @export var unit:Unit
 
 @export var spells:Array[R_Spell]
+var spell_instances:Array[Spell]
 
 var spell_channeling:SpellChanneling
 
@@ -17,7 +18,6 @@ func _ready() -> void:
 		[
 			"unit",
 			"spells",
-			#"spell_channeling",
 		]
 		,SimusNetVarConfig.new().flag_mode_server_only().flag_replication().flag_serialization()
 	)
@@ -33,34 +33,42 @@ func _ready() -> void:
 
 func _create_spells() -> void:
 	for spell in spells:
-		spell.create(self)
-
+		var new_spell = spell.create(self)
+		spell_instances.append(new_spell)
 
 func _requset_try_precast(idx: int) -> void:
-	SimusNetRPC.invoke_on_server(_server_try_precast, idx)
+	var spell = spell_instances[idx]
+	if not is_instance_valid(spell) or not spell.can_cast():
+		print(1)
+		return
+	
+	var player = PlayerCamera.i()
+	var target_type = spell.res.target_type
+	
+	if target_type == R_Spell.TargetType.NO_TARGET:
+		SimusNetRPC.invoke_on_server(_server_try_precast, spell)
+	else:
+		player.target_select_mode = target_type
+		
+		var target = null
+		if target_type == R_Spell.TargetType.UNIT_TARGET:
+			target = await player.unit_selected
+		elif target_type == R_Spell.TargetType.POINT_TARGET:
+			target = await player.point_selected
+			
+		if target != null:
+			SimusNetRPC.invoke_on_server(_server_try_precast, spell, target)
+	
+	#player.target_select_mode = R_Spell.TargetType.NO_TARGET
+	
+	#SimusNetRPC.invoke_on_server(_server_try_precast)
 
-func _server_try_precast(idx: int) -> Error:
+func _server_try_precast(p_spell:Spell, target:Variant = null) -> Error:
 	if spell_channeling and spell_channeling.is_active:
 		return FAILED
 	
-	var child = get_child(idx)
-	if not is_instance_valid(child):
-		return FAILED
-	if child is Spell:
-		if not child.can_cast():
-			return FAILED
-		
-		var target_type = child.res.target_type
-		
-		if target_type == R_Spell.TargetType.NO_TARGET:
-			child.precast()
-		elif target_type == R_Spell.TargetType.UNIT_TARGET:
-			child.precast()
-		elif target_type == R_Spell.TargetType.POINT_TARGET:
-			child.precast()
-	else:
-		return FAILED
-	
+	p_spell.precast(target)
+	PlayerCamera.find_by_peer(SimusNetRemote.sender_id).target_select_mode = R_Spell.TargetType.NO_TARGET
 	return OK
 
 func _input(_event: InputEvent) -> void:

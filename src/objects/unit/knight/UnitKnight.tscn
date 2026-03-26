@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://dbhbggfmmurcx" path="res://src/models/knight/animated_model.tscn" id="2_bdw4g"]
 [ext_resource type="Script" uid="uid://bt7y70x0v0561" path="res://src/components/magic/R_Spell.gd" id="2_o17hf"]
 [ext_resource type="Resource" uid="uid://c0r6kg6p0lilk" path="res://src/objects/unit/knight/spells/reverse_polarity/reverse_polarity.tres" id="3_6pd5l"]
+[ext_resource type="Resource" uid="uid://llc6qgrk7uio" path="res://src/objects/unit/knight/spells/stun4ik/stun4ik.tres" id="4_6pd5l"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_bdw4g"]
 height = 1.7049682
@@ -16,7 +17,7 @@ animated_model = NodePath("AnimatedModel")
 interpolate_speed = 64.0
 
 [node name="SpellMachine" parent="." index="4" unique_id=832120988]
-spells = Array[ExtResource("2_o17hf")]([ExtResource("3_6pd5l")])
+spells = Array[ExtResource("2_o17hf")]([ExtResource("3_6pd5l"), ExtResource("4_6pd5l")])
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." index="5" unique_id=884630160]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85248417, 0)

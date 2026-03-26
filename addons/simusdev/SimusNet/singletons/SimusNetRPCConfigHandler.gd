@@ -26,7 +26,9 @@ func get_callable_by_method_name(name: StringName) -> Variant:
 	return _callables.get(name, null)
 
 func get_object() -> Object:
-	return _object_weak_ref.get_ref()
+	if _object_weak_ref:
+		return _object_weak_ref.get_ref() 
+	return null
 
 static func get_or_create(object: Object) -> SimusNetRPCConfigHandler:
 	if object.has_meta(META):

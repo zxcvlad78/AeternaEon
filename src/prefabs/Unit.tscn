@@ -6,11 +6,16 @@
 [ext_resource type="Script" uid="uid://bhnptgumb630v" path="res://src/components/points/CT_Mana.gd" id="3_62vqr"]
 [ext_resource type="Script" uid="uid://hso2ju3bqqww" path="res://addons/simusdev/SimusNet/SimusNetIdentity.gd" id="3_o83l0"]
 [ext_resource type="Script" uid="uid://de567i2tbcvyq" path="res://src/components/movement/CT_Movement.gd" id="4_62vqr"]
+[ext_resource type="PackedScene" uid="uid://dpe66ggxvbtop" path="res://src/prefabs/point_bar/point_bar.tscn" id="5_pjvmu"]
 [ext_resource type="Script" uid="uid://b1q8rkwhld80p" path="res://addons/simusdev/statemachine/SD_NodeStateMachine.gd" id="6_vb5u6"]
 [ext_resource type="Script" uid="uid://c85p6hiq2wm53" path="res://src/components/magic/SpellMachine.gd" id="7_mbpmj"]
 [ext_resource type="Script" uid="uid://b2fidrwvgnri2" path="res://addons/simusdev/statemachine/SD_State.gd" id="7_xyafo"]
+[ext_resource type="Script" uid="uid://dxq864cjtni6m" path="res://src/components/entity/CT_UnitFootsteps.gd" id="10_o83l0"]
 
 [sub_resource type="Resource" id="Resource_36mmn"]
+script = ExtResource("3_o83l0")
+
+[sub_resource type="Resource" id="Resource_o83l0"]
 script = ExtResource("3_o83l0")
 
 [node name="Unit" type="CharacterBody3D" unique_id=907328648 node_paths=PackedStringArray("state_machine")]
@@ -30,6 +35,7 @@ metadata/_custom_type_script = "uid://d1jwapkumdp1u"
 [node name="CT_Health" type="Node" parent="." unique_id=1232407360 node_paths=PackedStringArray("root")]
 script = ExtResource("2_w0g2k")
 root = NodePath("..")
+point_bar_prefab = ExtResource("5_pjvmu")
 metadata/_custom_type_script = "uid://d1b2q70d8cwlq"
 
 [node name="CT_Mana" type="Node" parent="." unique_id=1831672166 node_paths=PackedStringArray("root")]
@@ -70,3 +76,11 @@ metadata/_custom_type_script = "uid://b2fidrwvgnri2"
 process_mode = 4
 script = ExtResource("7_xyafo")
 metadata/_custom_type_script = "uid://b2fidrwvgnri2"
+
+[node name="CT_UnitFootsteps" type="Node3D" parent="." unique_id=587105672 node_paths=PackedStringArray("unit")]
+script = ExtResource("10_o83l0")
+unit = NodePath("..")
+metadata/_custom_type_script = "uid://dxq864cjtni6m"
+metadata/SimusNetIdentity = SubResource("Resource_o83l0")
+metadata/SimusNetRPCConfigHandler = Object(RefCounted,"script":Resource("res://addons/simusdev/SimusNet/singletons/SimusNetRPCConfigHandler.gd"))
+

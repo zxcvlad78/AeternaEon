@@ -1,7 +1,14 @@
 [gd_resource type="Resource" script_class="R_Unit" format=3 uid="uid://byprm4cq8wq0h"]
 
 [ext_resource type="Script" uid="uid://rck36o34a5md" path="res://src/components/unit/R_Unit.gd" id="1_co2dg"]
+[ext_resource type="AudioStream" uid="uid://dib6tvd6dky2j" path="res://src/audio/footsteps_general/footstep_hero_general1.mp3" id="1_hiu6y"]
 [ext_resource type="PackedScene" uid="uid://6j2ki7l57a2m" path="res://src/objects/unit/knight/UnitKnight.tscn" id="1_xrwt8"]
+[ext_resource type="AudioStream" uid="uid://cvn6k4mk8wslm" path="res://src/audio/footsteps_general/footstep_hero_general2.mp3" id="2_plush"]
+[ext_resource type="AudioStream" uid="uid://df6iqsut44wx1" path="res://src/audio/footsteps_general/footstep_hero_general3.mp3" id="3_r10ah"]
+[ext_resource type="AudioStream" uid="uid://bupvw4feqjeqa" path="res://src/audio/footsteps_general/footstep_hero_general4.mp3" id="4_ii55m"]
+[ext_resource type="AudioStream" uid="uid://budxdebim8xna" path="res://src/audio/footsteps_general/footstep_hero_general5.mp3" id="5_0ueai"]
+[ext_resource type="AudioStream" uid="uid://cnjfcgjkpy2ag" path="res://src/audio/footsteps_general/footstep_hero_general6.mp3" id="6_kald6"]
+[ext_resource type="AudioStream" uid="uid://n1hbv36ct8sg" path="res://src/audio/footsteps_general/footstep_hero_general7.mp3" id="7_3fxeu"]
 
 [resource]
 script = ExtResource("1_co2dg")
@@ -11,4 +18,5 @@ base_health = 400.0
 strength = 15.0
 agility = 8.0
 intelligence = 7.0
+base_movespeed = 1.995
 metadata/_custom_type_script = "uid://rck36o34a5md"

@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://dpe66ggxvbtop"]
+
+[ext_resource type="Script" uid="uid://ba381c7c0wbf6" path="res://src/prefabs/point_bar/point_bar.gd" id="1_uqy1r"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y3l3b"]
+bg_color = Color(0.08984375, 0.08984375, 0.08984375, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nk3fk"]
+
+[node name="PointBar" type="ProgressBar" unique_id=1597946741]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -64.0
+offset_top = -6.75
+offset_right = 64.0
+offset_bottom = 6.75
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_y3l3b")
+theme_override_styles/fill = SubResource("StyleBoxFlat_nk3fk")
+value = 33.51
+show_percentage = false
+script = ExtResource("1_uqy1r")
+color = Color(0.984375, 0, 0, 1)
+
+[node name="Label" type="Label" parent="." unique_id=198941549]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "355.0"
+horizontal_alignment = 1
+vertical_alignment = 1

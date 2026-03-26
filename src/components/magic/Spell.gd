@@ -3,6 +3,9 @@ class_name Spell extends Node3D
 var spell_machine:SpellMachine = null
 var res:R_Spell
 
+var should_cast:bool = false
+var last_target:Variant = null
+
 func _enter_tree() -> void:
 	if not spell_machine:
 		var parent = get_parent()
@@ -17,14 +20,6 @@ func _ready() -> void:
 		],
 		SimusNetRPCConfig.new().flag_mode_any_peer()
 	)
-	
-	#SimusNetVars.register(
-		#self,
-		#[
-			#"res"
-		#],
-		#SimusNetVarConfig.new().flag_mode_server_only().flag_serialization().flag_replication()
-	#)
 
 func can_cast(target:Variant = null) -> bool:
 	if res.level < res.required_level:
@@ -65,6 +60,13 @@ func _local_precast(target:Variant = null) -> void:
 			spell_machine.spell_channeling = null
 
 func precast(target:Variant = null) -> void:
+	last_target = target
+	
+	while not can_cast():
+		should_cast = true
+	
+	should_cast = false
+	
 	SimusNetRPC.invoke_all(_local_precast, target)
 
 
@@ -73,5 +75,18 @@ func _cast(target:Variant = null) -> void:
 	_spawn_partilces(res.particles.cast)
 	s_Audio.play_global(res.cast_sound, spell_machine.global_position)
 	
+	cast(target)
+	
 	if multiplayer.is_server():
 		pass
+
+func cast(target:Variant = null) -> void:
+	pass
+
+
+func _process(_delta: float) -> void:
+	if not multiplayer.is_server():
+		return
+	
+	if should_cast:
+		spell_machine.unit.ct_movement.goto_target(last_target)

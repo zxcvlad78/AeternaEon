@@ -27,9 +27,7 @@ func _local_precast(target:Variant = null) -> void:
 			return 
 		collision_shape.shape.radius = res.get_radius()
 
-func _cast(target:Variant = null) -> void:
-	super()
-	
+func cast(target:Variant = null) -> void:
 	if not multiplayer.is_server():
 		return
 	

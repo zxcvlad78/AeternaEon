@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="R_Spell" format=3 uid="uid://llc6qgrk7uio"]
+
+[ext_resource type="Script" uid="uid://bt7y70x0v0561" path="res://src/components/magic/R_Spell.gd" id="1_4koyu"]
+[ext_resource type="AudioStream" uid="uid://ctm72g0syrlkk" path="res://src/audio/magnus/Reverse_Polarity_cast.mp3" id="1_w0cky"]
+[ext_resource type="Script" uid="uid://vr3jgkyx31so" path="res://src/objects/unit/knight/spells/stun4ik/stun4ik.gd" id="2_fuc75"]
+[ext_resource type="AudioStream" uid="uid://1e0fdarwisfy" path="res://src/audio/magnus/Reverse_Polarity_pre_cast.mp3" id="2_qsyku"]
+
+[resource]
+script = ExtResource("1_4koyu")
+data = {
+"stun_duration": [1.0, 2.0, 3.0, 4.0]
+}
+precast_sound = ExtResource("2_qsyku")
+cast_sound = ExtResource("1_w0cky")
+spell_script = ExtResource("2_fuc75")
+target_type = 1
+base_precast_time = 0.2
+base_cast_range = Array[float]([1.5, 1.5, 1.5, 1.5])
+base_mana_cost = Array[float]([0.0, 0.0, 0.0, 0.0])
+required_level = 0
+metadata/_custom_type_script = "uid://bt7y70x0v0561"
