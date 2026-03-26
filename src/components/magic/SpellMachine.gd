@@ -39,36 +39,36 @@ func _create_spells() -> void:
 func _requset_try_precast(idx: int) -> void:
 	var spell = spell_instances[idx]
 	if not is_instance_valid(spell) or not spell.can_cast():
-		print(1)
 		return
 	
 	var player = PlayerCamera.i()
 	var target_type = spell.res.target_type
 	
+	player.target_select_mode = target_type
+	
+	
 	if target_type == R_Spell.TargetType.NO_TARGET:
 		SimusNetRPC.invoke_on_server(_server_try_precast, spell)
 	else:
-		player.target_select_mode = target_type
-		
 		var target = null
+		
 		if target_type == R_Spell.TargetType.UNIT_TARGET:
 			target = await player.unit_selected
 		elif target_type == R_Spell.TargetType.POINT_TARGET:
 			target = await player.point_selected
-			
+		
+		
 		if target != null:
 			SimusNetRPC.invoke_on_server(_server_try_precast, spell, target)
 	
-	#player.target_select_mode = R_Spell.TargetType.NO_TARGET
-	
-	#SimusNetRPC.invoke_on_server(_server_try_precast)
+	player.target_select_mode = R_Spell.TargetType.NO_TARGET
 
 func _server_try_precast(p_spell:Spell, target:Variant = null) -> Error:
+	print(p_spell)
 	if spell_channeling and spell_channeling.is_active:
 		return FAILED
 	
 	p_spell.precast(target)
-	PlayerCamera.find_by_peer(SimusNetRemote.sender_id).target_select_mode = R_Spell.TargetType.NO_TARGET
 	return OK
 
 func _input(_event: InputEvent) -> void:
