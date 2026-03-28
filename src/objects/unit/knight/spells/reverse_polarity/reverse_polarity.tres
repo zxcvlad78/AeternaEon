@@ -2,19 +2,30 @@
 
 [ext_resource type="AudioStream" uid="uid://ctm72g0syrlkk" path="res://src/audio/magnus/Reverse_Polarity_cast.mp3" id="1_v4svv"]
 [ext_resource type="Texture2D" uid="uid://cyvdhm4snb8qj" path="res://addons/simusdev/icons/Timer.svg" id="2_j7dhm"]
+[ext_resource type="PackedScene" uid="uid://brrg8ynwrodvn" path="res://src/objects/unit/knight/spells/reverse_polarity/precast_particles.tscn" id="3_j7dhm"]
 [ext_resource type="Script" uid="uid://d2ukhn4uhy5j0" path="res://src/components/particles/R_Particles.gd" id="3_vtkww"]
+[ext_resource type="PackedScene" uid="uid://rv3cmlasfr1e" path="res://src/objects/unit/knight/spells/reverse_polarity/cast_particles.tscn" id="3_wt7lm"]
 [ext_resource type="Script" uid="uid://dlodw7gliq14w" path="res://src/components/particles/R_ParticlesSettings.gd" id="4_wt7lm"]
 [ext_resource type="AudioStream" uid="uid://1e0fdarwisfy" path="res://src/audio/magnus/Reverse_Polarity_pre_cast.mp3" id="5_hmgch"]
 [ext_resource type="Script" uid="uid://bt7y70x0v0561" path="res://src/components/magic/R_Spell.gd" id="6_25a5b"]
 [ext_resource type="Script" uid="uid://7fr31yhcpb38" path="res://src/objects/unit/knight/spells/reverse_polarity/reverse_polarity.gd" id="7_8u1h5"]
 
+[sub_resource type="Resource" id="Resource_hmgch"]
+script = ExtResource("3_vtkww")
+life_time = 0.2
+prefab = ExtResource("3_wt7lm")
+metadata/_custom_type_script = "uid://d2ukhn4uhy5j0"
+
 [sub_resource type="Resource" id="Resource_q6q5q"]
 script = ExtResource("3_vtkww")
+life_time = 0.2
+prefab = ExtResource("3_j7dhm")
 metadata/_custom_type_script = "uid://d2ukhn4uhy5j0"
 
 [sub_resource type="Resource" id="Resource_nrbxk"]
 script = ExtResource("4_wt7lm")
 precast = SubResource("Resource_q6q5q")
+cast = SubResource("Resource_hmgch")
 metadata/_custom_type_script = "uid://dlodw7gliq14w"
 
 [resource]

@@ -23,23 +23,10 @@ enum TargetType {
 @export var spell_script:Script
 
 @export var target_type:TargetType = TargetType.NO_TARGET
-@export var base_cast_point:Array[float] = [0.0]
 
-func get_leveled_value(array:Array) -> float:
-	if array.is_empty():
-		return 0.0
-	
-	if level < required_level:
-		return 0.0
-	
-	if level > array.size():
-		return array.back()
-	
-	var value = array[level]
-	if value is float:
-		return value
-	
-	return 0.0
+@export var base_cast_point:Array[float] = [0.0]
+func get_cast_point() -> float:
+	return get_leveled_value(base_cast_point)
 
 @export var base_cast_range:Array[float] = []
 func get_cast_range() -> float:
@@ -66,6 +53,21 @@ var level:int = 0
 @export var max_level:int = 4
 @export var required_level:int = 1
 
+func get_leveled_value(array:Array) -> float:
+	if array.is_empty():
+		return 0.0
+	
+	if level < required_level:
+		return 0.0
+	
+	if level > array.size():
+		return array.back()
+	
+	var value = array[level]
+	if value is float:
+		return value
+	
+	return 0.0
 
 func create(spell_machine:SpellMachine) -> Spell:
 	if not spell_machine:

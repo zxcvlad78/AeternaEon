@@ -32,15 +32,16 @@ func _ready() -> void:
 	if _point_bar_3d:
 		_point_bar_3d.free()
 	
-	_point_bar_3d = PointBar3D.get_default_prefab().instantiate() as PointBar3D
-	if _point_bar_3d:
-		_point_bar_3d.point_counter = self
-		root.add_child.call_deferred(_point_bar_3d)
+	if not Engine.is_editor_hint():
+		_point_bar_3d = PointBar3D.get_default_prefab().instantiate() as PointBar3D
+		if _point_bar_3d:
+			_point_bar_3d.point_counter = self
+			root.add_child.call_deferred(_point_bar_3d)
+			
+			_point_bar_3d.set_point_bar(point_bar_prefab)
 		
-		_point_bar_3d.set_point_bar(point_bar_prefab)
-	
-		if root.has_method("get_unit_height"):
-			_point_bar_3d.position.y = root.get_unit_height() + 0.025
+			if root.has_method("get_unit_height"):
+				_point_bar_3d.position.y = root.get_unit_height() + 0.025
 	
 	SimusNetVars.register(
 		self,
