@@ -13,6 +13,8 @@ func interrupt_cast() -> void:
 		spell_channeling = null
 
 func _ready() -> void:
+	SD_ECS.append_to(unit, self)
+	
 	SimusNetVars.register(
 		self,
 		[
@@ -64,7 +66,6 @@ func _requset_try_precast(idx: int) -> void:
 	player.target_select_mode = R_Spell.TargetType.NO_TARGET
 
 func _server_try_precast(p_spell:Spell, target:Variant = null) -> Error:
-	print(p_spell)
 	if spell_channeling and spell_channeling.is_active:
 		return FAILED
 	

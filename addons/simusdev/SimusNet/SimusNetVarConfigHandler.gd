@@ -30,13 +30,16 @@ func get_identity() -> SimusNetIdentity:
 		return _identity_weak_ref.get_ref()
 	return null
 
+func get_property_unique_id(property: StringName) -> int:
+	return _list.keys().find(property)
+
 func _add_cfg(cfg: SimusNetVarConfig, property: StringName) -> void:
 	_list[property] = cfg
 	
 	var properties: PackedStringArray = _properties_for.get_or_add(cfg, PackedStringArray())
 	if !property in properties:
 		properties.append(property)
-		SimusNetVars.cache(property)
+		#SimusNetVars.cache(property)
 	
 	if SimusNetConnection.is_active():
 		cfg._network_ready(self)

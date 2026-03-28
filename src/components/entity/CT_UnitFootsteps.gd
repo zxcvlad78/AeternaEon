@@ -7,11 +7,16 @@ class_name CT_UnitFootsteps extends Node3D
 		_auto_bind_footstep()
 
 func _auto_bind_footstep() -> void:
+	if Engine.is_editor_hint():
+		return
+	
 	if not unit:
 		return
 	
 	var model = unit.animated_model
 	if model:
+		if model.footstep.is_connected(do_footstep):
+			return
 		model.footstep.connect(do_footstep)
 
 func _enter_tree() -> void:
@@ -25,6 +30,8 @@ func _notification(what: int) -> void:
 func _ready() -> void:
 	if Engine.is_editor_hint():
 		return
+	
+	SD_ECS.append_to(unit, self)
 	
 	SimusNetRPC.register(
 		[

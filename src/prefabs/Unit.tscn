@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://c85p6hiq2wm53" path="res://src/components/magic/SpellMachine.gd" id="7_mbpmj"]
 [ext_resource type="Script" uid="uid://b2fidrwvgnri2" path="res://addons/simusdev/statemachine/SD_State.gd" id="7_xyafo"]
 [ext_resource type="Script" uid="uid://dxq864cjtni6m" path="res://src/components/entity/CT_UnitFootsteps.gd" id="10_o83l0"]
+[ext_resource type="Script" uid="uid://kjlobx8x10wb" path="res://src/components/unit/UnitOrders.gd" id="12_36mmn"]
 
 [sub_resource type="Resource" id="Resource_36mmn"]
 script = ExtResource("3_o83l0")
@@ -84,3 +85,8 @@ metadata/_custom_type_script = "uid://dxq864cjtni6m"
 metadata/SimusNetIdentity = SubResource("Resource_o83l0")
 metadata/SimusNetRPCConfigHandler = Object(RefCounted,"script":Resource("res://addons/simusdev/SimusNet/singletons/SimusNetRPCConfigHandler.gd"))
 
+
+[node name="UnitOrders" type="Node" parent="." unique_id=661428182 node_paths=PackedStringArray("unit")]
+script = ExtResource("12_36mmn")
+unit = NodePath("..")
+metadata/_custom_type_script = "uid://kjlobx8x10wb"

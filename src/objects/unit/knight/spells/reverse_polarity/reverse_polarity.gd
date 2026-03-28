@@ -27,7 +27,7 @@ func _local_precast(target:Variant = null) -> void:
 			return 
 		collision_shape.shape.radius = res.get_radius()
 
-func cast(target:Variant = null) -> void:
+func on_cast(target:Variant = null) -> void:
 	if not multiplayer.is_server():
 		return
 	
@@ -39,12 +39,19 @@ func cast(target:Variant = null) -> void:
 		if body is Unit:
 			_apply_rp_effects(body, pull_position)
 
-func _apply_rp_effects(target: Unit, pull_pos: Vector3) -> void:
+func _apply_rp_effects(target:Unit, pull_pos:Vector3) -> void:
 	target.global_position = pull_pos
 	
 	target.look_at(spell_machine.unit.global_position)
 	target.rotate_y(PI)
 	
 	var base_stun_duration = res.data.get("stun_duration", Array([]))
-	var stun_duration = res.get_leveled_value(base_stun_duration)
+	var base_damage = res.data.get("damage", Array([]))
 	
+	var stun_duration = res.get_leveled_value(base_stun_duration)
+	var damage = res.get_leveled_value(base_damage)
+	
+	var res_dmg = R_PointValue.new(damage)
+	
+	target.ct_health.apply_diminish(res_dmg)
+	#print(target.ct_health.points)

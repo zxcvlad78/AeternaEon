@@ -7,6 +7,7 @@ signal max_points_changed()
 
 @export var points:float = 100.0 :
 	set(val):
+		points = val
 		points = clamp(points, 0.0, max_points)
 		points_changed.emit()
 
@@ -56,7 +57,7 @@ func _ready() -> void:
 			_local_apply_diminish,
 			_local_apply_replenish
 		],
-		SimusNetRPCConfig.new().flag_mode_any_peer()
+		SimusNetRPCConfig.new().flag_serialization().flag_mode_any_peer()
 	)
 	
 	if not is_instance_valid(root):
@@ -78,5 +79,6 @@ func _local_reset() -> void:
 
 func _local_apply_diminish(value:R_PointValue) -> void:
 	points -= value.points
+
 func _local_apply_replenish(value:R_PointValue) -> void:
-	points -= value.points
+	points += value.points

@@ -21,10 +21,23 @@ func _ready() -> void:
 		SimusNetRPCConfig.new().flag_mode_any_peer()
 	)
 
+func get_unit() -> Unit:
+	return spell_machine.unit
+
 func can_cast(target:Variant = null) -> bool:
 	if res.level < res.required_level:
 		return false
+	
 	return true
+
+func can_reach(target:Variant) -> bool:
+	if res.target_type == R_Spell.TargetType.NO_TARGET:
+		return true
+	
+	if not target:
+		return false
+	
+	return get_unit().global_position.distance_to(target.global_position) < res.get_leveled_value(res.base_cast_range)
 
 func _play_animation(anim_names:Array[StringName]) -> void:
 	if anim_names.is_empty():
@@ -43,14 +56,15 @@ func _local_precast(target:Variant = null) -> void:
 	s_Audio.play_global(res.precast_sound, spell_machine.global_position)
 	
 	if multiplayer.is_server():
-		if res.base_precast_time == 0.0:
+		var cast_point = res.get_leveled_value(res.base_cast_point)
+		if cast_point == 0.0:
 			SimusNetRPC.invoke_all(_cast, target)
 			return
 		
 		var channel = SpellChanneling.new(spell_machine, self)
 		spell_machine.spell_channeling = channel
 		
-		channel.start(res.base_precast_time)
+		channel.start(cast_point)
 		
 		var success = await channel.finished
 		if success:
@@ -62,25 +76,28 @@ func _local_precast(target:Variant = null) -> void:
 func precast(target:Variant = null) -> void:
 	last_target = target
 	
-	while not can_cast():
+	if not can_reach(target):
 		should_cast = true
+		return
 	
 	should_cast = false
 	
 	SimusNetRPC.invoke_all(_local_precast, target)
 
+func on_spell_start(target:Variant = null) -> void:
+	pass
 
 func _cast(target:Variant = null) -> void:
 	_play_animation(res.backswing_animation_names)
 	_spawn_partilces(res.particles.cast)
 	s_Audio.play_global(res.cast_sound, spell_machine.global_position)
 	
-	cast(target)
+	on_cast(target)
 	
 	if multiplayer.is_server():
 		pass
 
-func cast(target:Variant = null) -> void:
+func on_cast(target:Variant = null) -> void:
 	pass
 
 
@@ -90,3 +107,4 @@ func _process(_delta: float) -> void:
 	
 	if should_cast:
 		spell_machine.unit.ct_movement.goto_target(last_target)
+		precast(last_target)

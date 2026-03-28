@@ -4,10 +4,13 @@ class_name Unit extends W_LivingEntity
 @onready var ct_mana:CT_Mana = SD_ECS.find_first_component_by_script(self, [CT_Mana])
 
 @onready var ct_movement:CT_Movement = SD_ECS.find_first_component_by_script(self, [CT_Movement])
+@onready var spell_machine:SpellMachine = SD_ECS.find_first_component_by_script(self, [SpellMachine])
+
+@onready var unit_orders:UnitOrders = SD_ECS.find_first_component_by_script(self, [UnitOrders])
 
 var resource:R_Unit = R_Unit.new():
 	set(val):
-		resource = val#.duplicate()
+		resource = val.duplicate()
 
 @export var state_machine:SD_NodeStateMachine
 @export var animated_model:AnimatedModel

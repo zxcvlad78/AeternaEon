@@ -4,9 +4,7 @@ class_name SimusNetIdentity
 var owner: Object : get = get_owner
 
 func get_owner() -> Object:
-	if !_owner_weak_ref:
-		return null
-	if !is_instance_valid(_owner_weak_ref.get_ref()):
+	if !_owner_weak_ref or !is_instance_valid(_owner_weak_ref.get_ref()):
 		return null
 	
 	return _owner_weak_ref.get_ref()

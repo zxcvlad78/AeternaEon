@@ -23,7 +23,7 @@ enum TargetType {
 @export var spell_script:Script
 
 @export var target_type:TargetType = TargetType.NO_TARGET
-@export var base_precast_time:float = 0.0
+@export var base_cast_point:Array[float] = [0.0]
 
 func get_leveled_value(array:Array) -> float:
 	if array.is_empty():

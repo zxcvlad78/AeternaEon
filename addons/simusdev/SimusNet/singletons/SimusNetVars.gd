@@ -62,8 +62,8 @@ func initialize() -> void:
 	SimusNetEvents.event_connected.listen(_on_connected)
 	SimusNetEvents.event_disconnected.listen(_on_disconnected)
 	
-	for p in BUILTIN_CACHE:
-		cache(p)
+	#for p in BUILTIN_CACHE:
+		#cache(p)
 	
 	process_mode = Node.PROCESS_MODE_DISABLED
 	

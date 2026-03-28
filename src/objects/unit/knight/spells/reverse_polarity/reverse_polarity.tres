@@ -22,13 +22,14 @@ script = ExtResource("6_25a5b")
 name = &"Reverse Polarity"
 icon = ExtResource("2_j7dhm")
 data = {
+"damage": [20.0, 20.0, 20.0, 20.0],
 "stun_duration": [2.5, 2.8, 3.2, 3.5]
 }
 particles = SubResource("Resource_nrbxk")
 precast_sound = ExtResource("5_hmgch")
 cast_sound = ExtResource("1_v4svv")
 spell_script = ExtResource("7_8u1h5")
-base_precast_time = 0.2
+base_cast_point = Array[float]([0.2])
 base_radius = Array[float]([2.5])
 swing_animation_names = Array[StringName]([&"swing_reverse_polarity"])
 backswing_animation_names = Array[StringName]([&"backswing_reverse_polarity"])

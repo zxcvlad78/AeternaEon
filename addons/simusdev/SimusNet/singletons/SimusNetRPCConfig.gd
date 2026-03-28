@@ -136,7 +136,7 @@ func flag_simulate_locally(simulate: bool = true) -> SimusNetRPCConfig:
 	_simulate = simulate
 	return self
 
-var _serialization: bool = false
+var _serialization: bool = true
 func flag_serialization(value: bool = true) -> SimusNetRPCConfig:
 	_serialization = value
 	return self

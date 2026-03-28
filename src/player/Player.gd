@@ -3,6 +3,8 @@ class_name PlayerCamera extends Node3D
 signal unit_selected(unit:Unit)
 signal point_selected(pos:Vector3)
 
+signal on_order_hold_position()
+
 var camera:Camera3D
 @export var camera_rotation:Vector3 = Vector3(-51.0, 120.0, 0.0)
 
@@ -84,6 +86,15 @@ func get_or_create_camera() -> Camera3D:
 	new_cam.rotation_degrees = camera_rotation
 	
 	return new_cam
+
+func _input(event: InputEvent) -> void:
+	if SimusDev.ui.has_active_interface():
+		return
+	
+	if Input.is_action_just_pressed("hold_position"):
+		var unit:Unit = get_main_unit()
+		if unit:
+			unit.unit_orders.hold_position()
 
 func _process(delta: float) -> void:
 	if not is_multiplayer_authority():
