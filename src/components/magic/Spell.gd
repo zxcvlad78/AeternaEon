@@ -22,6 +22,14 @@ func _ready() -> void:
 		],
 		SimusNetRPCConfig.new().flag_mode_any_peer()
 	)
+	
+	SimusNetVars.register(
+		self,
+		[
+			"last_target"
+		],
+		SimusNetVarConfig.new().flag_serialization().flag_replication()
+	)
 
 func get_unit() -> Unit:
 	return spell_machine.unit
