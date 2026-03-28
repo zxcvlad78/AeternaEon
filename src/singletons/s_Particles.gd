@@ -3,8 +3,10 @@ extends Node
 func spawn(spell:Spell, particles:R_Particles, pos:Vector3) -> void:
 	if not particles:
 		return
+	
 	if not particles.prefab:
 		return
+	
 	var new_particles = particles.prefab.instantiate()
 	
 	if new_particles is W_Particles:
@@ -18,7 +20,7 @@ func spawn(spell:Spell, particles:R_Particles, pos:Vector3) -> void:
 		)
 		
 		var channel = spell.spell_machine.spell_channeling
-		print(channel)
+		
 		if channel:
 			if channel.spell == spell:
 				channel.finished.connect(

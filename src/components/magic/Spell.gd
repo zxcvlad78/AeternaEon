@@ -1,5 +1,7 @@
 class_name Spell extends Node3D
 
+signal casted
+
 var spell_machine:SpellMachine = null
 var res:R_Spell
 
@@ -50,10 +52,15 @@ func _play_animation(anim_names:Array[StringName]) -> void:
 func _spawn_partilces(particles:R_Particles) -> void:
 	s_Particles.spawn(self, particles, spell_machine.global_position)
 
+func _play_audio(audio:R_SpellAudio) -> void:
+	var player = AudioStreamPlayer3D.new()
+	player.pitch_scale = randf_range(audio.pitch.x, audio.pitch.y)
+	s_Audio.play_global(audio.stream, spell_machine.global_position, player)
+
 func _local_precast(target:Variant = null) -> void:
 	_play_animation(res.swing_animation_names)
 	_spawn_partilces(res.particles.precast)
-	s_Audio.play_global(res.precast_sound, spell_machine.global_position)
+	_play_audio(res.precast_sound)
 	
 	if multiplayer.is_server():
 		var cast_point = res.get_leveled_value(res.base_cast_point)
@@ -76,6 +83,9 @@ func _local_precast(target:Variant = null) -> void:
 func precast(target:Variant = null) -> void:
 	last_target = target
 	
+	if not can_cast(target):
+		return
+	
 	if not can_reach(target):
 		should_cast = true
 		return
@@ -90,9 +100,10 @@ func on_spell_start(target:Variant = null) -> void:
 func _cast(target:Variant = null) -> void:
 	_play_animation(res.backswing_animation_names)
 	_spawn_partilces(res.particles.cast)
-	s_Audio.play_global(res.cast_sound, spell_machine.global_position)
+	_play_audio(res.cast_sound)
 	
 	on_cast(target)
+	casted.emit()
 	
 	if multiplayer.is_server():
 		pass
@@ -107,4 +118,7 @@ func _process(_delta: float) -> void:
 	
 	if should_cast:
 		spell_machine.unit.ct_movement.goto_target(last_target)
-		precast(last_target)
+		
+		if can_reach(last_target):
+			should_cast = false
+			SimusNetRPC.invoke_all(_local_precast, last_target)

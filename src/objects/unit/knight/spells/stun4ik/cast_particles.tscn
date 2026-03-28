@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://b13vbelss66te"]
+
+[ext_resource type="PackedScene" uid="uid://dvr6mfg7kfs0g" path="res://src/resources/blood/blood_particles.tscn" id="1_3s7el"]
+[ext_resource type="Script" uid="uid://bxilr3g22j6pa" path="res://src/objects/unit/knight/spells/stun4ik/cast_particles.gd" id="2_32yp1"]
+
+[node name="BloodParticles" unique_id=1159425300 instance=ExtResource("1_3s7el")]
+script = ExtResource("2_32yp1")
+
+[node name="blood" parent="." index="0" unique_id=899771965]
+emitting = true

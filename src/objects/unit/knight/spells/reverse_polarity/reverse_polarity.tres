@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="R_Spell" format=3 uid="uid://c0r6kg6p0lilk"]
 
 [ext_resource type="AudioStream" uid="uid://ctm72g0syrlkk" path="res://src/audio/magnus/Reverse_Polarity_cast.mp3" id="1_v4svv"]
+[ext_resource type="Script" uid="uid://box4b166sdj7p" path="res://src/components/magic/R_SpellAudio.gd" id="1_wt7lm"]
 [ext_resource type="Texture2D" uid="uid://cyvdhm4snb8qj" path="res://addons/simusdev/icons/Timer.svg" id="2_j7dhm"]
 [ext_resource type="PackedScene" uid="uid://brrg8ynwrodvn" path="res://src/objects/unit/knight/spells/reverse_polarity/precast_particles.tscn" id="3_j7dhm"]
 [ext_resource type="Script" uid="uid://d2ukhn4uhy5j0" path="res://src/components/particles/R_Particles.gd" id="3_vtkww"]
@@ -9,6 +10,12 @@
 [ext_resource type="AudioStream" uid="uid://1e0fdarwisfy" path="res://src/audio/magnus/Reverse_Polarity_pre_cast.mp3" id="5_hmgch"]
 [ext_resource type="Script" uid="uid://bt7y70x0v0561" path="res://src/components/magic/R_Spell.gd" id="6_25a5b"]
 [ext_resource type="Script" uid="uid://7fr31yhcpb38" path="res://src/objects/unit/knight/spells/reverse_polarity/reverse_polarity.gd" id="7_8u1h5"]
+
+[sub_resource type="Resource" id="Resource_25a5b"]
+script = ExtResource("1_wt7lm")
+stream = ExtResource("1_v4svv")
+pitch = Vector2(0.98, 1.02)
+metadata/_custom_type_script = "uid://box4b166sdj7p"
 
 [sub_resource type="Resource" id="Resource_hmgch"]
 script = ExtResource("3_vtkww")
@@ -28,6 +35,12 @@ precast = SubResource("Resource_q6q5q")
 cast = SubResource("Resource_hmgch")
 metadata/_custom_type_script = "uid://dlodw7gliq14w"
 
+[sub_resource type="Resource" id="Resource_8u1h5"]
+script = ExtResource("1_wt7lm")
+stream = ExtResource("5_hmgch")
+pitch = Vector2(0.98, 1.02)
+metadata/_custom_type_script = "uid://box4b166sdj7p"
+
 [resource]
 script = ExtResource("6_25a5b")
 name = &"Reverse Polarity"
@@ -37,8 +50,8 @@ data = {
 "stun_duration": [2.5, 2.8, 3.2, 3.5]
 }
 particles = SubResource("Resource_nrbxk")
-precast_sound = ExtResource("5_hmgch")
-cast_sound = ExtResource("1_v4svv")
+precast_sound = SubResource("Resource_8u1h5")
+cast_sound = SubResource("Resource_25a5b")
 spell_script = ExtResource("7_8u1h5")
 base_cast_point = Array[float]([0.2])
 base_radius = Array[float]([2.5])

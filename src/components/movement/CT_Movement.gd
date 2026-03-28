@@ -18,7 +18,11 @@ func _exit_tree() -> void:
 
 func _ready() -> void:
 	SimusNetRPC.register(
-		[goto, goto_target], 
+		[
+			goto,
+			goto_target,
+			stop,
+		], 
 		SimusNetRPCConfig.new().flag_mode_to_server().flag_serialization()
 	)
 	
@@ -29,6 +33,9 @@ func _ready() -> void:
 	nav_agent.path_desired_distance = 0.5
 	nav_agent.target_desired_distance = 0.5
 	unit.add_child(nav_agent)
+
+func request_stop() -> void:
+	SimusNetRPC.invoke_on_server(stop)
 
 func request_goto(pos: Vector3) -> void:
 	SimusNetRPC.invoke_on_server(goto, pos)

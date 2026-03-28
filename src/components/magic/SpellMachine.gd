@@ -7,6 +7,7 @@ var spell_instances:Array[Spell]
 
 var spell_channeling:SpellChanneling
 
+
 func interrupt_cast() -> void:
 	if spell_channeling:
 		spell_channeling.interrupt()
@@ -15,14 +16,14 @@ func interrupt_cast() -> void:
 func _ready() -> void:
 	SD_ECS.append_to(unit, self)
 	
-	SimusNetVars.register(
-		self,
-		[
-			"unit",
-			"spells",
-		]
-		,SimusNetVarConfig.new().flag_mode_server_only().flag_replication().flag_serialization()
-	)
+	#SimusNetVars.register(
+		#self,
+		#[
+			#"unit",
+			#"spells",
+		#]
+		#,SimusNetVarConfig.new().flag_mode_server_only().flag_replication().flag_serialization()
+	#)
 	
 	SimusNetRPC.register(
 		[
@@ -46,15 +47,26 @@ func _requset_try_precast(idx: int) -> void:
 		return
 	
 	var player = PlayerCamera.i()
+	
+	player.unit_selected.emit(null)
+	player.point_selected.emit(null) 
+	
 	var target_type = spell.res.target_type
 	
 	player.target_select_mode = target_type
 	
+	var shift = Input.is_action_pressed("shift")
 	
 	if target_type == R_Spell.TargetType.NO_TARGET:
-		SimusNetRPC.invoke_on_server(_server_try_precast, spell)
+			SimusNetRPC.invoke_on_server(
+				_server_try_precast,
+				spell,
+				shift
+				)
+	
 	else:
 		var target = null
+		
 		
 		if target_type == R_Spell.TargetType.UNIT_TARGET:
 			target = await player.unit_selected
@@ -62,16 +74,23 @@ func _requset_try_precast(idx: int) -> void:
 			target = await player.point_selected
 		
 		
-		if target != null:
-			SimusNetRPC.invoke_on_server(_server_try_precast, spell, target)
+		if target:
+			SimusNetRPC.invoke_on_server(
+				_server_try_precast,
+				spell,
+				shift,
+				target,
+				)
 	
 	player.target_select_mode = R_Spell.TargetType.NO_TARGET
 
-func _server_try_precast(p_spell:Spell, target:Variant = null) -> Error:
-	if spell_channeling and spell_channeling.is_active:
-		return FAILED
+func _server_try_precast(p_spell:Spell, shift:bool, target:Variant = null) -> Error:
+	#if spell_channeling and spell_channeling.is_active:
+		#return FAILED
 	
-	p_spell.precast(target)
+	var task = CastTask.new(unit, target, p_spell)
+	unit.unit_orders.issue_task(task, shift)
+	
 	return OK
 
 func _input(_event: InputEvent) -> void:

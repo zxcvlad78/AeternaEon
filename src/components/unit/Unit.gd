@@ -10,7 +10,7 @@ class_name Unit extends W_LivingEntity
 
 var resource:R_Unit = R_Unit.new():
 	set(val):
-		resource = val.duplicate()
+		resource = val#.duplicate()
 
 @export var state_machine:SD_NodeStateMachine
 @export var animated_model:AnimatedModel

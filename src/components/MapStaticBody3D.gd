@@ -3,6 +3,14 @@ class_name MapStaticBody3D extends StaticBody3D
 @export var click_visual:PackedScene
 @export var goto_visual:Node3D
 
+func _ready() -> void:
+	SimusNetRPC.register(
+		[
+			_order_move_task
+		],
+		SimusNetRPCConfig.new().flag_mode_any_peer()
+	)
+
 func _input_event(camera: Camera3D, event: InputEvent, event_position: Vector3, normal: Vector3, shape_idx: int) -> void:
 	if event is InputEventMouseButton:
 		var player = PlayerCamera.i()
@@ -16,15 +24,21 @@ func _input_event(camera: Camera3D, event: InputEvent, event_position: Vector3, 
 			if event.button_index == MOUSE_BUTTON_LEFT:
 				player.select_point(event_position)
 			elif event.button_index == MOUSE_BUTTON_RIGHT:
-				var ct_movement = player.get_main_unit().ct_movement
 				
-				if not is_instance_valid(ct_movement):
-					return
-				
-				ct_movement.request_goto(event_position)
+				SimusNetRPC.invoke_on_server(
+					_order_move_task,
+					event_position,
+					unit,
+					Input.is_action_pressed("shift")
+					)
 				
 				show_goto_visual(event_position)
 				#create_click_visual(event_position)
+
+func _order_move_task(pos:Vector3, unit:Unit, shift:bool) -> void:
+	var task = MoveTask.new(unit, pos)
+	
+	unit.unit_orders.issue_task(task, shift)
 
 func show_goto_visual(pos:Vector3) -> void:
 	if not goto_visual:

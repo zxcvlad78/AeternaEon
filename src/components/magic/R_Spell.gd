@@ -16,8 +16,8 @@ enum TargetType {
 @export var particles:R_ParticlesSettings = R_ParticlesSettings.new()
 
 @export_group("Audio")
-@export var precast_sound:AudioStream
-@export var cast_sound:AudioStream
+@export var precast_sound:R_SpellAudio
+@export var cast_sound:R_SpellAudio
 
 @export_group("Behaviour")
 @export var spell_script:Script

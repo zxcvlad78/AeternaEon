@@ -1,21 +1,55 @@
 [gd_resource type="Resource" script_class="R_Spell" format=3 uid="uid://llc6qgrk7uio"]
 
 [ext_resource type="Script" uid="uid://bt7y70x0v0561" path="res://src/components/magic/R_Spell.gd" id="1_4koyu"]
-[ext_resource type="AudioStream" uid="uid://ctm72g0syrlkk" path="res://src/audio/magnus/Reverse_Polarity_cast.mp3" id="1_w0cky"]
+[ext_resource type="Script" uid="uid://box4b166sdj7p" path="res://src/components/magic/R_SpellAudio.gd" id="1_6b4qu"]
+[ext_resource type="AudioStream" uid="uid://dojd1spaalk5i" path="res://src/objects/unit/knight/spells/stun4ik/sound/cast.mp3" id="1_w0cky"]
 [ext_resource type="Script" uid="uid://vr3jgkyx31so" path="res://src/objects/unit/knight/spells/stun4ik/stun4ik.gd" id="2_fuc75"]
-[ext_resource type="AudioStream" uid="uid://1e0fdarwisfy" path="res://src/audio/magnus/Reverse_Polarity_pre_cast.mp3" id="2_qsyku"]
+[ext_resource type="AudioStream" uid="uid://k71i8p6f5kmw" path="res://src/objects/unit/knight/spells/stun4ik/sound/precast.mp3" id="2_qsyku"]
+[ext_resource type="PackedScene" uid="uid://b13vbelss66te" path="res://src/objects/unit/knight/spells/stun4ik/cast_particles.tscn" id="3_46qwa"]
+[ext_resource type="Texture2D" uid="uid://fx0bdfn3xxb" path="res://addons/simusdev/icons/EditPivot.svg" id="3_e6vgq"]
+[ext_resource type="Script" uid="uid://d2ukhn4uhy5j0" path="res://src/components/particles/R_Particles.gd" id="4_e6vgq"]
+[ext_resource type="Script" uid="uid://dlodw7gliq14w" path="res://src/components/particles/R_ParticlesSettings.gd" id="5_x2fei"]
+
+[sub_resource type="Resource" id="Resource_qsyku"]
+script = ExtResource("1_6b4qu")
+stream = ExtResource("1_w0cky")
+pitch = Vector2(0.97, 1.03)
+metadata/_custom_type_script = "uid://box4b166sdj7p"
+
+[sub_resource type="Resource" id="Resource_5m8sy"]
+script = ExtResource("4_e6vgq")
+life_time = 1.5
+prefab = ExtResource("3_46qwa")
+metadata/_custom_type_script = "uid://d2ukhn4uhy5j0"
+
+[sub_resource type="Resource" id="Resource_wk6e0"]
+script = ExtResource("5_x2fei")
+cast = SubResource("Resource_5m8sy")
+metadata/_custom_type_script = "uid://dlodw7gliq14w"
+
+[sub_resource type="Resource" id="Resource_w0cky"]
+script = ExtResource("1_6b4qu")
+stream = ExtResource("2_qsyku")
+pitch = Vector2(0.97, 1.03)
+metadata/_custom_type_script = "uid://box4b166sdj7p"
 
 [resource]
 script = ExtResource("1_4koyu")
+name = &"Stun4ik"
+icon = ExtResource("3_e6vgq")
 data = {
+"damage": [10.0],
 "stun_duration": [1.0, 2.0, 3.0, 4.0]
 }
-precast_sound = ExtResource("2_qsyku")
-cast_sound = ExtResource("1_w0cky")
+particles = SubResource("Resource_wk6e0")
+precast_sound = SubResource("Resource_w0cky")
+cast_sound = SubResource("Resource_qsyku")
 spell_script = ExtResource("2_fuc75")
 target_type = 1
-base_precast_time = 0.2
+base_cast_point = Array[float]([0.7])
 base_cast_range = Array[float]([1.5, 1.5, 1.5, 1.5])
 base_mana_cost = Array[float]([0.0, 0.0, 0.0, 0.0])
+swing_animation_names = Array[StringName]([&"swing_cast_stun"])
+backswing_animation_names = Array[StringName]([&"backswing_cast_stun"])
 required_level = 0
 metadata/_custom_type_script = "uid://bt7y70x0v0561"
