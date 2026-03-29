@@ -12,6 +12,8 @@
 [ext_resource type="Script" uid="uid://b2fidrwvgnri2" path="res://addons/simusdev/statemachine/SD_State.gd" id="7_xyafo"]
 [ext_resource type="Script" uid="uid://dxq864cjtni6m" path="res://src/components/entity/CT_UnitFootsteps.gd" id="10_o83l0"]
 [ext_resource type="Script" uid="uid://kjlobx8x10wb" path="res://src/components/unit/UnitOrders.gd" id="12_36mmn"]
+[ext_resource type="PackedScene" uid="uid://bf315js7rsrv" path="res://src/prefabs/unit_border.tscn" id="13_heo08"]
+[ext_resource type="Script" uid="uid://bo4yks8bji1jr" path="res://src/components/magic/effects/UnitEffects.gd" id="13_kai3p"]
 
 [sub_resource type="Resource" id="Resource_36mmn"]
 script = ExtResource("3_o83l0")
@@ -45,12 +47,12 @@ metadata/SimusNetIdentity = SubResource("Resource_heo08")
 metadata/simusnet_var_config = Object(RefCounted,"script":Resource("res://addons/simusdev/SimusNet/SimusNetVarConfigHandler.gd"),"_object_weak_ref":Object(WeakRef,"script":null)
 ,"_identity_weak_ref":Object(WeakRef,"script":null)
 ,"_list":Dictionary[StringName, Resource("res://addons/simusdev/SimusNet/SimusNetVarConfig.gd")]({
-&"max_points": Object(RefCounted,"script":Resource("res://addons/simusdev/SimusNet/SimusNetVarConfig.gd"),"_channel":84,"_reliable":true,"_replication":true,"_replicate_on_spawn":true,"_serialize":false,"_mode":1,"_tickrate":0.0)
+&"max_points": Object(RefCounted,"script":Resource("res://addons/simusdev/SimusNet/SimusNetVarConfig.gd"),"_channel":84,"_reliable":true,"_replication":true,"_replicate_on_spawn":true,"_serialize":true,"_mode":1,"_tickrate":0.0,"__send_to_owner":false)
 ,
-&"points": Object(RefCounted,"script":Resource("res://addons/simusdev/SimusNet/SimusNetVarConfig.gd"),"_channel":84,"_reliable":true,"_replication":true,"_replicate_on_spawn":true,"_serialize":false,"_mode":1,"_tickrate":0.0)
+&"points": Object(RefCounted,"script":Resource("res://addons/simusdev/SimusNet/SimusNetVarConfig.gd"),"_channel":84,"_reliable":true,"_replication":true,"_replicate_on_spawn":true,"_serialize":true,"_mode":1,"_tickrate":0.0,"__send_to_owner":false)
 
 }),"_properties_for":Dictionary[Resource("res://addons/simusdev/SimusNet/SimusNetVarConfig.gd"), PackedStringArray]({
-Object(RefCounted,"script":Resource("res://addons/simusdev/SimusNet/SimusNetVarConfig.gd"),"_channel":84,"_reliable":true,"_replication":true,"_replicate_on_spawn":true,"_serialize":false,"_mode":1,"_tickrate":0.0)
+Object(RefCounted,"script":Resource("res://addons/simusdev/SimusNet/SimusNetVarConfig.gd"),"_channel":84,"_reliable":true,"_replication":true,"_replicate_on_spawn":true,"_serialize":true,"_mode":1,"_tickrate":0.0,"__send_to_owner":false)
 : PackedStringArray("points", "max_points")
 }),"_properties_time":Dictionary[int, float]({}))
 
@@ -96,6 +98,11 @@ process_mode = 4
 script = ExtResource("7_xyafo")
 metadata/_custom_type_script = "uid://b2fidrwvgnri2"
 
+[node name="stunned" type="Node" parent="StateMachine" unique_id=219526606]
+process_mode = 4
+script = ExtResource("7_xyafo")
+metadata/_custom_type_script = "uid://b2fidrwvgnri2"
+
 [node name="CT_UnitFootsteps" type="Node3D" parent="." unique_id=587105672 node_paths=PackedStringArray("unit")]
 script = ExtResource("10_o83l0")
 unit = NodePath("..")
@@ -108,3 +115,12 @@ metadata/SimusNetRPCConfigHandler = Object(RefCounted,"script":Resource("res://a
 script = ExtResource("12_36mmn")
 unit = NodePath("..")
 metadata/_custom_type_script = "uid://kjlobx8x10wb"
+
+[node name="UnitEffects" type="Node" parent="." unique_id=1601445515 node_paths=PackedStringArray("unit")]
+script = ExtResource("13_kai3p")
+unit = NodePath("..")
+metadata/_custom_type_script = "uid://bo4yks8bji1jr"
+
+[node name="UnitBorder" parent="." unique_id=1595994863 node_paths=PackedStringArray("unit") instance=ExtResource("13_heo08")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 0)
+unit = NodePath("..")

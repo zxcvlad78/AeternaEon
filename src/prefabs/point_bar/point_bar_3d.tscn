@@ -11,6 +11,12 @@ script = ExtResource("1_pvsqd")
 [node name="SubViewport" type="SubViewport" parent="." unique_id=1468810486]
 transparent_bg = true
 
+[node name="CanvasLayer" type="CanvasLayer" parent="SubViewport" unique_id=1537866832]
+layer = 7
+follow_viewport_enabled = true
+
 [node name="Sprite3D" type="Sprite3D" parent="." unique_id=2007426741]
+layers = 2
 billboard = 1
+render_priority = 10
 texture = SubResource("ViewportTexture_o83l0")

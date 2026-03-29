@@ -97,7 +97,6 @@ func _invoke_on_without_validating(peer: int, callable: Callable, args: Array, c
 		await identity.on_ready
 	
 	var unique_id: int = identity.get_unique_id()
-	var serialized_method_id: Variant = SimusNetMethods.try_serialize_into_variant(callable)
 	
 	var packet: Array = [
 		SimusNet.PACKET.RPC,
@@ -123,9 +122,9 @@ func _invoke_on_without_validating(peer: int, callable: Callable, args: Array, c
 	peer, config.flag_get_transfer_mode_multiplayer_peer(), 
 	config.flag_get_channel_id())
 	
-	SimusNetProfiler.get_instance()._put_up_traffic(bytes.size())
+	SimusNetProfiler.get_instance()._put_up_traffic(bytes.size() + 1)
 	SimusNetProfiler.get_instance()._put_rpc_traffic(
-		bytes.size(),
+		bytes.size() + 1,
 		identity,
 		callable,
 		false
@@ -146,7 +145,7 @@ var PACKET_AND_METHOD: Dictionary[SimusNet.PACKET, Callable] = {
 
 func _on_peer_packet_received(id: int, packet: PackedByteArray) -> void:
 	SimusNetProfiler._put_down_packet()
-	SimusNetProfiler.get_instance()._put_down_traffic(packet.size())
+	SimusNetProfiler.get_instance()._put_down_traffic(packet.size() + 1)
 	
 	var deserialized: Variant = SimusNetArguments.deserialize(packet)
 	#var deserialized: Variant = bytes_to_var(packet)
@@ -156,18 +155,18 @@ func _on_peer_packet_received(id: int, packet: PackedByteArray) -> void:
 	
 	if packet_id in PACKET_AND_METHOD:
 		var callable: Callable = PACKET_AND_METHOD[packet_id]
-		callable.call(packet, packet_id, id, deserialized)
+		callable.call(packet.size() + 1, packet_id, id, deserialized)
 	
 
-func _on_packet_rpc(original_packet: PackedByteArray, type: SimusNet.PACKET, peer: int, args: Array) -> void:
+func _on_packet_rpc(original_packet_size: int, type: SimusNet.PACKET, peer: int, args: Array) -> void:
 	var metadata: Dictionary = {}
 	var i: int = args[0]
 	var m: int = args[1]
 	for c in 2:
 		args.pop_front()
-	_receive_rpc(original_packet, peer, i, m, args)
+	_receive_rpc(original_packet_size, peer, i, m, args)
 
-func _receive_rpc(original_packet: PackedByteArray, peer: int, identity_id: int, method_id: int, args: Array, metadata: Dictionary = {}) -> void:
+func _receive_rpc(original_packet_size: int, peer: int, identity_id: int, method_id: int, args: Array, metadata: Dictionary = {}) -> void:
 	SimusNetRemote.sender_id = peer
 	#print('received rpc: %s, %s, %s, %s' % [peer, identity_id, method_id, args])
 	var identity: SimusNetIdentity = SimusNetIdentity.get_dictionary_by_unique_id().get(identity_id)
@@ -194,7 +193,7 @@ func _receive_rpc(original_packet: PackedByteArray, peer: int, identity_id: int,
 		return
 	
 	SimusNetProfiler.get_instance()._put_rpc_traffic(
-	original_packet.size(),
+	original_packet_size,
 	identity,
 	callable,
 	true

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="R_Effect" format=3 uid="uid://dlpv06ojmnjuu"]
+
+[ext_resource type="Script" uid="uid://do3y8cy4yjtxn" path="res://src/components/magic/effects/custom/stun.gd" id="1_a7fra"]
+[ext_resource type="Script" uid="uid://kn4l7qpuo0ph" path="res://src/components/magic/effects/R_Effect.gd" id="1_mklw5"]
+
+[resource]
+script = ExtResource("1_mklw5")
+id = &"stun"
+effect_script = ExtResource("1_a7fra")
+metadata/_custom_type_script = "uid://kn4l7qpuo0ph"

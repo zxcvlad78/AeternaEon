@@ -10,7 +10,9 @@ enum TargetType {
 	POINT_TARGET,
 }
 
-@export var data: Dictionary = {} 
+@export var spell_data: Dictionary = {} 
+
+@export var effects:Array[R_Effect]
 
 @export_group("Particles")
 @export var particles:R_ParticlesSettings = R_ParticlesSettings.new()
@@ -26,23 +28,23 @@ enum TargetType {
 
 @export var base_cast_point:Array[float] = [0.0]
 func get_cast_point() -> float:
-	return get_leveled_value(base_cast_point)
+	return AE.get_leveled_value(level, base_cast_point)
 
 @export var base_cast_range:Array[float] = []
 func get_cast_range() -> float:
-	return get_leveled_value(base_cast_range)
+	return AE.get_leveled_value(level, base_cast_range)
 
 @export var base_radius:Array[float] = []
 func get_radius() -> float:
-	return get_leveled_value(base_radius)
+	return AE.get_leveled_value(level, base_radius)
 
 @export var base_cooldown: Array[float] = [0]
 func get_cooldown() -> float:
-	return get_leveled_value(base_cooldown)
+	return AE.get_leveled_value(level, base_cooldown)
 
 @export var base_mana_cost: Array[float] = [0]
 func get_mana_cost() -> float:
-	return get_leveled_value(base_mana_cost)
+	return AE.get_leveled_value(level, base_mana_cost)
 
 @export_category("Animation")
 @export var swing_animation_names:Array[StringName]
@@ -52,22 +54,6 @@ func get_mana_cost() -> float:
 var level:int = 0
 @export var max_level:int = 4
 @export var required_level:int = 1
-
-func get_leveled_value(array:Array) -> float:
-	if array.is_empty():
-		return 0.0
-	
-	if level < required_level:
-		return 0.0
-	
-	if level > array.size():
-		return array.back()
-	
-	var value = array[level]
-	if value is float:
-		return value
-	
-	return 0.0
 
 func create(spell_machine:SpellMachine) -> Spell:
 	if not spell_machine:

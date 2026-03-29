@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://bf315js7rsrv"]
+
+[ext_resource type="Script" uid="uid://be44gf0ocgh88" path="res://src/prefabs/unit_border.gd" id="1_gkg3r"]
+[ext_resource type="Shader" uid="uid://b31vrll41yrh" path="res://resources/shaders/transparent_at_center.gdshader" id="1_j73dx"]
+[ext_resource type="Texture2D" uid="uid://bvj87kuyacasr" path="res://src/textures/circle.png" id="2_gkg3r"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_pg8hd"]
+size = Vector2(0.8, 0.8)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gkg3r"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("1_j73dx")
+shader_parameter/tex_albedo = ExtResource("2_gkg3r")
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/radius = 1.5950000757625
+shader_parameter/softness = 0.9570000454575
+
+[sub_resource type="Animation" id="Animation_j73dx"]
+resource_name = "on_select"
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_gkg3r"]
+_data = {
+&"on_select": SubResource("Animation_j73dx")
+}
+
+[node name="UnitBorder" type="Node3D" unique_id=1595994863]
+script = ExtResource("1_gkg3r")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=725295904]
+mesh = SubResource("PlaneMesh_pg8hd")
+surface_material_override/0 = SubResource("ShaderMaterial_gkg3r")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=2074408553]
+libraries/ = SubResource("AnimationLibrary_gkg3r")

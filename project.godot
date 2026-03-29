@@ -29,11 +29,14 @@ buses/default_bus_layout="uid://dplpl4183xu0j"
 
 SimusDev="*uid://cvfrshw18g5he"
 Network="*uid://tma7vcsghkrd"
+AE="*uid://bq2ydbmm3dag5"
 s_Audio="*uid://lsjirat7fjlr"
 s_Particles="*uid://bt1setfi5sr21"
 
 [display]
 
+window/size/viewport_width=1280
+window/size/viewport_height=720
 window/stretch/aspect="ignore"
 window/vsync/vsync_mode=0
 

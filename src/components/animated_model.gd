@@ -23,8 +23,10 @@ func _ready() -> void:
 	
 	SimusNetRPC.register(
 		[
-			play_tree_oneshot_by_name
-		]
+			_local_play_tree_oneshot_by_name,
+			_local_stop_tree_oneshot
+		],
+		SimusNetRPCConfig.new().flag_mode_any_peer()
 	)
 
 func initialize() -> void:
@@ -49,10 +51,10 @@ func set_blend_tree() -> void:
 		var _property_path = "parameters/%s/%s/blend_position" % [state_machine_name, i]
 		tree.set(_property_path, target.get(state_machine_properties[i]))
 
-func _net_play_tree_oneshot_by_name(anim_name:StringName) -> void:
-	SimusNetRPC.invoke_all(play_tree_oneshot_by_name, anim_name)
-
 func play_tree_oneshot_by_name(anim_name:StringName) -> void:
+	SimusNetRPC.invoke_all(_local_play_tree_oneshot_by_name)
+
+func _local_play_tree_oneshot_by_name(anim_name:StringName) -> void:
 	if not anim_name:
 		return
 	if not library.has_animation(anim_name):
@@ -67,7 +69,7 @@ func play_tree_oneshot_by_name(anim_name:StringName) -> void:
 	animation_node.animation = "%s/%s" % [lib_name, anim_name]
 	
 	tree.set("parameters/OneShot/request", AnimationNodeOneShot.OneShotRequest.ONE_SHOT_REQUEST_FIRE)
-	
+
 
 func play_tree_oneshot_by_array(array:Array[StringName]) -> void:
 	if array.is_empty():
@@ -79,6 +81,9 @@ func play_tree_oneshot(resource:Animation) -> void:
 	play_tree_oneshot_by_name(resource.resource_name)
 
 func stop_tree_oneshot() -> void:
+	SimusNetRPC.invoke_all(_local_stop_tree_oneshot)
+
+func _local_stop_tree_oneshot() -> void:
 	tree.set("parameters/OneShot/request", AnimationNodeOneShot.OneShotRequest.ONE_SHOT_REQUEST_ABORT)
 
 func is_tree_oneshot_playing() -> bool:

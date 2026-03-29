@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://dh3a7r6wittsl"]
+
+[ext_resource type="Script" uid="uid://6rss1yv71pc4" path="res://src/prefabs/player_ui/effect_container.gd" id="1_4jxg2"]
+[ext_resource type="Script" uid="uid://cgwmqttylf68" path="res://src/prefabs/player_ui/player_ui.gd" id="1_vpos8"]
+[ext_resource type="PackedScene" uid="uid://dnvvakw5j53o" path="res://src/prefabs/effect_icon.tscn" id="2_vpos8"]
+
+[node name="PlayerUI" type="Control" unique_id=1710522312]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("1_vpos8")
+
+[node name="EffectContainer" type="HBoxContainer" parent="." unique_id=1672192981 node_paths=PackedStringArray("player_ui")]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.73700005
+anchor_right = 1.0
+anchor_bottom = 0.73700005
+offset_top = 78.359985
+offset_bottom = 120.359985
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+script = ExtResource("1_4jxg2")
+player_ui = NodePath("..")
+effect_icon = ExtResource("2_vpos8")

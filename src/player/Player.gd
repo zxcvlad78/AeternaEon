@@ -1,5 +1,6 @@
 class_name PlayerCamera extends Node3D
 
+signal main_unit_changed()
 signal unit_selected(unit:Unit)
 signal point_selected(pos:Vector3)
 
@@ -25,6 +26,10 @@ static func i() -> PlayerCamera:
 	return instance
 
 var selected_units:Array[Unit]
+var main_unit:Unit :
+	set(val):
+		main_unit = val
+		main_unit_changed.emit()
 
 func _enter_tree() -> void:
 	if multiplayer.is_server():
@@ -35,6 +40,8 @@ func _enter_tree() -> void:
 		return
 	
 	camera = get_or_create_camera()
+	camera.current = true
+	
 	if not instance:
 		instance = self
 
@@ -58,11 +65,17 @@ func _ready() -> void:
 		SimusNetVarConfig.new().flag_mode_server_only().flag_replication()
 	)
 
+func _update_selected_units() -> void:
+	for unit in selected_units:
+		unit.update.emit()
+
 func _local_select_unit(unit:Unit) -> void:
 	if target_select_mode == R_Spell.TargetType.NO_TARGET:
 		selected_units.clear()
 		selected_units.append(unit)
 	unit_selected.emit(unit)
+	main_unit = get_main_unit()
+
 func select_unit(unit:Unit) -> void:
 	SimusNetRPC.invoke_all(_local_select_unit, unit)
 
@@ -137,6 +150,7 @@ func move_backward(delta:float) -> void:
 	camera.global_position.z -= delta * 5.0
 
 func is_mouse_in_window(viewport:Viewport = null, mouse_pos:Vector2 = Vector2.ZERO, screen_size:Vector2 = Vector2.ZERO) -> bool:
+	return true
 	if !viewport:
 		viewport = get_viewport()
 	if !screen_size:

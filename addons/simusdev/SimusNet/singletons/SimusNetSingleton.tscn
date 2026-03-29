@@ -19,9 +19,10 @@
 [ext_resource type="Script" uid="uid://dorvy1fd2kil5" path="res://addons/simusdev/SimusNet/singletons/SimusNetProfiler.gd" id="17_b41hy"]
 [ext_resource type="Script" uid="uid://clrsykc84a5uy" path="res://addons/simusdev/SimusNet/singletons/SimusNetGarbageCollector.gd" id="18_vjcj1"]
 
-[node name="SimusNetSingleton" type="Node" unique_id=1723475864 node_paths=PackedStringArray("profiler", "events", "cache", "channels", "connection", "time", "handshake", "methods", "RPC", "RPCgodot", "visibility", "resources", "vars", "synchronization")]
+[node name="SimusNetSingleton" type="Node" unique_id=1723475864 node_paths=PackedStringArray("garbage_collector", "profiler", "events", "cache", "channels", "connection", "time", "handshake", "methods", "RPC", "RPCgodot", "visibility", "resources", "vars", "synchronization")]
 process_mode = 4
 script = ExtResource("1_6nds0")
+garbage_collector = NodePath("GarbageCollector")
 profiler = NodePath("Profiler")
 events = NodePath("Events")
 cache = NodePath("Cache")

@@ -33,6 +33,9 @@ func get_identity() -> SimusNetIdentity:
 func get_property_unique_id(property: StringName) -> int:
 	return _list.keys().find(property)
 
+func get_property_name_by_unique_id(id: int) -> StringName:
+	return _list.keys().get(id)
+
 func _add_cfg(cfg: SimusNetVarConfig, property: StringName) -> void:
 	_list[property] = cfg
 	
@@ -70,6 +73,7 @@ func _tick(delta: float) -> void:
 		_properties_time.set(cfg_id, time)
 		if time >= 1.0 / config._tickrate:
 			config._process_sync(self)
+			_properties_time.set(cfg_id, 0.0)
 		
 
 func _network_ready() -> void:

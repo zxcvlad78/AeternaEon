@@ -6,7 +6,8 @@ var _reliable: bool = true
 
 var _replication: bool = false
 var _replicate_on_spawn: bool = true
-var _serialize: bool = false
+var _serialize: bool = true
+
 
 enum MODE {
 	AUTHORITY,
@@ -65,6 +66,11 @@ func flag_mode_to_server() -> SimusNetVarConfig:
 	_mode = MODE.TO_SERVER
 	return self
 
+var __send_to_owner: bool = false
+func flag_send_to_owner(value: bool = false) -> SimusNetVarConfig:
+	__send_to_owner = value
+	return self
+
 func _is_network_authority(handler: SimusNetVarConfigHandler) -> bool:
 	if _mode == MODE.SERVER_ONLY:
 		return SimusNetConnection.is_server()
@@ -78,7 +84,12 @@ func _validate_send(handler: SimusNetVarConfigHandler, to_peer: int) -> bool:
 	if _mode == MODE.TO_SERVER:
 		return to_peer == SimusNet.SERVER_ID
 	
-	return _is_network_authority(handler)
+	var authority: bool = _is_network_authority(handler)
+	
+	if authority and __send_to_owner:
+		return _get_network_authority(handler) == to_peer
+	
+	return authority 
 
 func _validate_send_receive(handler: SimusNetVarConfigHandler, from_peer: int) -> bool:
 	if _mode == MODE.TO_SERVER:

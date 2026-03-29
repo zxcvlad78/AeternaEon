@@ -40,6 +40,7 @@ enum TYPE {
 	IDENTITY_CACHED,
 	NODE,
 	ARRAY,
+	ARRAY_TYPED,
 	DICTIONARY,
 	CUSTOM,
 	STRING_NAME,
@@ -103,8 +104,7 @@ static func _parse_custom(variant: Object) -> PackedByteArray:
 	buffer.data_array = bytes
 	buffer.put_u8(TYPE.CUSTOM)
 	buffer.put_utf8_string(ResourceUID.path_to_uid(script.resource_path).replacen("uid://", ""))
-	buffer.put_var(SimusNetSerializer.parse(serialization.get_data()))
-	#print(ResourceUID.path_to_uid(script.resource_path).to_utf8_buffer().hex_encode())
+	buffer.put_data(parse_arguments(serialization._data))
 	return buffer.data_array
 
 static func parse_object(variant: Object) -> PackedByteArray:
@@ -140,6 +140,9 @@ static func parse_object(variant: Object) -> PackedByteArray:
 	return _buffer.data_array
 
 static func parse_resource(variant: Resource) -> PackedByteArray:
+	if !is_instance_valid(variant):
+		return parse_null(variant)
+	
 	if variant.resource_path.is_empty():
 		return parse_object(variant)
 	
@@ -203,13 +206,31 @@ static func parse_node(node: Node) -> Variant:
 	return parse_null(node)
 
 static func parse_array(array: Array) -> PackedByteArray:
-	var result: Array = Array([], array.get_typed_builtin(), array.get_typed_class_name(), array.get_typed_script())
+	var local_buffer: StreamPeerBuffer = StreamPeerBuffer.new()
+	var result: Array = []
+	
 	for i in array:
 		result.append(parse(i))
-	_buffer.clear()
-	_buffer.put_u8(TYPE.ARRAY)
-	_buffer.put_var(result)
-	return _buffer.data_array
+	
+	if !array.is_typed():
+		local_buffer.clear()
+		local_buffer.put_u8(TYPE.ARRAY)
+		local_buffer.put_var(result)
+		return local_buffer.data_array
+	
+	local_buffer.clear()
+	local_buffer.put_u8(TYPE.ARRAY_TYPED)
+	local_buffer.put_var(result)
+	local_buffer.put_u16(array.get_typed_builtin())
+	local_buffer.put_utf8_string(array.get_typed_class_name())
+	var typed_script: Variant = array.get_typed_script()
+	if is_instance_valid(typed_script):
+		local_buffer.put_u8(1)
+		local_buffer.put_data(parse_resource(typed_script))
+	else:
+		local_buffer.put_u8(0)
+
+	return local_buffer.data_array
 
 static func parse_dictionary(dictionary: Dictionary) -> PackedByteArray:
 	var result: Dictionary = Dictionary({},
@@ -249,6 +270,9 @@ static func parse_var(variant: Variant) -> PackedByteArray:
 	return _buffer.data_array
 
 static func test() -> void:
+	var simusnet_packet: PackedByteArray = SimusNet.serialize_packet(SimusNet.PACKET.RPC_DEFLATE, var_to_bytes(34))
+	print(SimusNet.deserialize_packet(simusnet_packet))
+	
 	var variant: PackedByteArray = SimusNetSerializer.parse_var(Transform3D())
 	print("variant: %s bytes" % variant.size())
 	print(SimusNetDeserializer.parse(variant))
@@ -293,3 +317,13 @@ static func test() -> void:
 	var object: PackedByteArray = SimusNetSerializer.parse_object(SimusNetSettings.new())
 	print("object: %s bytes" % object.size())
 	print(SimusNetDeserializer.parse(object))
+	
+	var array_typed_og: Array[SimusNetTestSerializable] = [
+		SimusNetTestSerializable.new(),
+		SimusNetTestSerializable.new()
+	]
+	print(array_typed_og)
+	var array_typed: PackedByteArray = SimusNetSerializer.parse_array(array_typed_og)
+	print("array typed: %s bytes" % array_typed.size())
+	var atd: Array[SimusNetTestSerializable] = SimusNetDeserializer.parse(array_typed)
+	print(atd)

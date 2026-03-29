@@ -5,7 +5,8 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y3l3b"]
 bg_color = Color(0.08984375, 0.08984375, 0.08984375, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nk3fk"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uqy1r"]
+bg_color = Color(0.984375, 0, 0, 1)
 
 [node name="PointBar" type="ProgressBar" unique_id=1597946741]
 anchors_preset = 8
@@ -20,7 +21,7 @@ offset_bottom = 6.75
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_y3l3b")
-theme_override_styles/fill = SubResource("StyleBoxFlat_nk3fk")
+theme_override_styles/fill = SubResource("StyleBoxFlat_uqy1r")
 value = 33.51
 show_percentage = false
 script = ExtResource("1_uqy1r")

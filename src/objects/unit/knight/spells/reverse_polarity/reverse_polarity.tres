@@ -3,9 +3,11 @@
 [ext_resource type="AudioStream" uid="uid://ctm72g0syrlkk" path="res://src/audio/magnus/Reverse_Polarity_cast.mp3" id="1_v4svv"]
 [ext_resource type="Script" uid="uid://box4b166sdj7p" path="res://src/components/magic/R_SpellAudio.gd" id="1_wt7lm"]
 [ext_resource type="Texture2D" uid="uid://cyvdhm4snb8qj" path="res://addons/simusdev/icons/Timer.svg" id="2_j7dhm"]
+[ext_resource type="Script" uid="uid://kn4l7qpuo0ph" path="res://src/components/magic/effects/R_Effect.gd" id="3_hmgch"]
 [ext_resource type="PackedScene" uid="uid://brrg8ynwrodvn" path="res://src/objects/unit/knight/spells/reverse_polarity/precast_particles.tscn" id="3_j7dhm"]
 [ext_resource type="Script" uid="uid://d2ukhn4uhy5j0" path="res://src/components/particles/R_Particles.gd" id="3_vtkww"]
 [ext_resource type="PackedScene" uid="uid://rv3cmlasfr1e" path="res://src/objects/unit/knight/spells/reverse_polarity/cast_particles.tscn" id="3_wt7lm"]
+[ext_resource type="Script" uid="uid://do3y8cy4yjtxn" path="res://src/components/magic/effects/custom/stun.gd" id="4_25a5b"]
 [ext_resource type="Script" uid="uid://dlodw7gliq14w" path="res://src/components/particles/R_ParticlesSettings.gd" id="4_wt7lm"]
 [ext_resource type="AudioStream" uid="uid://1e0fdarwisfy" path="res://src/audio/magnus/Reverse_Polarity_pre_cast.mp3" id="5_hmgch"]
 [ext_resource type="Script" uid="uid://bt7y70x0v0561" path="res://src/components/magic/R_Spell.gd" id="6_25a5b"]
@@ -16,6 +18,13 @@ script = ExtResource("1_wt7lm")
 stream = ExtResource("1_v4svv")
 pitch = Vector2(0.98, 1.02)
 metadata/_custom_type_script = "uid://box4b166sdj7p"
+
+[sub_resource type="Resource" id="Resource_wf7co"]
+script = ExtResource("3_hmgch")
+id = &"stun"
+effect_script = ExtResource("4_25a5b")
+duration = Array[float]([2.2, 2.8, 3.5, 4.3])
+metadata/_custom_type_script = "uid://kn4l7qpuo0ph"
 
 [sub_resource type="Resource" id="Resource_hmgch"]
 script = ExtResource("3_vtkww")
@@ -45,10 +54,7 @@ metadata/_custom_type_script = "uid://box4b166sdj7p"
 script = ExtResource("6_25a5b")
 name = &"Reverse Polarity"
 icon = ExtResource("2_j7dhm")
-data = {
-"damage": [20.0, 20.0, 20.0, 20.0],
-"stun_duration": [2.5, 2.8, 3.2, 3.5]
-}
+effects = Array[ExtResource("3_hmgch")]([SubResource("Resource_wf7co")])
 particles = SubResource("Resource_nrbxk")
 precast_sound = SubResource("Resource_8u1h5")
 cast_sound = SubResource("Resource_25a5b")

@@ -133,7 +133,8 @@ func _try_generate_generated_id() -> void:
 			if !owner.is_node_ready():
 				await owner.ready
 			
-			_generated_unique_id = owner.get_path()
+			if !owner.get_path().is_empty():
+				_generated_unique_id = owner.get_path()
 	else:
 		_generated_unique_id = settings.get_unique_id()
 	
@@ -165,9 +166,12 @@ func _tree_exited() -> void:
 	#if SimusNetConnection.is_server():
 		#print("removing: ", get_generated_unique_id())
 	
-	if owner:
-		SimusNetVisibility._local_identity_delete(self)
+	SimusNetVisibility._local_identity_delete(self)
 	
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		SimusNetVisibility._local_identity_delete(self)
 
 func get_generated_unique_id() -> Variant:
 	return _generated_unique_id

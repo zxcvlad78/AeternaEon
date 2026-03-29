@@ -6,8 +6,8 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_b5li3"]
 render_priority = 0
 shader = ExtResource("2_1uepk")
-shader_parameter/pull_strength = 2.0
-shader_parameter/speed = 3.0790001462525
+shader_parameter/pull_strength = 0.5
+shader_parameter/speed = 2.0
 shader_parameter/edge_color = Color(0.30200958, 0.11920166, 0.328125, 1)
 
 [sub_resource type="SphereMesh" id="SphereMesh_yqow7"]
@@ -57,6 +57,7 @@ script = ExtResource("1_b5li3")
 metadata/_custom_type_script = "uid://cve2k5vcx86mj"
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=2008464283]
+layers = 2
 material_override = SubResource("ShaderMaterial_b5li3")
 mesh = SubResource("SphereMesh_yqow7")
 

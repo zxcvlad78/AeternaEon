@@ -92,7 +92,9 @@ func _set_active(value: bool, server: bool) -> void:
 		_is_connection_canceled = false
 
 static func is_active() -> bool:
-	return _active and _instance._is_connected
+	if is_instance_valid(_instance):
+		return _active and _instance._is_connected
+	return false
 
 static func is_server() -> bool:
 	if get_peer() and is_active():

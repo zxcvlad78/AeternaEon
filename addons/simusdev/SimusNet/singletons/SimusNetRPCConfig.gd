@@ -115,6 +115,12 @@ func set_mode(mode: MODE) -> SimusNetRPCConfig:
 	_mode = mode
 	return self
 
+var ___require_ownership: bool = false
+
+func flag_require_ownership(value: bool = false) -> SimusNetRPCConfig:
+	___require_ownership = value
+	return self
+
 func flag_mode_server_only() -> SimusNetRPCConfig:
 	_mode = MODE.SERVER_ONLY
 	return self
@@ -152,17 +158,21 @@ func _validate(handler: SimusNetRPCConfigHandler, callable: Callable, to_peer: i
 	if !is_ready:
 		await on_ready
 	
-	if _mode == MODE.AUTHORITY:
-		var a: bool = SimusNet.is_network_authority(handler.get_object())
-		
-		if !a:
-			SimusNetRPC._instance.logger.debug_error("failed to validate AUTHORITY rpc: %s" % callable)
-		return a
+	var network_authority: bool = SimusNet.is_network_authority(handler.get_object())
 	
 	if _mode == MODE.SERVER_ONLY:
 		if (!SimusNetConnection.is_server()):
 			SimusNetRPC._instance.logger.debug_error("failed to validate SERVER_ONLY rpc: %s" % callable)
 			return false
+	
+	if ___require_ownership and !network_authority:
+		SimusNetRPC._instance.logger.debug_error("failed to validate OWNERSHIP rpc: %s" % callable)
+		return false
+	
+	if _mode == MODE.AUTHORITY:
+		if !network_authority:
+			SimusNetRPC._instance.logger.debug_error("failed to validate AUTHORITY rpc: %s" % callable)
+		return network_authority
 	
 	if _mode == MODE.TO_SERVER:
 		if to_peer != SimusNet.SERVER_ID:
@@ -175,11 +185,17 @@ func _validate_on_recieve(handler: SimusNetRPCConfigHandler, callable: Callable,
 	if !is_ready:
 		await on_ready
 	
+	var network_authority: bool = SimusNet.get_network_authority(handler.get_object()) == from_peer
+	
 	if _mode == MODE.SERVER_ONLY:
 		if SimusNetConnection.is_server():
 			if SimusNetRemote.sender_id != SimusNetConnection.SERVER_ID:
 				SimusNetRPC._instance.logger.debug_error("failed to recieve SERVER_ONLY rpc from peer: %s, %s" % [SimusNetRemote.sender_id, callable])
 				return false
+	
+	if !network_authority and ___require_ownership:
+		SimusNetRPC._instance.logger.debug_error("failed to recieve OWNERSHIP rpc from peer: %s, %s" % [SimusNetRemote.sender_id, callable])
+		return false
 	
 	if _mode == MODE.AUTHORITY:
 		var a: bool = SimusNet.get_network_authority(handler.get_object()) == SimusNetRemote.sender_id
@@ -192,6 +208,5 @@ func _validate_on_recieve(handler: SimusNetRPCConfigHandler, callable: Callable,
 		if !s:
 			SimusNetRPC._instance.logger.debug_error("failed to recieve TO_SERVER rpc from peer: %s, %s" % [SimusNetRemote.sender_id, callable])
 		return s
-	
 	
 	return true

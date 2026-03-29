@@ -45,13 +45,11 @@ func _apply_rp_effects(target:Unit, pull_pos:Vector3) -> void:
 	target.look_at(spell_machine.unit.global_position)
 	target.rotate_y(PI)
 	
-	var base_stun_duration = res.data.get("stun_duration", Array([]))
-	var base_damage = res.data.get("damage", Array([]))
+	var damage = AE.get_leveled_value_dict(
+		res.level,
+		res.spell_data,
+		"damage",
+		0.0
+		)
 	
-	var stun_duration = res.get_leveled_value(base_stun_duration)
-	var damage = res.get_leveled_value(base_damage)
-	
-	var res_dmg = R_PointValue.new(damage)
-	
-	target.ct_health.apply_diminish(res_dmg)
-	#print(target.ct_health.points)
+	target.ct_health.apply_diminish(R_PointValue.new(damage))

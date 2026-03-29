@@ -39,6 +39,8 @@ func _ready() -> void:
 func _update() -> void:
 	if not point_counter:
 		return
+	
+	
 	max_value = point_counter.max_points
 	value = point_counter.points
 	if label:

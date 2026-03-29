@@ -12,6 +12,8 @@ signal on_tick(delta: float)
 
 var _timer: Timer
 
+static var _buffer: StreamPeerBuffer = StreamPeerBuffer.new()
+
 @export var _processor_send: SimusNetVarsProccessorSend
 static var _instance: SimusNetVars
 
@@ -67,11 +69,67 @@ func initialize() -> void:
 	
 	process_mode = Node.PROCESS_MODE_DISABLED
 	
+	singleton.api.peer_packet.connect(_on_peer_packet)
+	
 	#_timer = Timer.new()
 	#_timer.wait_time = 1.0 / singleton.settings.synchronization_vars_tickrate
 	#_timer.timeout.connect(_on_timer_tick)
 	#add_child(_timer)
 	
+
+var PACKET_AND_METHOD: Dictionary[SimusNet.PACKET, Callable] = {
+	SimusNet.PACKET.VARIABLES: _on_variable_received,
+}
+
+func _on_peer_packet(id: int, packet: PackedByteArray) -> void:
+	var deserialized: Variant = SimusNetArguments.deserialize(packet)
+	#var deserialized: Variant = bytes_to_var(packet)
+	#print('received packet(%s, size: %s): %s' % [id, packet.size(), deserialized])
+	var packet_id: SimusNet.PACKET = deserialized[0]
+	deserialized.pop_front()
+	
+	if packet_id in PACKET_AND_METHOD:
+		var callable: Callable = PACKET_AND_METHOD[packet_id]
+		callable.call(packet.size() + 1, packet_id, id, deserialized)
+	
+
+func _on_variable_received(og_packet_size: int, packet_type: SimusNet.PACKET, peer: int, arguments: Array) -> void:
+	var identity_id: int = arguments.pop_front()
+	var property_id: int = arguments.pop_front()
+	
+	
+	var identity: SimusNetIdentity = SimusNetIdentity.get_dictionary_by_unique_id().get(identity_id)
+	if !identity:
+		logger.push_error("_on_variable_received() cant find identity with ID %s, %s, %s" % [identity_id, property_id])
+		return
+	
+	if !identity.owner:
+		logger.push_error("_on_variable_received() cant find identity owner with ID %s, %s, %s" % [identity_id, property_id])
+		return
+	
+	var config_handler: SimusNetVarConfigHandler = SimusNetVarConfigHandler.find_in(identity.owner)
+	if !config_handler:
+		logger.push_error("_on_variable_received() cant find config handler on owner (%s) with ID %s, %s, %s" % [identity.owner, identity_id, property_id])
+		return
+	
+	var property: StringName = config_handler.get_property_name_by_unique_id(property_id)
+	if property.is_empty():
+		logger.push_error("_on_variable_received() cant find property on owner (%s) with ID %s, %s, %s" % [identity.owner, identity_id, property_id])
+		return
+	
+	var cfg: SimusNetVarConfig = config_handler._list.get(property)
+	var value: Variant = SimusNetDeserializer.parse(arguments.pop_front(), cfg._serialize)
+	
+	if !cfg:
+		logger.push_error("_on_variable_received() cant find config for property (%s) on owner (%s) with ID %s, %s, %s" % [property, identity.owner, identity_id, property_id, value])
+		return
+	
+	if !cfg._validate_send_receive(config_handler, peer):
+		return
+	
+	SimusNetProfiler._instance._put_var_traffic(og_packet_size, identity, property, true)
+	
+	identity.owner.set(property, value)
 
 static func register(object: Object, properties: PackedStringArray, config: SimusNetVarConfig = SimusNetVarConfig.new()) -> bool:
 	var handler: SimusNetVarConfigHandler = SimusNetVarConfigHandler.get_or_create(object)
@@ -90,8 +148,6 @@ var _queue_replicate_unreliable: Dictionary = {}
 
 var _queue_replicate_server: Dictionary = {}
 
-var _queue_send: Dictionary = {}
-
 var _queue_send_synced_types: Dictionary[SimusNetSyncedType, Array] = {}
 var _queue_replicate_synced_types: Array[SimusNetSyncedType] = []
 var _queue_replicate_send_synced_types: Dictionary = {}
@@ -108,10 +164,6 @@ func _physics_process(delta: float) -> void:
 	if !_queue_replicate_server.is_empty():
 		_handle_replicate_server(_queue_replicate_server)
 		_queue_replicate_server.clear()
-	
-	if !_queue_send.is_empty():
-		_handle_send(_queue_send)
-		_queue_send.clear()
 	
 	if !_queue_send_synced_types.is_empty():
 		_handle_send_synced_types(_queue_send_synced_types)
@@ -285,8 +337,8 @@ func _replicate_rpc_unreliable(packet: Variant) -> void:
 
 static func _hook_snapshot(data: Dictionary[StringName, Variant], property: String, object: Object) -> bool:
 	var value: Variant = object.get(property)
-	if (value is Array) or (value is Dictionary):
-		value = value.duplicate()
+	if value is Array or value is Dictionary:
+		return value.size() == data.get_or_add(property, value.size())
 	return data.get_or_add(property, value) == object.get(property)
 
 static func send(object: Object, properties: PackedStringArray, reliable: bool = true, log_error: bool = true) -> void:
@@ -294,15 +346,31 @@ static func send(object: Object, properties: PackedStringArray, reliable: bool =
 	var changed_properties: Dictionary[StringName, Variant] = SimusNetSynchronization.get_changed_properties(object)
 	for property in properties:
 		
-		if _hook_snapshot(changed_properties, property, object):
-			continue
-		
 		var config: SimusNetVarConfig = SimusNetVarConfig.get_config(object, property)
 		if !config:
 			_instance.logger.debug_error("send(), cant find config for %s, property: %s" % [object, property])
 			continue
 		
+		if config._reliable:
+			if _hook_snapshot(changed_properties, property, object):
+				continue
+		
 		var identity: SimusNetIdentity = handler.get_identity()
+		
+		if !identity.is_ready:
+			await identity.on_ready
+		
+		var p: int = handler.get_property_unique_id(property)
+		var v: Variant = SimusNetSerializer.parse(identity.owner.get(property), config._serialize)
+		
+		var raw_packet: Array = [
+			SimusNet.PACKET.VARIABLES,
+			identity.get_unique_id(),
+			p,
+			v
+		]
+		
+		var packet_bytes: PackedByteArray = SimusNetArguments.serialize(raw_packet)
 		
 		for p_id in SimusNetConnection.get_connected_peers():
 			if SimusNetVisibility.is_visible_for(p_id, identity.owner):
@@ -310,49 +378,14 @@ static func send(object: Object, properties: PackedStringArray, reliable: bool =
 				if !validate:
 					continue
 				
-				var for_peer: Dictionary = _instance._queue_send.get_or_add(p_id, {})
-				var channel: Dictionary = for_peer.get_or_add(config._channel, {})
-				var transfer: Dictionary = channel.get_or_add(reliable, {})
-				
-				var identity_data: Dictionary = transfer.get_or_add(identity.try_serialize_into_variant(), {})
-				
-				var p: Variant = try_serialize_into_variant(property)
-				var v: Variant = SimusNetSerializer.parse(identity.owner.get(property), config._serialize)
-				
-				#var size: int = var_to_bytes(p).size() + var_to_bytes(v).size()
-				#SimusNetProfiler._instance._put_var_traffic(size, identity, property, false)
-				
-				identity_data.set(p, v)
-				#_instance._queue_send_peers.append(p_id)
-		
-		changed_properties.set(property, identity.owner.get(property))
-		
-
-func _handle_send(_queue: Dictionary) -> void:
-	for peer: int in _queue:
-		for channel: int in _queue.get(peer, {}):
-			for reliable: bool in _queue[peer][channel]:
-				
-				var identity_data: Dictionary = _queue[peer][channel][reliable]
-				
-				var callable: Callable
-				
 				if reliable:
-					callable = _send_handle_callables.get(channel, Callable(_processor_send, "_r_s_p_l_r%s" % channel))
+					singleton.api.send_bytes(packet_bytes, p_id, MultiplayerPeer.TRANSFER_MODE_RELIABLE, config._channel)
 				else:
-					callable = _send_handle_callables.get(channel, Callable(_processor_send, "_r_s_p_l_u%s" % channel))
+					singleton.api.send_bytes(packet_bytes, p_id, MultiplayerPeer.TRANSFER_MODE_RELIABLE, config._channel)
 				
-				var packet: Variant = SimusNetCompressor.parse_if_necessary(identity_data)
-				var bytes: PackedByteArray
-				if packet is PackedByteArray:
-					bytes = packet
-				else:
-					bytes = var_to_bytes(packet)
-				
-				callable.rpc_id(peer, packet)
 				SimusNetProfiler._put_up_packet()
-				SimusNetProfiler._instance._put_up_traffic(bytes.size())
-				
+				SimusNetProfiler._instance._put_up_traffic(packet_bytes.size() + 1)
+				SimusNetProfiler._instance._put_var_traffic(packet_bytes.size(), identity, property, false)
 
 @onready var _send_handle_callables: Dictionary[int, Callable] = {
 	SimusNetChannels.BUILTIN.VARS_SEND_RELIABLE: _processor_send._default_recieve_send,
@@ -373,13 +406,16 @@ func _recieve_send_packet_local(packet: Variant, from_peer: int) -> void:
 	
 	for id in data:
 		var identity: SimusNetIdentity = SimusNetIdentity.try_deserialize_from_variant(id)
+		
 		if !is_instance_valid(identity) or !is_instance_valid(identity.owner):
 			logger.debug_error("recieve vars from peer(%s), identity with %s ID was not found." % [from_peer, id])
 			continue
 		
+		var cfg_handler: SimusNetVarConfigHandler = SimusNetVarConfigHandler.get_or_create(identity.owner)
+		
 		if SimusNet.get_network_authority(identity.owner) == from_peer or (from_peer == SimusNet.SERVER_ID):
 			for s_p in data[id]:
-				var property: String = try_deserialize_from_variant(s_p)
+				var property: String = cfg_handler.get_property_name_by_unique_id(s_p)
 				var config: SimusNetVarConfig = SimusNetVarConfig.get_config(identity.owner, property)
 				if !config:
 					continue

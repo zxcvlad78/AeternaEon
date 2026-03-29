@@ -11,7 +11,8 @@ static func simusnet_deserialize(serialization: SimusNetCustomSerialization) -> 
 const METHOD_SERIALIZE: String = "simusnet_serialize"
 const METHOD_DESERIALIZE: String = "simusnet_deserialize"
 
-var _data: Variant
+var _data: Array = []
+
 var _result: Variant
 var _result_def: Variant
 
@@ -27,13 +28,6 @@ static func find_base_script(script: Script, recursive: bool = true) -> Script:
 	if recursive:
 		return find_base_script(script.get_base_script())
 	return base
-
-func set_data(new: Variant) -> SimusNetCustomSerialization:
-	_data = new
-	return self
-
-func get_data() -> Variant:
-	return _data
 
 func set_result(new: Variant) -> SimusNetCustomSerialization:
 	_result = new

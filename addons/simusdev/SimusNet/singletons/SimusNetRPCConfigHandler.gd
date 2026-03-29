@@ -26,7 +26,7 @@ func get_callable_by_method_name(name: StringName) -> Variant:
 	return _callables.get(name, null)
 
 func get_object() -> Object:
-	if not _object_weak_ref:
+	if !is_instance_valid(_object_weak_ref):
 		return null
 	return _object_weak_ref.get_ref()
 

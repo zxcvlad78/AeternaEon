@@ -17,8 +17,11 @@ func _enter_tree() -> void:
 func _ready() -> void:
 	SimusNetRPC.register(
 		[
+			_server_sync_var,
+			_receive_var,
+			
 			_local_precast,
-			_cast
+			_cast,
 		],
 		SimusNetRPCConfig.new().flag_mode_any_peer()
 	)
@@ -28,8 +31,22 @@ func _ready() -> void:
 		[
 			"last_target"
 		],
-		SimusNetVarConfig.new().flag_serialization().flag_replication()
+		SimusNetVarConfig.new().flag_replication()
 	)
+
+func sync_var(node:Node, var_name:String) -> void:
+	SimusNetRPC.invoke_on_server(_server_sync_var, node, var_name)
+
+func _server_sync_var(node:Node, var_name:String) -> void:
+	SimusNetRPC.invoke_on_sender(
+		_receive_var, node, var_name, node.get(var_name)
+	)
+
+func _receive_var(node:Node,  var_name:String, var_val:Variant) -> void:
+	if not node:
+		return
+	node.set(var_name, var_val)
+
 
 func get_unit() -> Unit:
 	return spell_machine.unit
@@ -47,7 +64,7 @@ func can_reach(target:Variant) -> bool:
 	if not target:
 		return false
 	
-	return get_unit().global_position.distance_to(target.global_position) < res.get_leveled_value(res.base_cast_range)
+	return get_unit().global_position.distance_to(target.global_position) < res.get_cast_range()
 
 func _play_animation(anim_names:Array[StringName]) -> void:
 	if anim_names.is_empty():
@@ -55,15 +72,29 @@ func _play_animation(anim_names:Array[StringName]) -> void:
 	var model = spell_machine.unit.animated_model
 	
 	if model:
-		model.play_tree_oneshot_by_name(anim_names.pick_random())
+		model._local_play_tree_oneshot_by_name(anim_names.pick_random())
 
 func _spawn_partilces(particles:R_Particles) -> void:
 	s_Particles.spawn(self, particles, spell_machine.global_position)
 
+func _apply_effects(target:Variant, _effects:Array[R_Effect] = res.effects) -> void:
+	if not target:
+		return
+	
+	for effect in _effects:
+		var new_effect = effect.create(get_unit(), self, target)
+		new_effect.apply()
+
 func _play_audio(audio:R_SpellAudio) -> void:
-	var player = AudioStreamPlayer3D.new()
-	player.pitch_scale = randf_range(audio.pitch.x, audio.pitch.y)
-	s_Audio.play_global(audio.stream, spell_machine.global_position, player)
+	if !multiplayer.is_server():
+		return
+	
+	s_Audio.play_global_from_server(
+		audio.stream,
+		spell_machine.global_position,
+		true,
+		{"pitch_scale": randf_range(audio.pitch.x, audio.pitch.y)}
+		)
 
 func _local_precast(target:Variant = null) -> void:
 	_play_animation(res.swing_animation_names)
@@ -71,7 +102,7 @@ func _local_precast(target:Variant = null) -> void:
 	_play_audio(res.precast_sound)
 	
 	if multiplayer.is_server():
-		var cast_point = res.get_leveled_value(res.base_cast_point)
+		var cast_point = res.get_cast_point()
 		if cast_point == 0.0:
 			SimusNetRPC.invoke_all(_cast, target)
 			return
@@ -106,15 +137,17 @@ func on_spell_start(target:Variant = null) -> void:
 	pass
 
 func _cast(target:Variant = null) -> void:
-	_play_animation(res.backswing_animation_names)
-	_spawn_partilces(res.particles.cast)
-	_play_audio(res.cast_sound)
+	if multiplayer.is_server():
+		_apply_effects(target)
 	
 	on_cast(target)
 	casted.emit()
 	
-	if multiplayer.is_server():
-		pass
+	
+	_play_animation(res.backswing_animation_names)
+	_spawn_partilces(res.particles.cast)
+	_play_audio(res.cast_sound)
+
 
 func on_cast(target:Variant = null) -> void:
 	pass

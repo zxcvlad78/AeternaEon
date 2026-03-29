@@ -18,6 +18,7 @@ static var __type_and_method: Dictionary[SimusNetSerializer.TYPE, Callable] = {
 	SimusNetSerializer.TYPE.IDENTITY_CACHED: parse_identity,
 	SimusNetSerializer.TYPE.NODE: parse_node,
 	SimusNetSerializer.TYPE.ARRAY: parse_array,
+	SimusNetSerializer.TYPE.ARRAY_TYPED: parse_array,
 	SimusNetSerializer.TYPE.DICTIONARY: parse_dictionary,
 	SimusNetSerializer.TYPE.CUSTOM: _parse_custom,
 	SimusNetSerializer.TYPE.NULL: parse_null,
@@ -29,24 +30,22 @@ static func _parse_custom(data: PackedByteArray) -> Variant:
 	_buffer.data_array = data
 	var type: SimusNetSerializer.TYPE = _buffer.get_u8()
 	var uid: String = _buffer.get_utf8_string()
-	var variant: Variant = _buffer.get_var()
-	variant = parse(variant)
+	var variant: Array = parse_arguments(_buffer.get_data(_buffer.get_size())[1])
 	var result: SimusNetCustomSerialization = SimusNetCustomSerialization.new()
 	var path: String = "uid://" + uid
 	var static_script: Script = load(path)
 	if !static_script:
-		printerr("failed to load script %s!" % [path])
-		return result
-	
-	if variant == null:
-		printerr("serialized variant is null!, failed to deserialize. %s, %s" % [path, variant])
-		return result
+		_throw_error("_parse_custom(): failed to load script %s!" % [path])
+		return result._result
 	
 	result._data = variant
 	
 	if SimusNetCustomSerialization.find_base_script(static_script).has_method(SimusNetCustomSerialization.METHOD_DESERIALIZE):
 		static_script.call(SimusNetCustomSerialization.METHOD_DESERIALIZE, result)
 	
+	#if result._result == null:
+		#_throw_error("_parse_custom(): deserialized variant is null! %s, %s, %s" % [path, variant, load(path)])
+	#
 	return result._result
 	
 
@@ -138,11 +137,31 @@ static func parse_node(data: PackedByteArray) -> Node:
 	return SimusNetSingleton.get_instance().get_node(path)
 
 static func parse_array(data: PackedByteArray) -> Array:
-	_buffer.data_array = data
-	var type: SimusNetSerializer.TYPE = _buffer.get_u8()
-	var array: Array = _buffer.get_var()
-	var result: Array = Array([], array.get_typed_builtin(), array.get_typed_class_name(), array.get_typed_script())
-	for i in array:
+	var local_buffer: StreamPeerBuffer = StreamPeerBuffer.new()
+	local_buffer.clear()
+	
+	local_buffer.data_array = data
+	var type: SimusNetSerializer.TYPE = local_buffer.get_u8()
+	var serialized: Array = local_buffer.get_var()
+	
+	if type == SimusNetSerializer.TYPE.ARRAY:
+		
+		var result: Array = []
+		for i in serialized:
+			result.append(parse(i))
+		
+		return result
+	
+	var typed_builtin: int = local_buffer.get_u16()
+	var typed_classname: String = local_buffer.get_utf8_string()
+	var has_script: int = local_buffer.get_u8()
+	var script: Variant = null
+	if has_script == 1:
+		script = parse(local_buffer.get_data(local_buffer.get_size())[1])
+	
+	var result: Array = Array([], typed_builtin, typed_classname, script)
+	
+	for i in serialized:
 		result.append(parse(i))
 	return result
 
@@ -180,7 +199,6 @@ static func parse(variant: Variant, try: bool = true) -> Variant:
 	if variant is PackedByteArray:
 		_buffer.data_array = variant
 		var type: SimusNetSerializer.TYPE = _buffer.get_u8()
-		#print(type)
 		if __type_and_method.has(type):
 			return __type_and_method[type].call(variant)
 	

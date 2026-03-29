@@ -8,4 +8,8 @@ func _init(p_points:float = 1.0) -> void:
 		["points"]
 	)
 	
+	if p_points == null:
+		points = 0.0
+		return
+	
 	points = p_points

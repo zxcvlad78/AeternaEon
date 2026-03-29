@@ -4,9 +4,12 @@ class_name SimusNetCompressor
 
 static var _buffer: StreamPeerBuffer = StreamPeerBuffer.new()
 
+const COMPRESSION_DEFLATE_BYTES: int = 256
+const COMPRESSION_ZSTD_BYTES: int = 4096
+
 static var BYTES_SIZE_AND_METHODS: Dictionary[int, FileAccess.CompressionMode] = {
-	256: FileAccess.CompressionMode.COMPRESSION_DEFLATE,
-	4096: FileAccess.CompressionMode.COMPRESSION_ZSTD,
+	COMPRESSION_DEFLATE_BYTES: FileAccess.CompressionMode.COMPRESSION_DEFLATE,
+	COMPRESSION_ZSTD_BYTES: FileAccess.CompressionMode.COMPRESSION_ZSTD,
 }
 
 static func parse_gzip(variant: Variant) -> PackedByteArray:
