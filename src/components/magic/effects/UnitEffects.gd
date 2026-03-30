@@ -35,7 +35,6 @@ func add_effect(effect: Effect) -> void:
 	effect.on_start()
 	effect_added.emit(effect)
 	effects_updated.emit()
-	print("Added %s" % effect)
 
 func find_effect_by_id(effect_id: StringName) -> Effect:
 	if active_effects_map.has(effect_id):
@@ -56,7 +55,6 @@ func _process(delta: float) -> void:
 			_remove_from_internal_storage(effect)
 			active_effects.remove_at(i)
 			effect_removed.emit(effect)
-			print("Removed %s" % effect)
 			changed = true
 	
 	if changed:
