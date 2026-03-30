@@ -2,9 +2,16 @@
 extends RefCounted
 class_name SimusNetSerializer
 
+static var _instance: WeakRef
+
+static func get_instance() -> SimusNetSerializer:
+	return _instance.get_ref()
+
 static var _settings: SimusNetSettings
 
 static var _buffer: StreamPeerBuffer = StreamPeerBuffer.new()
+
+static var _current_blocked_methods: Array[StringName] = []
 
 const ARRAY_SIZE: int = 2
 
@@ -19,12 +26,15 @@ const BLACKLIST: Array[int] = [
 ]
 
 static func is_object_has_custom_serialization(object: Object) -> bool:
+	if _current_blocked_methods.has(parse_custom.get_method()):
+		return false
+	
 	return object.has_method(SimusNetCustomSerialization.METHOD_SERIALIZE) and \
 	object.has_method(SimusNetCustomSerialization.METHOD_DESERIALIZE)
 
 static func _throw_error(...args: Array) -> void:
 	if _settings.debug_enable:
-		printerr("[SimusNetSerializer]: ")
+		printerr("[YOUR UNIQUE ID: %s] [SimusNetSerializer]: " % SimusNetConnection.get_unique_id())
 		printerr(args)
 
 func _init() -> void:
@@ -82,8 +92,12 @@ static func parse(variant: Variant, try: bool = true) -> Variant:
 	var parsable: bool = false
 	for c in __class_and_method:
 		if c == cls or c == type_string:
+			var callable: Callable = __class_and_method[c]
+			if _current_blocked_methods.has(callable.get_method()):
+				continue
+			
 			parsable = true
-			parsed = __class_and_method[c].call(variant)
+			parsed = callable.call(variant)
 			#if variant is C_ItemStack:
 				#print(variant, " : ", parsable, __class_and_method[c])
 			return parsed
@@ -93,8 +107,9 @@ static func parse(variant: Variant, try: bool = true) -> Variant:
 	
 	return parse_var(variant)
 
-static func _parse_custom(variant: Object) -> PackedByteArray:
+static func parse_custom(variant: Object) -> PackedByteArray:
 	var serialization := SimusNetCustomSerialization.new()
+	_current_blocked_methods.clear()
 	if variant.has_method(SimusNetCustomSerialization.METHOD_SERIALIZE):
 		variant.call(SimusNetCustomSerialization.METHOD_SERIALIZE, serialization)
 	var script: Script = variant.get_script()
@@ -107,20 +122,7 @@ static func _parse_custom(variant: Object) -> PackedByteArray:
 	buffer.put_data(parse_arguments(serialization._data))
 	return buffer.data_array
 
-static func parse_object(variant: Object) -> PackedByteArray:
-	if is_object_has_custom_serialization(variant):
-		return _parse_custom(variant)
-
-	if variant is Node:
-		return parse_node(variant)
-	
-	if SimusNetIdentity.try_find_in(variant):
-		return parse_identity(variant)
-	
-	if variant is Resource:
-		if !variant.resource_local_to_scene and !variant.resource_path.is_empty():
-			return parse_resource(variant)
-	
+static func parse_raw_object(variant: Object) -> PackedByteArray:
 	var identity: SimusNetIdentity = SimusNetIdentity.try_find_in(variant)
 	_buffer.clear()
 	_buffer.put_u8(TYPE.OBJECT)
@@ -138,6 +140,23 @@ static func parse_object(variant: Object) -> PackedByteArray:
 	_buffer.put_var(SimusNetNodeSceneReplicator.serialize_object_network_parameters(variant))
 	
 	return _buffer.data_array
+
+static func parse_object(variant: Object) -> PackedByteArray:
+	if is_object_has_custom_serialization(variant):
+		return parse_custom(variant)
+
+	if variant is Node:
+		return parse_node(variant)
+	
+	if SimusNetIdentity.try_find_in(variant):
+		return parse_identity(variant)
+	
+	if variant is Resource:
+		if !variant.resource_local_to_scene and !variant.resource_path.is_empty():
+			return parse_resource(variant)
+	
+	return parse_raw_object(variant)
+
 
 static func parse_resource(variant: Resource) -> PackedByteArray:
 	if !is_instance_valid(variant):
@@ -281,7 +300,7 @@ static func test() -> void:
 	print("resource: %s bytes" % resource.size())
 	print(SimusNetDeserializer.parse(resource))
 	
-	var custom: PackedByteArray = SimusNetSerializer._parse_custom(SimusNetSingleton.get_instance())
+	var custom: PackedByteArray = SimusNetSerializer.parse_custom(SimusNetSingleton.get_instance())
 	print("custom: %s bytes" % custom.size())
 	print(SimusNetDeserializer.parse(custom))
 	

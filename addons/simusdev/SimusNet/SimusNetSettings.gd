@@ -5,8 +5,10 @@ class_name SimusNetSettings
 @export var server_info:SimusNetServerInfo = null
 
 @export_group("Synchronization", "synchronization")
-@export var synchronization_transform_tickrate: float = 32.0
-#@export var synchronization_vars_tickrate: float = 40.0
+@export var synchronization_transform_batch_count: int = 25
+#@export var synchronization_var_replicate_batch_count: int = 25
+#@export var synchronization_var_send_batch_count: int = 10
+
 
 #@export_group("Time", "time")
 #@export var time_tickrate: float = 48.0 : set = set_time_tickrate

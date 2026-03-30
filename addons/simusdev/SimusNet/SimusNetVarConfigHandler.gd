@@ -11,6 +11,13 @@ var _properties_for: Dictionary[SimusNetVarConfig, PackedStringArray]
 
 var _properties_time: Dictionary[int, float] = {}
 
+var current_received_property: String
+var current_received_value: Variant
+var current_peer: int = 1
+
+signal on_property_received(property: String, peer: int)
+
+
 func get_all_properties() -> PackedStringArray:
 	var result: PackedStringArray = []
 	for i in _list:

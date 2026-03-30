@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://b13vbelss66te" path="res://src/objects/unit/knight/spells/stun4ik/cast_particles.tscn" id="3_46qwa"]
 [ext_resource type="Texture2D" uid="uid://fx0bdfn3xxb" path="res://addons/simusdev/icons/EditPivot.svg" id="3_e6vgq"]
 [ext_resource type="Script" uid="uid://kn4l7qpuo0ph" path="res://src/components/magic/effects/R_Effect.gd" id="3_x2fei"]
-[ext_resource type="Script" uid="uid://do3y8cy4yjtxn" path="res://src/components/magic/effects/custom/stun.gd" id="4_5m8sy"]
+[ext_resource type="Resource" uid="uid://c8b45ktpnggkp" path="res://src/objects/unit/knight/spells/stun4ik/effect.tres" id="4_5m8sy"]
 [ext_resource type="Script" uid="uid://d2ukhn4uhy5j0" path="res://src/components/particles/R_Particles.gd" id="4_e6vgq"]
 [ext_resource type="Script" uid="uid://dlodw7gliq14w" path="res://src/components/particles/R_ParticlesSettings.gd" id="5_x2fei"]
 
@@ -17,14 +17,6 @@ script = ExtResource("1_5m8sy")
 stream_list = Array[AudioStream]([ExtResource("1_w0cky")])
 pitch = Vector2(0.97, 1.03)
 metadata/_custom_type_script = "uid://box4b166sdj7p"
-
-[sub_resource type="Resource" id="Resource_63raq"]
-script = ExtResource("3_x2fei")
-id = &"stun"
-effect_script = ExtResource("4_5m8sy")
-duration = Array[float]([1.2, 1.4, 1.8, 2.2])
-statusbar_visible = true
-metadata/_custom_type_script = "uid://kn4l7qpuo0ph"
 
 [sub_resource type="Resource" id="Resource_5m8sy"]
 script = ExtResource("4_e6vgq")
@@ -50,7 +42,7 @@ icon = ExtResource("3_e6vgq")
 spell_data = Dictionary[String, Array]({
 "damage": [5.0, 5.0]
 })
-effects = Array[ExtResource("3_x2fei")]([SubResource("Resource_63raq")])
+effects = Array[ExtResource("3_x2fei")]([ExtResource("4_5m8sy")])
 particles = SubResource("Resource_wk6e0")
 precast_sound = SubResource("Resource_w0cky")
 cast_sound = SubResource("Resource_qsyku")

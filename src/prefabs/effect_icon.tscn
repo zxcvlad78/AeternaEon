@@ -57,10 +57,3 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_nf8ag")
 expand_mode = 1
-
-[node name="Label" type="Label" parent="." unique_id=1431418126]
-layout_mode = 0
-offset_left = 1.0
-offset_top = -23.0
-offset_right = 41.0
-text = "1233"

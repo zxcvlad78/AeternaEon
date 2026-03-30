@@ -125,6 +125,8 @@ func _local_precast(target:Variant = null) -> void:
 			spell_machine.spell_channeling = null
 
 func precast(target:Variant = null) -> void:
+	if get_unit().is_disabled():
+		return
 	last_target = target
 	
 	if not can_cast(target):

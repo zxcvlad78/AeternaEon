@@ -25,9 +25,8 @@ var api: SceneMultiplayer
 
 var __static_class_list: Array[Object] = [
 	SimusNet.new(),
-	SimusNetSerializer.new(),
-	SimusNetDeserializer.new(),
-	SimusNetArguments.new()
+	SimusNetArguments.new(),
+	SimusNetDictionarySerializer.new()
 ]
 
 static var _instance: SimusNetSingleton
@@ -36,6 +35,18 @@ static func get_instance() -> SimusNetSingleton:
 	return _instance
 
 func _ready() -> void:
+	var serializer: SimusNetSerializer = SimusNetSerializer.new()
+	var serializer_weak_ref: WeakRef = weakref(serializer)
+	__static_class_list.append(serializer_weak_ref)
+	serializer._instance = serializer_weak_ref 
+	__static_class_list.append(serializer)
+	
+	var deserializer: SimusNetDeserializer = SimusNetDeserializer.new()
+	var deserializer_weak_ref: WeakRef = weakref(deserializer)
+	__static_class_list.append(deserializer_weak_ref)
+	deserializer._instance = deserializer_weak_ref
+	__static_class_list.append(deserializer)
+	
 	info = SimusNetInfo.new()
 	_set_active(false, true)
 	get_tree().root.add_child.call_deferred(info)

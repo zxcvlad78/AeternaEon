@@ -52,7 +52,7 @@ func set_blend_tree() -> void:
 		tree.set(_property_path, target.get(state_machine_properties[i]))
 
 func play_tree_oneshot_by_name(anim_name:StringName, speed_scale:float = 1.0) -> void:
-	SimusNetRPC.invoke_all(_local_play_tree_oneshot_by_name)
+	SimusNetRPC.invoke_all(_local_play_tree_oneshot_by_name, anim_name, speed_scale)
 
 func _local_play_tree_oneshot_by_name(anim_name:StringName, speed_scale:float = 1.0) -> void:
 	if not anim_name:

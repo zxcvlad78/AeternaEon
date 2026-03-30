@@ -16,7 +16,7 @@ var _connecting_check: bool = false
 var _is_connected: bool = false
 var _is_connection_canceled: bool = false
 
-signal on_kicked()
+signal on_kicked(reason: String)
 
 static func get_instance() -> SimusNetConnection:
 	return _instance
@@ -165,15 +165,17 @@ static func connect_network_node_callables(object: Object, on_ready: Callable, o
 	
 	SimusNetEvents.event_disconnected.listen(on_disconnect)
 
-static func kick_peer(peer: int) -> void:
+static func kick_peer(peer: int, reason: String = "") -> void:
 	if is_server():
-		get_peer()
-		_instance._kick_yourself.rpc_id(peer)
+		_instance._kick_yourself.rpc_id(peer, reason)
+		await _instance.get_tree().create_timer(1.0).timeout
+		if get_peer():
+			get_peer().disconnect_peer(peer)
 
 @rpc("authority", "call_remote", "reliable", SimusNetChannels.BUILTIN.HANDSHAKE)
-func _kick_yourself() -> void:
+func _kick_yourself(reason: String) -> void:
 	try_close_peer()
-	on_kicked.emit()
+	on_kicked.emit(reason)
 
 #static func get_ping(peer: int = get_unique_id()) -> float:
 	#match get_peer().get_class():

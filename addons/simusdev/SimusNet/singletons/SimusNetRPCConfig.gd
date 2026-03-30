@@ -1,8 +1,8 @@
-extends Resource
+extends SimusNetConfigBase
 class_name SimusNetRPCConfig
 
-var _channel: int = 0
-var _transfer_mode: SimusNetRPC.TRANSFER_MODE = SimusNetRPC.TRANSFER_MODE.RELIABLE
+@export var _channel: int = 0
+@export var _transfer_mode: SimusNetRPC.TRANSFER_MODE = SimusNetRPC.TRANSFER_MODE.RELIABLE
 
 var is_ready: bool = false
 signal on_ready()
@@ -106,7 +106,7 @@ enum MODE {
 	ANY_PEER,
 }
 
-var _mode: MODE = MODE.AUTHORITY
+@export var _mode: MODE = MODE.AUTHORITY
 
 func get_mode() -> MODE:
 	return _mode
@@ -115,7 +115,7 @@ func set_mode(mode: MODE) -> SimusNetRPCConfig:
 	_mode = mode
 	return self
 
-var ___require_ownership: bool = false
+@export var ___require_ownership: bool = false
 
 func flag_require_ownership(value: bool = false) -> SimusNetRPCConfig:
 	___require_ownership = value
@@ -137,17 +137,17 @@ func flag_mode_any_peer() -> SimusNetRPCConfig:
 	_mode = MODE.ANY_PEER
 	return self
 
-var _simulate: bool = true
+@export var _simulate: bool = true
 func flag_simulate_locally(simulate: bool = true) -> SimusNetRPCConfig:
 	_simulate = simulate
 	return self
 
-var _serialization: bool = true
+@export var _serialization: bool = true
 func flag_serialization(value: bool = true) -> SimusNetRPCConfig:
 	_serialization = value
 	return self
 
-var _async: bool = false
+@export var _async: bool = false
 func flag_async(value: bool = true) -> SimusNetRPCConfig:
 	_async = value
 	return self

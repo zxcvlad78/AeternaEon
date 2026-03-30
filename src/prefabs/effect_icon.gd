@@ -1,7 +1,6 @@
 extends Control
 
 @onready var icon: TextureRect = $Icon
-@onready var label: Label = $Label
 
 var effect: Effect:
 	set(val):
@@ -21,6 +20,3 @@ func _update_ui() -> void:
 	
 	if not effect.finished.is_connected(queue_free):
 		effect.finished.connect(queue_free)
-
-func _process(delta: float) -> void:
-	label.text = str( snappedf(effect.time_left, 0.1) )

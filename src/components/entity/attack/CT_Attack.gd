@@ -33,6 +33,9 @@ func in_cooldown() -> bool:
 	return cooldown_timer.time_left > 0.0
 
 func _play_animation(anim_name:StringName) -> void:
+	if !multiplayer.is_server():
+		return
+	
 	var model = unit.animated_model
 	
 	if model:
@@ -42,7 +45,7 @@ func _play_animation(anim_name:StringName) -> void:
 			
 			if target_duration > 0:
 				var speed_scale = animation.length / target_duration
-				model._local_play_tree_oneshot_by_name(anim_name, speed_scale)
+				model.play_tree_oneshot_by_name(anim_name, speed_scale)
 
 func _play_audio(audio:R_Audio) -> void:
 	if !multiplayer.is_server():
@@ -100,9 +103,10 @@ func swing(target:Variant) -> void:
 		animation = unit.resource.attack_animations.pick_random()
 	else:
 		animation = R_Animation.new()
-	SimusNetRPC.invoke_all(_local_swing, target)
+	SimusNetRPC.invoke_all(_local_swing, target, animation)
 
-func _local_swing(target:Variant) -> void:
+func _local_swing(target:Variant, _animation:R_Animation) -> void:
+	animation = _animation
 	_play_animation(animation.swing)
 	_play_audio(unit.resource.swing_audio)
 	

@@ -28,7 +28,6 @@ func switch() -> void:
 
 func _switch_synchronized() -> void:
 	transitioned.emit()
-	print(self)
 
 func _enter() -> void:
 	pass

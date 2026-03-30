@@ -42,6 +42,7 @@ func _create_spells() -> void:
 func _requset_try_precast(idx: int) -> void:
 	if idx > spell_instances.size():
 		return
+	
 	var spell = spell_instances[idx]
 	if not is_instance_valid(spell) or not spell.can_cast():
 		return

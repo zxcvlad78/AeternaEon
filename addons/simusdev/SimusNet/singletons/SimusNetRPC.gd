@@ -96,10 +96,11 @@ func _invoke_on_without_validating(peer: int, callable: Callable, args: Array, c
 	if !identity.is_ready:
 		await identity.on_ready
 	
+	SimusNetSerializer._current_blocked_methods = config._serializer_blocked_methods
+	
 	var unique_id: int = identity.get_unique_id()
 	
 	var packet: Array = [
-		SimusNet.PACKET.RPC,
 		unique_id,
 		config_handler.get_method_unique_id(callable.get_method())
 		]
@@ -112,7 +113,11 @@ func _invoke_on_without_validating(peer: int, callable: Callable, args: Array, c
 	#if object is C_Inventory:
 		#pass
 	#
-	var bytes: PackedByteArray = SimusNetArguments.serialize(packet)
+	var bytes: PackedByteArray = SimusNet.serialize_packet(
+		SimusNet.PACKET.RPC,
+		SimusNetArguments.serialize(packet),
+	)
+	
 	#var bytes: PackedByteArray = var_to_bytes(packet)
 	#if object is C_Inventory:
 		#print("SimusNet:", bytes.size())
@@ -147,15 +152,16 @@ func _on_peer_packet_received(id: int, packet: PackedByteArray) -> void:
 	SimusNetProfiler._put_down_packet()
 	SimusNetProfiler.get_instance()._put_down_traffic(packet.size() + 1)
 	
-	var deserialized: Variant = SimusNetArguments.deserialize(packet)
+	var deserialized: Array = SimusNet.deserialize_packet(packet)
 	#var deserialized: Variant = bytes_to_var(packet)
 	#print('received packet(%s, size: %s): %s' % [id, packet.size(), deserialized])
 	var packet_id: SimusNet.PACKET = deserialized[0]
+	var raw_data: PackedByteArray = deserialized[1]
 	deserialized.pop_front()
 	
 	if packet_id in PACKET_AND_METHOD:
 		var callable: Callable = PACKET_AND_METHOD[packet_id]
-		callable.call(packet.size() + 1, packet_id, id, deserialized)
+		callable.call(packet.size() + 1, packet_id, id, SimusNetArguments.deserialize(raw_data))
 	
 
 func _on_packet_rpc(original_packet_size: int, type: SimusNet.PACKET, peer: int, args: Array) -> void:
@@ -221,17 +227,17 @@ static func invoke_on_server(callable: Callable, ...args: Array) -> void:
 static func invoke_on_sender(callable: Callable, ...args: Array) -> void:
 	_instance._invoke_on(SimusNetRemote.sender_id, callable, args)
 
-static func async_invoke_on(peer: int, callable: Callable, ...args: Array) -> Variant:
-	return await _instance._async_invoke_on(peer, callable, args)
-
-static func async_invoke_on_server(callable: Callable, ...args: Array) -> Variant:
-	return await _instance._async_invoke_on(SimusNetConnection.SERVER_ID, callable, args)
-
-static func async_invoke_on_sender(callable: Callable, ...args: Array) -> Variant:
-	return await _instance._async_invoke_on(SimusNetRemote.sender_id, callable, args)
-
-func _async_invoke_on(peer: int, callable: Callable, args: Array) -> Variant:
-	return await _invoke_on(peer, callable, args, true)
+#static func async_invoke_on(peer: int, callable: Callable, ...args: Array) -> Variant:
+	#return await _instance._async_invoke_on(peer, callable, args)
+#
+#static func async_invoke_on_server(callable: Callable, ...args: Array) -> Variant:
+	#return await _instance._async_invoke_on(SimusNetConnection.SERVER_ID, callable, args)
+#
+#static func async_invoke_on_sender(callable: Callable, ...args: Array) -> Variant:
+	#return await _instance._async_invoke_on(SimusNetRemote.sender_id, callable, args)
+#
+#func _async_invoke_on(peer: int, callable: Callable, args: Array) -> Variant:
+	#return await _invoke_on(peer, callable, args, true)
 
 func _invoke_on(peer: int, callable: Callable, args: Array, async: bool = false) -> Variant:
 	var handler: SimusNetRPCConfigHandler = SimusNetRPCConfigHandler.get_or_create(callable.get_object())
@@ -245,6 +251,8 @@ func _invoke_on(peer: int, callable: Callable, args: Array, async: bool = false)
 		
 		var serialized_args: Array = []
 		var bytes: PackedByteArray = []
+		SimusNetSerializer._current_blocked_methods = config._serializer_blocked_methods
+		
 		if config._simulate and config._serialization:
 			for i in args:
 				serialized_args.append(SimusNetSerializer.parse(i))

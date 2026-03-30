@@ -49,14 +49,11 @@ metadata/SimusNetIdentity = SubResource("Resource_heo08")
 metadata/simusnet_var_config = Object(RefCounted,"script":Resource("res://addons/simusdev/SimusNet/SimusNetVarConfigHandler.gd"),"_object_weak_ref":Object(WeakRef,"script":null)
 ,"_identity_weak_ref":Object(WeakRef,"script":null)
 ,"_list":Dictionary[StringName, Resource("res://addons/simusdev/SimusNet/SimusNetVarConfig.gd")]({
-&"max_points": Object(RefCounted,"script":Resource("res://addons/simusdev/SimusNet/SimusNetVarConfig.gd"),"_channel":84,"_reliable":true,"_replication":true,"_replicate_on_spawn":true,"_serialize":true,"_mode":1,"_tickrate":0.0,"__send_to_owner":false)
-,
-&"points": Object(RefCounted,"script":Resource("res://addons/simusdev/SimusNet/SimusNetVarConfig.gd"),"_channel":84,"_reliable":true,"_replication":true,"_replicate_on_spawn":true,"_serialize":true,"_mode":1,"_tickrate":0.0,"__send_to_owner":false)
-
+&"max_points": null,
+&"points": null
 }),"_properties_for":Dictionary[Resource("res://addons/simusdev/SimusNet/SimusNetVarConfig.gd"), PackedStringArray]({
-Object(RefCounted,"script":Resource("res://addons/simusdev/SimusNet/SimusNetVarConfig.gd"),"_channel":84,"_reliable":true,"_replication":true,"_replicate_on_spawn":true,"_serialize":true,"_mode":1,"_tickrate":0.0,"__send_to_owner":false)
-: PackedStringArray("points", "max_points")
-}),"_properties_time":Dictionary[int, float]({}))
+null: PackedStringArray("points", "max_points")
+}),"_properties_time":Dictionary[int, float]({}),"current_received_property":"","current_received_value":null,"current_peer":1)
 
 metadata/SimusNetRPCConfigHandler = Object(RefCounted,"script":Resource("res://addons/simusdev/SimusNet/singletons/SimusNetRPCConfigHandler.gd"))
 

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="R_Effect" format=3 uid="uid://c8b45ktpnggkp"]
+
+[ext_resource type="Script" uid="uid://do3y8cy4yjtxn" path="res://src/components/magic/effects/custom/stun.gd" id="1_owler"]
+[ext_resource type="Script" uid="uid://kn4l7qpuo0ph" path="res://src/components/magic/effects/R_Effect.gd" id="2_nrvbb"]
+
+[resource]
+script = ExtResource("2_nrvbb")
+id = &"stun"
+effect_script = ExtResource("1_owler")
+duration = Array[float]([1.2, 1.4, 1.8, 2.2])
+statusbar_visible = true
+metadata/_custom_type_script = "uid://kn4l7qpuo0ph"
