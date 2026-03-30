@@ -51,14 +51,16 @@ func set_blend_tree() -> void:
 		var _property_path = "parameters/%s/%s/blend_position" % [state_machine_name, i]
 		tree.set(_property_path, target.get(state_machine_properties[i]))
 
-func play_tree_oneshot_by_name(anim_name:StringName) -> void:
+func play_tree_oneshot_by_name(anim_name:StringName, speed_scale:float = 1.0) -> void:
 	SimusNetRPC.invoke_all(_local_play_tree_oneshot_by_name)
 
-func _local_play_tree_oneshot_by_name(anim_name:StringName) -> void:
+func _local_play_tree_oneshot_by_name(anim_name:StringName, speed_scale:float = 1.0) -> void:
 	if not anim_name:
 		return
 	if not library.has_animation(anim_name):
 		return
+	
+	set_oneshot_animation_speed(speed_scale)
 	
 	var lib_name:StringName = library.resource_name
 	if lib_name.is_empty():
@@ -71,14 +73,14 @@ func _local_play_tree_oneshot_by_name(anim_name:StringName) -> void:
 	tree.set("parameters/OneShot/request", AnimationNodeOneShot.OneShotRequest.ONE_SHOT_REQUEST_FIRE)
 
 
-func play_tree_oneshot_by_array(array:Array[StringName]) -> void:
+func play_tree_oneshot_by_array(array:Array[StringName], speed_scale:float = 1.0) -> void:
 	if array.is_empty():
 		return
 	
-	play_tree_oneshot_by_name(array.pick_random())
+	play_tree_oneshot_by_name(array.pick_random(), speed_scale)
 
-func play_tree_oneshot(resource:Animation) -> void:
-	play_tree_oneshot_by_name(resource.resource_name)
+func play_tree_oneshot(resource:Animation, speed_scale:float = 1.0) -> void:
+	play_tree_oneshot_by_name(resource.resource_name, speed_scale)
 
 func stop_tree_oneshot() -> void:
 	SimusNetRPC.invoke_all(_local_stop_tree_oneshot)
@@ -89,8 +91,8 @@ func _local_stop_tree_oneshot() -> void:
 func is_tree_oneshot_playing() -> bool:
 	return tree.get("parameters/OneShot/active")
 
-func set_attack_animation_speed(value:float = 1.0) -> void:
-	tree.set("parameters/AttackAnimationSpeed/scale", value)
+func set_oneshot_animation_speed(value:float = 1.0) -> void:
+	tree.set("parameters/OneshotAnimationSpeedScale/scale", value)
 
 func switch_state(state:SD_State) -> void:
 	if state.name in state_exceptions:

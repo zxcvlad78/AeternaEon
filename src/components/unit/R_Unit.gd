@@ -16,9 +16,10 @@ enum Attribute {
 @export var base_mana:float = 200.0
 @export var main_attribute:Attribute = Attribute.STRENGTH
 
-@export var base_attack_speed:float = 100
-@export var base_attack_interval:float = 1.5
-@export var base_attack_damage:float = 50
+@export var base_attack_speed:float = 120.0
+@export var base_attack_range:float = 1.5
+@export var base_attack_interval:float = 1.2
+@export var base_attack_damage:float = 50.0
 
 @export var base_magic_resistance:float = 25.0
 
@@ -30,6 +31,8 @@ enum Attribute {
 @export var base_rotation_speed:float = 22.0
 
 @export_category("Audio")
+@export var swing_audio:R_Audio
+@export var impact_audio:R_Audio
 @export var footsteps:Array[AudioStream] = [
 	preload("res://src/audio/footsteps_general/footstep_hero_general1.mp3"),
 	preload("res://src/audio/footsteps_general/footstep_hero_general2.mp3"),
@@ -39,6 +42,9 @@ enum Attribute {
 	preload("res://src/audio/footsteps_general/footstep_hero_general6.mp3"),
 	preload("res://src/audio/footsteps_general/footstep_hero_general7.mp3"),
 ]
+
+@export_group("Animation")
+@export var attack_animations:Array[R_Animation]
 
 func get_health_regen() -> float:
 	return strength * 0.09
@@ -51,7 +57,8 @@ func get_max_mana() -> float:
 	return base_mana + intelligence * 12
 
 func get_attack_speed() -> float:
-	return (((base_attack_speed + agility) * 0.6) * base_attack_interval)
+	var total_as = base_attack_speed + agility
+	return base_attack_interval / (total_as / 100.0)
 
 func get_attack_damage() -> float:
 	if main_attribute == Attribute.STRENGTH:

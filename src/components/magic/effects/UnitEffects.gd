@@ -56,6 +56,8 @@ func _process(delta: float) -> void:
 			active_effects.remove_at(i)
 			effect_removed.emit(effect)
 			changed = true
+			
+			
 	
 	if changed:
 		effects_updated.emit()

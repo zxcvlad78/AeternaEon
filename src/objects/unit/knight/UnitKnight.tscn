@@ -31,20 +31,20 @@ Object(RefCounted,"script":Resource("res://addons/simusdev/SimusNet/SimusNetVarC
 }),"_properties_time":Dictionary[int, float]({}))
 
 
-[node name="SpellMachine" parent="." index="4" unique_id=832120988]
-spells = Array[ExtResource("2_o17hf")]([ExtResource("3_6pd5l"), ExtResource("4_6pd5l")])
-
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." index="5" unique_id=884630160]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85248417, 0)
 shape = SubResource("CylinderShape3D_bdw4g")
 
+[node name="SpellMachine" parent="." index="6" unique_id=832120988]
+spells = Array[ExtResource("2_o17hf")]([ExtResource("3_6pd5l"), ExtResource("4_6pd5l")])
+
 [node name="AnimatedModel" parent="." index="7" unique_id=1035250868 node_paths=PackedStringArray("target") instance=ExtResource("2_bdw4g")]
 target = NodePath("..")
-
-[node name="UnitBorder" parent="." index="11" unique_id=1595994863 node_paths=PackedStringArray("collision_shapes")]
-collision_shapes = [NodePath("../CollisionShape3D")]
 
 [node name="StatusBar3D" parent="." index="12" unique_id=1432275322 node_paths=PackedStringArray("unit_effects") instance=ExtResource("6_vca5l")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3000002, 0)
 visible = false
 unit_effects = NodePath("../UnitEffects")
+
+[node name="UnitBorder" parent="." index="13" unique_id=1595994863 node_paths=PackedStringArray("collision_shapes")]
+collision_shapes = [NodePath("../CollisionShape3D")]

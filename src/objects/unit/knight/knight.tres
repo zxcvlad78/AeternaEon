@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="R_Unit" format=3 uid="uid://byprm4cq8wq0h"]
 
+[ext_resource type="Script" uid="uid://cdlxuncbu88e1" path="res://src/components/entity/R_Animation.gd" id="1_a7qd3"]
 [ext_resource type="Script" uid="uid://rck36o34a5md" path="res://src/components/unit/R_Unit.gd" id="1_co2dg"]
 [ext_resource type="AudioStream" uid="uid://dib6tvd6dky2j" path="res://src/audio/footsteps_general/footstep_hero_general1.mp3" id="1_hiu6y"]
 [ext_resource type="PackedScene" uid="uid://6j2ki7l57a2m" path="res://src/objects/unit/knight/UnitKnight.tscn" id="1_xrwt8"]
@@ -9,14 +10,52 @@
 [ext_resource type="AudioStream" uid="uid://budxdebim8xna" path="res://src/audio/footsteps_general/footstep_hero_general5.mp3" id="5_0ueai"]
 [ext_resource type="AudioStream" uid="uid://cnjfcgjkpy2ag" path="res://src/audio/footsteps_general/footstep_hero_general6.mp3" id="6_kald6"]
 [ext_resource type="AudioStream" uid="uid://n1hbv36ct8sg" path="res://src/audio/footsteps_general/footstep_hero_general7.mp3" id="7_3fxeu"]
+[ext_resource type="AudioStream" uid="uid://bp0dqcfdu17rh" path="res://src/audio/knight/hit/hit1.mp3" id="9_ihe3e"]
+[ext_resource type="AudioStream" uid="uid://dqjsmi4a7loy0" path="res://src/audio/knight/hit/hit2.mp3" id="10_a7qd3"]
+[ext_resource type="Script" uid="uid://box4b166sdj7p" path="res://src/components/R_Audio.gd" id="10_plush"]
+[ext_resource type="AudioStream" uid="uid://dpi7ux2oigngm" path="res://src/audio/knight/hit/hit3.mp3" id="11_xadyp"]
+[ext_resource type="AudioStream" uid="uid://dnhaak5yaw1j7" path="res://src/audio/knight/hit/hit4.mp3" id="12_smhs8"]
+[ext_resource type="AudioStream" uid="uid://dd4jveqfgqw78" path="res://src/audio/knight/hit/hit5.mp3" id="13_cvlxd"]
+[ext_resource type="AudioStream" uid="uid://bb7wkf3u8k1qj" path="res://src/audio/preattack/large_blade_woosh1.mp3" id="16_t6jk7"]
+[ext_resource type="AudioStream" uid="uid://c17of8ccmrb02" path="res://src/audio/preattack/large_blade_woosh2.mp3" id="17_tcivq"]
+[ext_resource type="AudioStream" uid="uid://ciyd2syna236d" path="res://src/audio/preattack/large_blade_woosh3.mp3" id="18_d1xxf"]
+
+[sub_resource type="Resource" id="Resource_xadyp"]
+script = ExtResource("1_a7qd3")
+swing = &"attack"
+backswing = &"attack_backswing"
+metadata/_custom_type_script = "uid://cdlxuncbu88e1"
+
+[sub_resource type="Resource" id="Resource_smhs8"]
+script = ExtResource("1_a7qd3")
+swing = &"attack2"
+backswing = &"attack2_backswing"
+metadata/_custom_type_script = "uid://cdlxuncbu88e1"
+
+[sub_resource type="Resource" id="Resource_2tsm6"]
+script = ExtResource("10_plush")
+stream_list = Array[AudioStream]([ExtResource("9_ihe3e"), ExtResource("10_a7qd3"), ExtResource("11_xadyp"), ExtResource("12_smhs8"), ExtResource("13_cvlxd")])
+pitch = Vector2(1.02, 0.98)
+metadata/_custom_type_script = "uid://box4b166sdj7p"
+
+[sub_resource type="Resource" id="Resource_r10ah"]
+script = ExtResource("10_plush")
+stream_list = Array[AudioStream]([ExtResource("16_t6jk7"), ExtResource("17_tcivq"), ExtResource("18_d1xxf")])
+pitch = Vector2(1.02, 0.98)
+metadata/_custom_type_script = "uid://box4b166sdj7p"
 
 [resource]
 script = ExtResource("1_co2dg")
 name = "Knight"
 prefab = ExtResource("1_xrwt8")
 base_health = 400.0
+base_attack_speed = 150.0
+base_attack_interval = 0.8
 strength = 15.0
 agility = 8.0
 intelligence = 7.0
 base_movespeed = 1.995
+swing_audio = SubResource("Resource_r10ah")
+impact_audio = SubResource("Resource_2tsm6")
+attack_animations = Array[ExtResource("1_a7qd3")]([SubResource("Resource_xadyp"), SubResource("Resource_smhs8")])
 metadata/_custom_type_script = "uid://rck36o34a5md"

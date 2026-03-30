@@ -85,13 +85,16 @@ func _apply_effects(target:Variant, _effects:Array[R_Effect] = res.effects) -> v
 		var new_effect = effect.create(get_unit(), self, target)
 		new_effect.apply()
 
-func _play_audio(audio:R_SpellAudio) -> void:
+func _play_audio(audio:R_Audio) -> void:
 	if !multiplayer.is_server():
 		return
 	
+	if audio.stream_list.is_empty():
+		return
+	
 	s_Audio.play_global_from_server(
-		audio.stream,
-		spell_machine.global_position,
+		audio.stream_list.pick_random(),
+		spell_machine.unit.global_position,
 		true,
 		{"pitch_scale": randf_range(audio.pitch.x, audio.pitch.y)}
 		)

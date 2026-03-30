@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="R_Spell" format=3 uid="uid://llc6qgrk7uio"]
 
 [ext_resource type="Script" uid="uid://bt7y70x0v0561" path="res://src/components/magic/R_Spell.gd" id="1_4koyu"]
-[ext_resource type="Script" uid="uid://box4b166sdj7p" path="res://src/components/magic/R_SpellAudio.gd" id="1_6b4qu"]
+[ext_resource type="Script" uid="uid://box4b166sdj7p" path="res://src/components/R_Audio.gd" id="1_5m8sy"]
 [ext_resource type="AudioStream" uid="uid://dojd1spaalk5i" path="res://src/objects/unit/knight/spells/stun4ik/sound/cast.mp3" id="1_w0cky"]
 [ext_resource type="Script" uid="uid://vr3jgkyx31so" path="res://src/objects/unit/knight/spells/stun4ik/stun4ik.gd" id="2_fuc75"]
 [ext_resource type="AudioStream" uid="uid://k71i8p6f5kmw" path="res://src/objects/unit/knight/spells/stun4ik/sound/precast.mp3" id="2_qsyku"]
@@ -13,8 +13,8 @@
 [ext_resource type="Script" uid="uid://dlodw7gliq14w" path="res://src/components/particles/R_ParticlesSettings.gd" id="5_x2fei"]
 
 [sub_resource type="Resource" id="Resource_qsyku"]
-script = ExtResource("1_6b4qu")
-stream = ExtResource("1_w0cky")
+script = ExtResource("1_5m8sy")
+stream_list = Array[AudioStream]([ExtResource("1_w0cky")])
 pitch = Vector2(0.97, 1.03)
 metadata/_custom_type_script = "uid://box4b166sdj7p"
 
@@ -38,8 +38,8 @@ cast = SubResource("Resource_5m8sy")
 metadata/_custom_type_script = "uid://dlodw7gliq14w"
 
 [sub_resource type="Resource" id="Resource_w0cky"]
-script = ExtResource("1_6b4qu")
-stream = ExtResource("2_qsyku")
+script = ExtResource("1_5m8sy")
+stream_list = Array[AudioStream]([ExtResource("2_qsyku")])
 pitch = Vector2(0.97, 1.03)
 metadata/_custom_type_script = "uid://box4b166sdj7p"
 

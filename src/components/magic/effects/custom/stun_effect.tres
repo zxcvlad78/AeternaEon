@@ -7,4 +7,6 @@
 script = ExtResource("1_mklw5")
 id = &"stun"
 effect_script = ExtResource("1_a7fra")
+statusbar_visible = true
+statusbar_text = &"Stunned"
 metadata/_custom_type_script = "uid://kn4l7qpuo0ph"

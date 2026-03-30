@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://do2oq37b82wfq" path="res://src/prefabs/mana_bar.tscn" id="7_82p3w"]
 [ext_resource type="Script" uid="uid://c85p6hiq2wm53" path="res://src/components/magic/SpellMachine.gd" id="7_mbpmj"]
 [ext_resource type="Script" uid="uid://b2fidrwvgnri2" path="res://addons/simusdev/statemachine/SD_State.gd" id="7_xyafo"]
+[ext_resource type="Script" uid="uid://duwnqtwpfe0lx" path="res://src/components/entity/attack/CT_Attack.gd" id="9_jkrt4"]
 [ext_resource type="Script" uid="uid://dxq864cjtni6m" path="res://src/components/entity/CT_UnitFootsteps.gd" id="10_o83l0"]
 [ext_resource type="Script" uid="uid://kjlobx8x10wb" path="res://src/components/unit/UnitOrders.gd" id="12_36mmn"]
 [ext_resource type="PackedScene" uid="uid://bf315js7rsrv" path="res://src/prefabs/unit_border.tscn" id="13_heo08"]
@@ -70,6 +71,11 @@ metadata/_custom_type_script = "uid://bhnptgumb630v"
 script = ExtResource("4_62vqr")
 unit = NodePath("..")
 metadata/_custom_type_script = "uid://de567i2tbcvyq"
+
+[node name="CT_Attack" type="Node" parent="." unique_id=838871645 node_paths=PackedStringArray("unit")]
+script = ExtResource("9_jkrt4")
+unit = NodePath("..")
+metadata/_custom_type_script = "uid://duwnqtwpfe0lx"
 
 [node name="SpellMachine" type="Node3D" parent="." unique_id=832120988 node_paths=PackedStringArray("unit")]
 script = ExtResource("7_mbpmj")
