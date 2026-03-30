@@ -114,6 +114,8 @@ func _local_precast(target:Variant = null) -> void:
 		
 		var success = await channel.finished
 		if success:
+			if get_unit().is_disabled():
+				return
 			SimusNetRPC.invoke_all(_cast, target)
 		
 		if spell_machine.spell_channeling == channel:
@@ -139,6 +141,7 @@ func on_spell_start(target:Variant = null) -> void:
 func _cast(target:Variant = null) -> void:
 	if multiplayer.is_server():
 		_apply_effects(target)
+	
 	
 	on_cast(target)
 	casted.emit()

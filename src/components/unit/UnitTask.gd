@@ -6,6 +6,7 @@ var unit:Unit
 var target:Variant
 
 func _init(_unit:Unit = null, _target:Variant = null):
+	
 	SimusNetVars.register(
 		self,
 		[

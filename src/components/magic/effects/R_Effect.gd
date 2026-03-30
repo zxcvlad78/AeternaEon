@@ -2,6 +2,7 @@ class_name R_Effect extends Resource
 
 @export var id: StringName = "base_effect"
 @export var icon: Texture
+
 @export var effect_script: Script
 
 @export var stackable:bool = false
@@ -10,8 +11,11 @@ class_name R_Effect extends Resource
 
 @export var data:Dictionary = {}
 
-var level:int = 0
+@export_group("StatusBar", "statusbar_")
+@export var statusbar_visible:bool = false
+@export var statusbar_text:StringName = &""
 
+var level:int = 0
 
 func get_duration() -> float:
 	return AE.get_leveled_value(level, duration)

@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://bxcv73m27crg7"]
+
+[ext_resource type="PackedScene" uid="uid://dbhqs4tv52evh" path="res://addons/simusdev/SimusNet/profiler/SimpleProfiler.tscn" id="1_2tonv"]
+
+[node name="Profiler" type="CanvasLayer" unique_id=1869158717]
+
+[node name="SimpleProfiler" parent="." unique_id=605018193 instance=ExtResource("1_2tonv")]

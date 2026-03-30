@@ -44,6 +44,9 @@ func request_goto_target(target: Variant) -> void:
 	SimusNetRPC.invoke_on_server(goto_target, target)
 
 func goto(pos: Vector3) -> void:
+	if unit.is_disabled():
+		return
+	
 	current_target_node = null
 	move_target_reached = false
 	nav_agent.target_position = pos
@@ -65,7 +68,10 @@ func stop() -> void:
 func _physics_process(delta: float) -> void:
 	if not multiplayer.is_server() or move_target_reached:
 		return
-
+	
+	#if unit.is_disabled():
+		#stop()
+	
 	if is_instance_valid(current_target_node):
 		nav_agent.target_position = current_target_node.global_position
 

@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://bt7y70x0v0561" path="res://src/components/magic/R_Spell.gd" id="2_o17hf"]
 [ext_resource type="Resource" uid="uid://c0r6kg6p0lilk" path="res://src/objects/unit/knight/spells/reverse_polarity/reverse_polarity.tres" id="3_6pd5l"]
 [ext_resource type="Resource" uid="uid://llc6qgrk7uio" path="res://src/objects/unit/knight/spells/stun4ik/stun4ik.tres" id="4_6pd5l"]
+[ext_resource type="PackedScene" uid="uid://t4pawvyapoqy" path="res://src/prefabs/status_bar_3d.tscn" id="6_vca5l"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_bdw4g"]
 height = 1.7049682
@@ -42,3 +43,8 @@ target = NodePath("..")
 
 [node name="UnitBorder" parent="." index="11" unique_id=1595994863 node_paths=PackedStringArray("collision_shapes")]
 collision_shapes = [NodePath("../CollisionShape3D")]
+
+[node name="StatusBar3D" parent="." index="12" unique_id=1432275322 node_paths=PackedStringArray("unit_effects") instance=ExtResource("6_vca5l")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3000002, 0)
+visible = false
+unit_effects = NodePath("../UnitEffects")

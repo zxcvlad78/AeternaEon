@@ -58,12 +58,6 @@ func _ready() -> void:
 		],
 		SimusNetRPCConfig.new().flag_mode_any_peer()
 	)
-	
-	SimusNetVars.register(
-		self,
-		["ref_list"],
-		SimusNetVarConfig.new().flag_mode_server_only().flag_replication()
-	)
 
 func _update_selected_units() -> void:
 	for unit in selected_units:
@@ -117,15 +111,16 @@ func _process(delta: float) -> void:
 	var screen_size = viewport.get_visible_rect().size
 	var mouse_pos:Vector2 = viewport.get_mouse_position()
 	
-	if get_window().has_focus() and is_mouse_in_window(viewport, screen_size, mouse_pos):
-		if mouse_pos.x <= 1:
-			move_left(delta)
-		if mouse_pos.y <= 1:
-			move_forward(delta)
-		if mouse_pos.x >= screen_size.x-1:
-			move_right(delta)
-		if mouse_pos.y >= screen_size.y-1:
-			move_backward(delta)
+	#if get_window().has_focus() and is_mouse_in_window(viewport, screen_size, mouse_pos):
+		#pass
+		#if mouse_pos.x <= 1:
+			#move_left(delta)
+		#if mouse_pos.y <= 1:
+			#move_forward(delta)
+		#if mouse_pos.x >= screen_size.x-1:
+			#move_right(delta)
+		#if mouse_pos.y >= screen_size.y-1:
+			#move_backward(delta)
 	
 	if Input.is_action_pressed("move_camera_left"):
 		move_left(delta)

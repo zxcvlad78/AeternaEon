@@ -85,9 +85,6 @@ func _requset_try_precast(idx: int) -> void:
 	player.target_select_mode = R_Spell.TargetType.NO_TARGET
 
 func _server_try_precast(p_spell:Spell, shift:bool, target:Variant = null) -> Error:
-	#if spell_channeling and spell_channeling.is_active:
-		#return FAILED
-	
 	var task = CastTask.new(unit, target, p_spell)
 	unit.unit_orders.issue_task(task, shift)
 	

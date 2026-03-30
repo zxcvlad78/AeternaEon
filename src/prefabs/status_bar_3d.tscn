@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://t4pawvyapoqy"]
+
+[ext_resource type="Script" uid="uid://bdk4y7vofd4yb" path="res://src/prefabs/status_bar_3d.gd" id="1_vsfeq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bkiul"]
+bg_color = Color(0.0546875, 0.0546875, 0.0546875, 1)
+skew = Vector2(0.1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vsfeq"]
+bg_color = Color(0.91015625, 0.91015625, 0.91015625, 1)
+skew = Vector2(0.1, 0)
+
+[sub_resource type="LabelSettings" id="LabelSettings_0w5or"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_bkiul"]
+viewport_path = NodePath("SubViewport")
+
+[node name="StatusBar3D" type="Node3D" unique_id=1432275322]
+script = ExtResource("1_vsfeq")
+
+[node name="SubViewport" type="SubViewport" parent="." unique_id=1850373566]
+transparent_bg = true
+
+[node name="Control" type="Control" parent="SubViewport" unique_id=682161840]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="SubViewport/Control" unique_id=953538795]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -105.0625
+offset_top = -4.875
+offset_right = 105.0625
+offset_bottom = 4.875
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_bkiul")
+theme_override_styles/fill = SubResource("StyleBoxFlat_vsfeq")
+value = 23.54
+show_percentage = false
+
+[node name="Label" type="Label" parent="SubViewport/Control" unique_id=534804873]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -640.0
+offset_top = -30.5
+offset_right = 640.0
+offset_bottom = -7.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Disabled"
+label_settings = SubResource("LabelSettings_0w5or")
+horizontal_alignment = 1
+uppercase = true
+
+[node name="Sprite3D" type="Sprite3D" parent="." unique_id=2074077141]
+billboard = 1
+texture = SubResource("ViewportTexture_bkiul")

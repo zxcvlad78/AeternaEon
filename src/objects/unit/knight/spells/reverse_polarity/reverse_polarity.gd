@@ -35,7 +35,8 @@ func on_cast(target:Variant = null) -> void:
 	var pull_position = caster.global_position - caster.global_transform.basis.z * (caster.scale * 0.8)
 	
 	for body in area.get_overlapping_bodies():
-		if body == caster: continue
+		if body == caster:
+			continue
 		if body is Unit:
 			_apply_rp_effects(body, pull_position)
 
@@ -52,4 +53,5 @@ func _apply_rp_effects(target:Unit, pull_pos:Vector3) -> void:
 		0.0
 		)
 	
+	_apply_effects(target)
 	target.ct_health.apply_diminish(R_PointValue.new(damage))

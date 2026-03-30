@@ -21,3 +21,12 @@ func get_leveled_value_dict(level:int, dict:Dictionary, array_name:String, defau
 		return default_value
 	
 	return get_leveled_value(level, array, default_value)
+
+func get_status_by_id(id:StringName) -> StringName:
+	var text:String
+	if id == &"stun":
+		text = &"Stunned"
+	else:
+		text = &"Status"
+	
+	return text

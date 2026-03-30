@@ -12,8 +12,9 @@ var res: R_Effect
 var time_left: float = 0.0 :
 	set(val):
 		time_left = val
-		if time_left <= 0.0:
-			finish()
+		if SimusNetConnection.is_server():
+			if time_left <= 0.0:
+				finish()
 
 
 func on_start() -> void:
