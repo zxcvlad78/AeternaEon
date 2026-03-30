@@ -20,6 +20,7 @@ script = ExtResource("1_vsfeq")
 
 [node name="SubViewport" type="SubViewport" parent="." unique_id=1850373566]
 transparent_bg = true
+size = Vector2i(171, 48)
 
 [node name="Control" type="Control" parent="SubViewport" unique_id=682161840]
 layout_mode = 3
@@ -36,9 +37,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -105.0625
+offset_left = -83.03125
 offset_top = -4.875
-offset_right = 105.0625
+offset_right = 83.03125
 offset_bottom = 4.875
 grow_horizontal = 2
 grow_vertical = 2
@@ -67,4 +68,5 @@ uppercase = true
 
 [node name="Sprite3D" type="Sprite3D" parent="." unique_id=2074077141]
 billboard = 1
+render_priority = 1
 texture = SubResource("ViewportTexture_bkiul")

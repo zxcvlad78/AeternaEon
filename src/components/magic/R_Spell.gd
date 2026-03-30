@@ -10,7 +10,7 @@ enum TargetType {
 	POINT_TARGET,
 }
 
-@export var spell_data: Dictionary = {} 
+@export var spell_data: Dictionary[String, Array] = {} 
 
 @export var effects:Array[R_Effect]
 

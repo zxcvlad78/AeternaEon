@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://do2oq37b82wfq"]
+
+[ext_resource type="PackedScene" uid="uid://dpe66ggxvbtop" path="res://src/prefabs/point_bar/point_bar.tscn" id="1_5m3da"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5m3da"]
+bg_color = Color(0, 0.38284314, 0.6901961, 1)
+
+[node name="ManaBar" unique_id=1597946741 instance=ExtResource("1_5m3da")]
+offset_top = 8.0
+offset_bottom = 16.0
+theme_override_styles/fill = SubResource("StyleBoxFlat_5m3da")
+color = Color(0, 0.38284314, 0.6901961, 1)
+
+[node name="Label" parent="." index="0" unique_id=198941549]
+visible = false

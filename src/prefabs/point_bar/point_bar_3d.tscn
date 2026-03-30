@@ -18,5 +18,4 @@ follow_viewport_enabled = true
 [node name="Sprite3D" type="Sprite3D" parent="." unique_id=2007426741]
 layers = 2
 billboard = 1
-render_priority = 10
 texture = SubResource("ViewportTexture_o83l0")

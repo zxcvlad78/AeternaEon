@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://de567i2tbcvyq" path="res://src/components/movement/CT_Movement.gd" id="4_62vqr"]
 [ext_resource type="PackedScene" uid="uid://dpe66ggxvbtop" path="res://src/prefabs/point_bar/point_bar.tscn" id="5_pjvmu"]
 [ext_resource type="Script" uid="uid://b1q8rkwhld80p" path="res://addons/simusdev/statemachine/SD_NodeStateMachine.gd" id="6_vb5u6"]
+[ext_resource type="PackedScene" uid="uid://do2oq37b82wfq" path="res://src/prefabs/mana_bar.tscn" id="7_82p3w"]
 [ext_resource type="Script" uid="uid://c85p6hiq2wm53" path="res://src/components/magic/SpellMachine.gd" id="7_mbpmj"]
 [ext_resource type="Script" uid="uid://b2fidrwvgnri2" path="res://addons/simusdev/statemachine/SD_State.gd" id="7_xyafo"]
 [ext_resource type="Script" uid="uid://dxq864cjtni6m" path="res://src/components/entity/CT_UnitFootsteps.gd" id="10_o83l0"]
@@ -62,6 +63,7 @@ metadata/SimusNetRPCConfigHandler = Object(RefCounted,"script":Resource("res://a
 [node name="CT_Mana" type="Node" parent="." unique_id=1831672166 node_paths=PackedStringArray("root")]
 script = ExtResource("3_62vqr")
 root = NodePath("..")
+point_bar_prefab = ExtResource("7_82p3w")
 metadata/_custom_type_script = "uid://bhnptgumb630v"
 
 [node name="CT_Movement" type="Node" parent="." unique_id=1479135991 node_paths=PackedStringArray("unit")]
