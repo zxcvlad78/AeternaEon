@@ -5,6 +5,8 @@ signal finished
 var unit:Unit
 var target:Variant
 
+var icon:Texture
+
 func _init(_unit:Unit = null, _target:Variant = null):
 	SimusNetIdentity.register(self)
 	SimusNetVars.register(
@@ -20,6 +22,11 @@ func _init(_unit:Unit = null, _target:Variant = null):
 	target = _target
 
 func get_icon() -> Texture:
+	if icon:
+		return icon
+	return _get_icon()
+
+func _get_icon() -> Texture:
 	return load("res://src/textures/grass.jpg")
 
 func start() -> void:
@@ -40,6 +47,7 @@ func simusnet_serialize(serializer:SimusNetCustomSerialization) -> void:
 	
 	serializer.pack(unit)
 	serializer.pack(target)
+	serializer.pack(icon)
 
 static func simusnet_deserialize(serializer:SimusNetCustomSerialization) -> void:
 	var script:Script = serializer.unpack()
@@ -49,6 +57,7 @@ static func simusnet_deserialize(serializer:SimusNetCustomSerialization) -> void
 	
 	task.unit = serializer.unpack()
 	task.target = serializer.unpack()
+	task.icon = serializer.unpack()
 	
 	serializer.set_result(task)
 #endregion

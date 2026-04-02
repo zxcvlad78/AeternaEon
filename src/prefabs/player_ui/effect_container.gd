@@ -34,6 +34,7 @@ func _update() -> void:
 	for effect in _current_unit.unit_effects.active_effects:
 		add_effect(effect)
 
+
 func _clear() -> void:
 	for c in get_children():
 		c.queue_free()

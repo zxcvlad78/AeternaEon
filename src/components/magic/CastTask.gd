@@ -14,6 +14,12 @@ func _init(_unit:Unit = null, _target:Variant = null, _spell:Spell = null):
 	super(_unit, _target)
 	spell = _spell
 
+func _get_icon() -> Texture:
+	if is_instance_valid(spell):
+		return spell.res.icon
+	
+	return super()
+
 func simusnet_serialize(serializer:SimusNetCustomSerialization) -> void:
 	var id:SimusNetIdentity = SimusNetIdentity.register(self)
 	serializer.pack(id.get_unique_id())
@@ -41,3 +47,4 @@ func cancel() -> void:
 	if is_instance_valid(spell):
 		spell.should_cast = false
 		spell.spell_machine.interrupt_cast()
+		on_finish()

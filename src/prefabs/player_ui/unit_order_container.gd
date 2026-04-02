@@ -32,10 +32,14 @@ func _on_main_unit_changed() -> void:
 func _on_queue_added(task:UnitTask) -> void:
 	add_task_icon(task)
 	update_children()
+	_update_visibility()
 
 func _on_queue_removed(task:UnitTask) -> void:
 	update_children()
+	_update_visibility()
 
+func _update_visibility() -> void:
+	visible = get_child_count() > 1
 
 func _clear() -> void:
 	for c in get_children():

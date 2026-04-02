@@ -23,7 +23,10 @@ func _update() -> void:
 func _apply_size() -> void:
 	if is_inside_tree():
 		if get_index() == 0:
-			custom_minimum_size = Vector2(64, 64)
+			custom_minimum_size = Vector2(52, 52)
 		else:
 			custom_minimum_size = Vector2(42, 42)
+		
+		if !is_node_ready():
+			await ready
 		size = custom_minimum_size

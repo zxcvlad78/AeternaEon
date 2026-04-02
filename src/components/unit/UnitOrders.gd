@@ -83,12 +83,13 @@ func _execute_next() -> void:
 	current_task.start()
 
 func _on_task_finished() -> void:
-	if _queue.is_empty():
-		return
-	
-	queue_pop_front()
-	
-	_execute_next.call_deferred()
+	if multiplayer.is_server():
+		if _queue.is_empty():
+			return
+		
+		queue_pop_front()
+		
+		_execute_next.call_deferred()
 
 func interrupt_current() -> void:
 	SimusNetRPC.invoke_on_server(_server_interrupt_current)

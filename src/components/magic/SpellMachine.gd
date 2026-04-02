@@ -77,6 +77,7 @@ func _requeset_try_precast(idx: int) -> void:
 
 func _server_try_precast(p_spell:Spell, shift:bool, target:Variant = null) -> Error:
 	var task = CastTask.new(unit, target, p_spell)
+	task.icon = p_spell.res.icon
 	unit.unit_orders.issue_task(task, shift)
 	
 	return OK
