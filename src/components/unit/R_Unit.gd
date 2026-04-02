@@ -46,6 +46,9 @@ enum Attribute {
 @export_group("Animation")
 @export var attack_animations:Array[R_Animation]
 
+@export_group("Portrait")
+@export var portrait:R_UnitPortrait = R_UnitPortrait.new()
+
 func get_health_regen() -> float:
 	return strength * 0.09
 func get_max_health() -> float:
@@ -74,3 +77,67 @@ func get_rotation_speed() -> float:
 
 func get_movespeed() -> float:
 	return base_movespeed
+
+#region Serialization
+
+func simusnet_serialize(serialization:SimusNetCustomSerialization) -> void:
+	var is_copy:bool = resource_path.is_empty()
+	serialization.pack(is_copy)
+	if !is_copy:
+		serialization.pack(resource_path)
+		return
+	
+	serialization.pack(name)
+	serialization.pack(prefab)
+	serialization.pack(data)
+	serialization.pack(base_health)
+	serialization.pack(base_mana)
+	serialization.pack(main_attribute)
+	serialization.pack(base_attack_speed)
+	serialization.pack(base_attack_range)
+	serialization.pack(base_attack_interval)
+	serialization.pack(base_attack_damage)
+	serialization.pack(base_magic_resistance)
+	serialization.pack(strength)
+	serialization.pack(agility)
+	serialization.pack(intelligence)
+	serialization.pack(base_movespeed)
+	serialization.pack(base_rotation_speed)
+	serialization.pack(swing_audio)
+	serialization.pack(impact_audio)
+	serialization.pack(footsteps)
+	serialization.pack(attack_animations)
+	serialization.pack(portrait)
+
+
+static func simusnet_deserialize(serialization:SimusNetCustomSerialization) -> void:
+	var r_unit = R_Unit.new()
+	var is_copy:bool = serialization.unpack()
+	
+	if !is_copy:
+		var res_path = serialization.unpack()
+		r_unit = load(res_path)
+	else:
+		r_unit.name = serialization.unpack()
+		r_unit.prefab = serialization.unpack()
+		r_unit.data = serialization.unpack()
+		r_unit.base_health = serialization.unpack()
+		r_unit.base_mana = serialization.unpack()
+		r_unit.main_attribute = serialization.unpack()
+		r_unit.base_attack_speed = serialization.unpack()
+		r_unit.base_attack_range = serialization.unpack()
+		r_unit.base_attack_interval = serialization.unpack()
+		r_unit.base_attack_damage = serialization.unpack()
+		r_unit.base_magic_resistance = serialization.unpack()
+		r_unit.strength = serialization.unpack()
+		r_unit.agility = serialization.unpack()
+		r_unit.intelligence = serialization.unpack()
+		r_unit.base_movespeed = serialization.unpack()
+		r_unit.base_rotation_speed = serialization.unpack()
+		r_unit.swing_audio = serialization.unpack()
+		r_unit.impact_audio = serialization.unpack()
+		r_unit.footsteps = serialization.unpack()
+		r_unit.attack_animations = serialization.unpack()
+		r_unit.portrait = serialization.unpack()
+	
+	serialization.set_result(r_unit)

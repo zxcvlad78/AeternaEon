@@ -4,6 +4,11 @@ class_name R_Spell extends Resource
 @export var icon:Texture
 @export_multiline() var description: String = ""
 
+enum AbilityType {
+	ACTIVE,
+	PASSIVE,
+}
+
 enum TargetType {
 	NO_TARGET,
 	UNIT_TARGET,
@@ -24,6 +29,7 @@ enum TargetType {
 @export_group("Behaviour")
 @export var spell_script:Script
 
+@export var ability_type:AbilityType = AbilityType.ACTIVE
 @export var target_type:TargetType = TargetType.NO_TARGET
 
 @export var base_cast_point:Array[float] = [0.0]
@@ -54,6 +60,68 @@ func get_mana_cost() -> float:
 var level:int = 0
 @export var max_level:int = 4
 @export var required_level:int = 1
+
+#region Serialization
+func simusnet_serialize(serialization:SimusNetCustomSerialization) -> void:
+	var is_copy:bool = resource_path.is_empty()
+	serialization.pack(is_copy)
+	if !is_copy:
+		serialization.pack(resource_path)
+		return
+	
+	serialization.pack(name)
+	serialization.pack(icon)
+	serialization.pack(description)
+	serialization.pack(spell_data)
+	serialization.pack(effects)
+	serialization.pack(particles)
+	serialization.pack(precast_sound)
+	serialization.pack(cast_sound)
+	serialization.pack(spell_script)
+	serialization.pack(target_type)
+	serialization.pack(base_cast_point)
+	serialization.pack(base_cast_range)
+	serialization.pack(base_radius)
+	serialization.pack(base_cooldown)
+	serialization.pack(base_mana_cost)
+	serialization.pack(swing_animation_names)
+	serialization.pack(backswing_animation_names)
+	serialization.pack(level)
+	serialization.pack(max_level)
+	serialization.pack(required_level)
+
+func simusnet_deserialize(serialization:SimusNetCustomSerialization) -> void:
+	var r_spell = R_Spell.new()
+	var is_copy:bool = serialization.unpack()
+	
+	if !is_copy:
+		var res_path = serialization.unpack()
+		r_spell = load(res_path)
+	else:
+		name = serialization.unpack()
+		icon = serialization.unpack()
+		description = serialization.unpack()
+		spell_data = serialization.unpack()
+		effects = serialization.unpack()
+		particles = serialization.unpack()
+		precast_sound = serialization.unpack()
+		cast_sound = serialization.unpack()
+		spell_script = serialization.unpack()
+		target_type = serialization.unpack()
+		base_cast_point = serialization.unpack()
+		base_cast_range = serialization.unpack()
+		base_radius = serialization.unpack()
+		base_cooldown = serialization.unpack()
+		base_mana_cost = serialization.unpack()
+		swing_animation_names = serialization.unpack()
+		backswing_animation_names = serialization.unpack()
+		level = serialization.unpack()
+		max_level = serialization.unpack()
+		required_level = serialization.unpack()
+	
+	serialization.set_result(r_spell)
+#endregion
+
 
 func create(spell_machine:SpellMachine) -> Spell:
 	if not spell_machine:

@@ -17,6 +17,7 @@ var time_left: float = 0.0 :
 			if time_left <= 0.0:
 				SimusNetRPC.invoke_all(finish)
 
+#region Serialization
 func simusnet_serialize(serializer:SimusNetCustomSerialization) -> void:
 	serializer.pack(get_script())
 	var id:SimusNetIdentity = SimusNetIdentity.register(self)
@@ -26,7 +27,6 @@ func simusnet_serialize(serializer:SimusNetCustomSerialization) -> void:
 	serializer.pack(spell)
 	serializer.pack(target)
 	serializer.pack(res)
-	
 
 static func simusnet_deserialize(serializer:SimusNetCustomSerialization) -> void:
 	var script:Script = serializer.unpack()
@@ -40,6 +40,7 @@ static func simusnet_deserialize(serializer:SimusNetCustomSerialization) -> void
 	effect.res = serializer.unpack()
 	
 	serializer.set_result(effect)
+#endregion
 
 func on_start() -> void:
 	pass
@@ -56,7 +57,9 @@ func on_update(delta: float) -> void:
 func update(delta: float) -> void:
 	if is_finished:
 		return
-	time_left -= delta
+	if !res.is_permanent():
+		time_left -= delta
+	
 	on_update(delta)
 
 func dispell() -> void:

@@ -16,6 +16,8 @@
 [ext_resource type="Script" uid="uid://kjlobx8x10wb" path="res://src/components/unit/UnitOrders.gd" id="12_36mmn"]
 [ext_resource type="PackedScene" uid="uid://bf315js7rsrv" path="res://src/prefabs/unit_border.tscn" id="13_heo08"]
 [ext_resource type="Script" uid="uid://bo4yks8bji1jr" path="res://src/components/magic/effects/UnitEffects.gd" id="13_kai3p"]
+[ext_resource type="Shader" uid="uid://b4or1t03isxru" path="res://resources/shaders/spell_cast_range.gdshader" id="17_rnudq"]
+[ext_resource type="Script" uid="uid://b0vc4socxkkcq" path="res://src/components/MeshCastRange.gd" id="18_tvpee"]
 
 [sub_resource type="Resource" id="Resource_36mmn"]
 script = ExtResource("3_o83l0")
@@ -25,6 +27,17 @@ script = ExtResource("3_o83l0")
 
 [sub_resource type="Resource" id="Resource_o83l0"]
 script = ExtResource("3_o83l0")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cwkas"]
+render_priority = 0
+shader = ExtResource("17_rnudq")
+shader_parameter/line_color = Color(0, 1, 0, 1)
+shader_parameter/radius = 0.5
+shader_parameter/thickness = 0.010000000475
+shader_parameter/dash_count = 40.0
+shader_parameter/animation_speed = 1.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_7vjhm"]
 
 [node name="Unit" type="CharacterBody3D" unique_id=907328648 node_paths=PackedStringArray("state_machine")]
 script = ExtResource("1_pkw2p")
@@ -37,7 +50,9 @@ metadata/SimusNetIdentity = SubResource("Resource_36mmn")
 [node name="SimusNetTransform" type="Node" parent="." unique_id=1977621246 node_paths=PackedStringArray("node")]
 script = ExtResource("2_xerr7")
 node = NodePath("..")
-interpolate_speed = 128.0
+interpolate_speed = 64.0
+tickrate = 128.0
+server_authorative = true
 metadata/_custom_type_script = "uid://d1jwapkumdp1u"
 
 [node name="CT_Health" type="Node" parent="." unique_id=1232407360 node_paths=PackedStringArray("root")]
@@ -49,10 +64,13 @@ metadata/SimusNetIdentity = SubResource("Resource_heo08")
 metadata/simusnet_var_config = Object(RefCounted,"script":Resource("res://addons/simusdev/SimusNet/SimusNetVarConfigHandler.gd"),"_object_weak_ref":Object(WeakRef,"script":null)
 ,"_identity_weak_ref":Object(WeakRef,"script":null)
 ,"_list":Dictionary[StringName, Resource("res://addons/simusdev/SimusNet/SimusNetVarConfig.gd")]({
-&"max_points": null,
-&"points": null
+&"max_points": Object(RefCounted,"script":Resource("res://addons/simusdev/SimusNet/SimusNetVarConfig.gd"),"_channel":0,"_reliable":true,"_replication":true,"_replicate_on_spawn":true,"_serialize":true,"_mode":1,"_tickrate":0.0,"__send_to_owner":false,"_serializer_blocked_methods":Array[StringName]([]))
+,
+&"points": Object(RefCounted,"script":Resource("res://addons/simusdev/SimusNet/SimusNetVarConfig.gd"),"_channel":0,"_reliable":true,"_replication":true,"_replicate_on_spawn":true,"_serialize":true,"_mode":1,"_tickrate":0.0,"__send_to_owner":false,"_serializer_blocked_methods":Array[StringName]([]))
+
 }),"_properties_for":Dictionary[Resource("res://addons/simusdev/SimusNet/SimusNetVarConfig.gd"), PackedStringArray]({
-null: PackedStringArray("points", "max_points")
+Object(RefCounted,"script":Resource("res://addons/simusdev/SimusNet/SimusNetVarConfig.gd"),"_channel":0,"_reliable":true,"_replication":true,"_replicate_on_spawn":true,"_serialize":true,"_mode":1,"_tickrate":0.0,"__send_to_owner":false,"_serializer_blocked_methods":Array[StringName]([]))
+: PackedStringArray("points", "max_points")
 }),"_properties_time":Dictionary[int, float]({}),"current_received_property":"","current_received_value":null,"current_peer":1)
 
 metadata/SimusNetRPCConfigHandler = Object(RefCounted,"script":Resource("res://addons/simusdev/SimusNet/singletons/SimusNetRPCConfigHandler.gd"))
@@ -129,3 +147,12 @@ metadata/_custom_type_script = "uid://bo4yks8bji1jr"
 [node name="UnitBorder" parent="." unique_id=1595994863 node_paths=PackedStringArray("unit") instance=ExtResource("13_heo08")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 0)
 unit = NodePath("..")
+
+[node name="MeshCastRange" type="MeshInstance3D" parent="." unique_id=915426476 node_paths=PackedStringArray("unit")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 0)
+visible = false
+material_override = SubResource("ShaderMaterial_cwkas")
+mesh = SubResource("PlaneMesh_7vjhm")
+script = ExtResource("18_tvpee")
+unit = NodePath("..")
+metadata/_custom_type_script = "uid://b0vc4socxkkcq"

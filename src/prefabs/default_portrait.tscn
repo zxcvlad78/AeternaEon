@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://c781d3ntniyji"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ku3rk"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yxseh"]
+albedo_texture = SubResource("NoiseTexture2D_ku3rk")
+texture_filter = 0
+
+[sub_resource type="SphereMesh" id="SphereMesh_8t0g5"]
+radius = 1.0
+radial_segments = 4
+rings = 1
+is_hemisphere = true
+
+[sub_resource type="Animation" id="Animation_nng8m"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-0.265, 0, -0.265)]
+}
+
+[sub_resource type="Animation" id="Animation_412xq"]
+resource_name = "start"
+length = 3.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1.5),
+"transitions": PackedFloat32Array(-2, -2),
+"update": 0,
+"values": [Vector3(-0.265, 0, -0.265), Vector3(-0.265, -0.18, -0.265)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_wvttu"]
+_data = {
+&"RESET": SubResource("Animation_nng8m"),
+&"start": SubResource("Animation_412xq")
+}
+
+[node name="DefaultPortrait" type="Node3D" unique_id=1753066360]
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1947203364]
+transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 1, 0.43, 1)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=201225625]
+transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, -0.265, 0, -0.265)
+material_override = SubResource("StandardMaterial3D_yxseh")
+mesh = SubResource("SphereMesh_8t0g5")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=2097120997]
+libraries/ = SubResource("AnimationLibrary_wvttu")
+autoplay = &"start"

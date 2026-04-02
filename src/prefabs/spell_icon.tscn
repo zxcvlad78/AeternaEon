@@ -1,0 +1,108 @@
+[gd_scene format=3 uid="uid://dis612c1gbu24"]
+
+[ext_resource type="Script" uid="uid://drprneb0bik3i" path="res://src/prefabs/spell_icon.gd" id="1_643ag"]
+[ext_resource type="Texture2D" uid="uid://cl5butv5rrhl3" path="res://src/textures/ability_ui/active_ability_border.png" id="2_cjtvm"]
+[ext_resource type="Texture2D" uid="uid://ba613ikwiqx1y" path="res://src/objects/box/textures/wood.jpg" id="2_pfv7i"]
+[ext_resource type="Texture2D" uid="uid://dcqmufug7ekp1" path="res://src/textures/ability_ui/active_ability_border_down.png" id="3_2qt1k"]
+[ext_resource type="Texture2D" uid="uid://itploq8hjwxi" path="res://src/textures/ability_ui/active_well_png.png" id="3_ubb4s"]
+[ext_resource type="Texture2D" uid="uid://klix2b1lsrq4" path="res://src/textures/ability_ui/abilit_inner.png" id="4_mnco5"]
+[ext_resource type="Texture2D" uid="uid://d0ffpownjqifk" path="res://src/textures/ability_ui/passive_ability_border_down_png.png" id="5_768vl"]
+[ext_resource type="Texture2D" uid="uid://c6n766hinop0a" path="res://src/textures/ability_ui/passive_ability_border.png" id="5_cjtvm"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_2qt1k"]
+font_size = 10
+
+[node name="SpellIcon" type="Control" unique_id=1740931532]
+custom_minimum_size = Vector2(64, 63.999996)
+layout_mode = 3
+anchor_right = 0.05
+anchor_bottom = 0.08888889
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_643ag")
+active_ablity_border = Dictionary[StringName, Texture]({
+&"down": ExtResource("3_2qt1k"),
+&"normal": ExtResource("2_cjtvm")
+})
+passive_ablity_border = Dictionary[StringName, Texture]({
+&"down": ExtResource("5_768vl"),
+&"normal": ExtResource("5_cjtvm")
+})
+metadata/_edit_use_anchors_ = true
+
+[node name="Bg" type="TextureRect" parent="." unique_id=259080813]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Icon" type="TextureRect" parent="." unique_id=1086961172]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_pfv7i")
+expand_mode = 1
+
+[node name="Well" type="TextureRect" parent="." unique_id=1306713812]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_ubb4s")
+expand_mode = 1
+
+[node name="Inner" type="TextureRect" parent="." unique_id=1867841869]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_mnco5")
+expand_mode = 1
+
+[node name="AbilityType" type="TextureRect" parent="." unique_id=192292824]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_cjtvm")
+expand_mode = 1
+
+[node name="HotKey" type="Label" parent="AbilityType" unique_id=1001277166]
+layout_mode = 0
+offset_left = -4.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 6.0
+text = "q"
+label_settings = SubResource("LabelSettings_2qt1k")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="." unique_id=676513172]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+metadata/_edit_lock_ = true

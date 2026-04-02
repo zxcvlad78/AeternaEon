@@ -18,6 +18,7 @@ func _ready() -> void:
 	
 	SimusNetRPC.register(
 		[
+			_order_task_server,
 			_local_swing,
 			_local_impact,
 		],
@@ -136,6 +137,14 @@ func _local_impact(target:Variant) -> void:
 			var dmg = R_PointValue.new(unit.resource.get_attack_damage())
 			target.ct_health.apply_diminish(dmg)
 
+func order_task(target:Variant, shift:bool = false) -> void:
+	SimusNetRPC.invoke_on_server(_order_task_server, target, shift)
+
+func _order_task_server(target:Variant, shift:bool = false) -> void:
+	if target == unit:
+		return
+	var attack_task = AttackTask.new(unit, target)
+	unit.unit_orders.issue_task(attack_task, shift)
 
 func _process(delta: float) -> void:
 	if not multiplayer.is_server():

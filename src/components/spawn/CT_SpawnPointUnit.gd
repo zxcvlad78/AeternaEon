@@ -13,16 +13,4 @@ func _ready() -> void:
 		spawn()
 
 func _spawn() -> void:
-	if not root:
-		return
-	if not unit:
-		return
-	if not unit.prefab:
-		return
-	
-	var inst = unit.prefab.instantiate()
-	inst.set("resource", unit)
-	root.add_child(inst)
-	
-	if inst is Node3D:
-		inst.global_position = self.global_position
+	AE.spawn_unit(unit, root, global_position)

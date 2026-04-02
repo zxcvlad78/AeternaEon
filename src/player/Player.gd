@@ -12,7 +12,6 @@ var camera:Camera3D
 var target_select_mode:R_Spell.TargetType = R_Spell.TargetType.NO_TARGET :
 	set(val):
 		target_select_mode = val
-		
 
 static var ref_list:Array[PlayerCamera]
 static func find_by_peer(peer_id:int) -> PlayerCamera:
@@ -98,29 +97,36 @@ func _input(event: InputEvent) -> void:
 	if SimusDev.ui.has_active_interface():
 		return
 	
+	if Input.is_action_just_pressed("ui_cancel"):
+		unit_selected.emit(null)
+		point_selected.emit(null)
+	
 	if Input.is_action_just_pressed("hold_position"):
 		var unit:Unit = get_main_unit()
 		if unit:
 			unit.unit_orders.hold_position()
+	
+	var shift_pressed = Input.is_action_pressed("shift")
+	
+	var result = _do_raycast()
+	if result:
+		if event.is_action_pressed("left_click"):
+			if result.collider is Unit:
+				select_unit(result.collider)
+			else:
+				select_point(result.position)
+		if event.is_action_pressed("right_click"):
+			if result.collider is Unit:
+				for unit in selected_units:
+					unit.ct_attack.order_task(result.collider, shift_pressed)
+			else:
+				for unit in selected_units:
+					unit.ct_movement.order_task(result.position, shift_pressed)
+					AE.show_goto_visual(result.position)
 
 func _process(delta: float) -> void:
 	if not is_multiplayer_authority():
 		return
-	
-	var viewport = get_viewport()
-	var screen_size = viewport.get_visible_rect().size
-	var mouse_pos:Vector2 = viewport.get_mouse_position()
-	
-	#if get_window().has_focus() and is_mouse_in_window(viewport, screen_size, mouse_pos):
-		#pass
-		#if mouse_pos.x <= 1:
-			#move_left(delta)
-		#if mouse_pos.y <= 1:
-			#move_forward(delta)
-		#if mouse_pos.x >= screen_size.x-1:
-			#move_right(delta)
-		#if mouse_pos.y >= screen_size.y-1:
-			#move_backward(delta)
 	
 	if Input.is_action_pressed("move_camera_left"):
 		move_left(delta)
@@ -132,26 +138,25 @@ func _process(delta: float) -> void:
 		move_backward(delta)
 
 func move_left(delta:float) -> void:
-	camera.global_position.x += delta * 5.0
-	camera.global_position.z += delta * 5.0
+	global_position.x += delta * 5.0
+	global_position.z += delta * 5.0
 func move_right(delta:float) -> void:
-	camera.global_position.x -= delta * 5.0
-	camera.global_position.z -= delta * 5.0
+	global_position.x -= delta * 5.0
+	global_position.z -= delta * 5.0
 func move_forward(delta:float) -> void:
-	camera.global_position.x -= delta * 5.0
-	camera.global_position.z += delta * 5.0
+	global_position.x -= delta * 5.0
+	global_position.z += delta * 5.0
 func move_backward(delta:float) -> void:
-	camera.global_position.x += delta * 5.0
-	camera.global_position.z -= delta * 5.0
+	global_position.x += delta * 5.0
+	global_position.z -= delta * 5.0
 
-func is_mouse_in_window(viewport:Viewport = null, mouse_pos:Vector2 = Vector2.ZERO, screen_size:Vector2 = Vector2.ZERO) -> bool:
-	return true
-	if !viewport:
-		viewport = get_viewport()
-	if !screen_size:
-		screen_size = viewport.get_visible_rect().size
-	if !mouse_pos:
-		mouse_pos = viewport.get_mouse_position()
+func _do_raycast() -> Dictionary:
+	var mouse_pos = get_viewport().get_mouse_position()
+	var ray_length = 1000.0
+	var from = camera.project_ray_origin(mouse_pos)
+	var to = from + camera.project_ray_normal(mouse_pos) * ray_length
 	
-	var in_window:bool = not (mouse_pos.x < 0 or mouse_pos.y < 0 or mouse_pos.x > screen_size.x or mouse_pos.y > screen_size.y)
-	return in_window
+	var space_state = get_world_3d().direct_space_state
+	var query = PhysicsRayQueryParameters3D.create(from, to)
+	
+	return space_state.intersect_ray(query)

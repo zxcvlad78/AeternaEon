@@ -111,6 +111,7 @@ func deserialize_nodes_to_delete(bytes: Variant, _root: Node) -> Array[Node]:
 	var data: Array = SimusNetDecompressor.parse_if_necessary(bytes)
 	var result: Array[Node] = []
 	for path: String in data:
+		print("path: %s" % path)
 		var node: Node = _root.get_node(path)
 		if node:
 			result.append(node)

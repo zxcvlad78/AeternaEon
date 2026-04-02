@@ -40,13 +40,13 @@ func _setup_internal_nodes() -> void:
 		add_child(_mesh_instance)
 
 func append_to_reference_list() -> void:
-	if SimusNetConnection.is_server():
+	if multiplayer.is_server():
 		if reference_list.has(self):
 			return
 		reference_list.append(self)
 
 func erase_from_reference_list() -> void:
-	if SimusNetConnection.is_server():
+	if multiplayer.is_server():
 		if not reference_list.has(self):
 			return
 		reference_list.erase(self)

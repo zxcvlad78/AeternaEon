@@ -3,6 +3,30 @@
 [ext_resource type="Script" uid="uid://6rss1yv71pc4" path="res://src/prefabs/player_ui/effect_container.gd" id="1_4jxg2"]
 [ext_resource type="Script" uid="uid://cgwmqttylf68" path="res://src/prefabs/player_ui/player_ui.gd" id="1_vpos8"]
 [ext_resource type="PackedScene" uid="uid://dnvvakw5j53o" path="res://src/prefabs/effect_icon.tscn" id="2_vpos8"]
+[ext_resource type="PackedScene" uid="uid://yps6hn87i4n6" path="res://src/objects/unit/knight/knight_portrait.tscn" id="4_1mvhp"]
+[ext_resource type="Script" uid="uid://bfannlboox1ly" path="res://src/prefabs/player_ui/unit_portrait.gd" id="4_xvj3t"]
+[ext_resource type="Script" uid="uid://cfdwktpoxfr7u" path="res://src/prefabs/player_ui/spell_container.gd" id="6_rk7vd"]
+[ext_resource type="PackedScene" uid="uid://dis612c1gbu24" path="res://src/prefabs/spell_icon.tscn" id="7_hifk2"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_xvj3t"]
+viewport_path = NodePath("UnitPortrait/SubViewport")
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gmgh3"]
+sky_top_color = Color(0.40234375, 0.1650238, 0.1650238, 1)
+sky_horizon_color = Color(0.70703125, 0.085617065, 0.085617065, 1)
+ground_bottom_color = Color(0.70703125, 0.085617065, 0.085617065, 1)
+ground_horizon_color = Color(0.70703125, 0.085617065, 0.085617065, 1)
+
+[sub_resource type="Sky" id="Sky_rk7vd"]
+sky_material = SubResource("ProceduralSkyMaterial_gmgh3")
+
+[sub_resource type="Environment" id="Environment_hifk2"]
+background_mode = 2
+sky = SubResource("Sky_rk7vd")
+ambient_light_source = 3
+
+[sub_resource type="World3D" id="World3D_fpcqj"]
+environment = SubResource("Environment_hifk2")
 
 [node name="PlayerUI" type="Control" unique_id=1710522312]
 layout_mode = 3
@@ -18,14 +42,54 @@ script = ExtResource("1_vpos8")
 custom_minimum_size = Vector2(0, 42)
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.73700005
+anchor_top = 0.73333335
 anchor_right = 1.0
-anchor_bottom = 0.73700005
-offset_top = 78.359985
-offset_bottom = 120.359985
+anchor_bottom = 0.7916667
+offset_bottom = -3.0517578e-05
 grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 script = ExtResource("1_4jxg2")
 player_ui = NodePath("..")
 effect_icon = ExtResource("2_vpos8")
+metadata/_edit_use_anchors_ = true
+
+[node name="UnitPortrait" type="TextureRect" parent="." unique_id=1835869921 node_paths=PackedStringArray("player_ui")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.15
+anchor_top = 0.8
+anchor_right = 0.25
+anchor_bottom = 0.98333335
+texture = SubResource("ViewportTexture_xvj3t")
+expand_mode = 1
+stretch_mode = 6
+script = ExtResource("4_xvj3t")
+player_ui = NodePath("..")
+metadata/_edit_use_anchors_ = true
+
+[node name="SubViewport" type="SubViewport" parent="UnitPortrait" unique_id=1894745745]
+world_3d = SubResource("World3D_fpcqj")
+
+[node name="KnightPortrait" parent="UnitPortrait/SubViewport" unique_id=754452009 instance=ExtResource("4_1mvhp")]
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=969441124]
+layout_mode = 0
+anchor_left = 0.25625
+anchor_top = 0.8
+anchor_right = 0.8
+anchor_bottom = 0.9777778
+color = Color(0.13671875, 0.13671875, 0.13671875, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="SpellContainer" type="HBoxContainer" parent="ColorRect" unique_id=193404390 node_paths=PackedStringArray("player_ui")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.011494253
+anchor_top = 0.0625
+anchor_right = 0.9885057
+anchor_bottom = 0.4375
+script = ExtResource("6_rk7vd")
+player_ui = NodePath("../..")
+spell_icon = ExtResource("7_hifk2")
+metadata/_edit_use_anchors_ = true

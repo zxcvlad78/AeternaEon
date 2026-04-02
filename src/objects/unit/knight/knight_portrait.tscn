@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://yps6hn87i4n6"]
+
+[ext_resource type="PackedScene" uid="uid://dbhbggfmmurcx" path="res://src/models/knight/animated_model.tscn" id="1_ksc3g"]
+
+[node name="KnightPortrait" type="Node3D" unique_id=754452009]
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=379157892]
+transform = Transform3D(-0.90630776, 1.3105035e-09, -0.42261833, 0, 1, 3.1009149e-09, 0.42261833, 2.8103833e-09, -0.90630776, -0.3, 1.5893288, -0.8)
+fov = 47.5
+
+[node name="AnimatedModel" parent="." unique_id=1035250868 instance=ExtResource("1_ksc3g")]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1866199987]
+transform = Transform3D(0.7071068, 0.6408565, 0.29883635, 7.196708e-09, -0.42261833, 0.90630776, 0.70710695, -0.6408564, -0.2988363, 0, 0, 0)

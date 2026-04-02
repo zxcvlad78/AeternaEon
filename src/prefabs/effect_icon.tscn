@@ -2,7 +2,8 @@
 
 [ext_resource type="Texture2D" uid="uid://bjf5r0010tkn3" path="res://icon.svg" id="1_im0tw"]
 [ext_resource type="Script" uid="uid://dhgn7gqoxn2s8" path="res://src/prefabs/effect_icon.gd" id="1_nf8ag"]
-[ext_resource type="Texture2D" uid="uid://dbckrnvewoyta" path="res://src/textures/circle_border.png" id="2_nf8ag"]
+[ext_resource type="Texture2D" uid="uid://cg5ymko6ka1xk" path="res://src/textures/bg_color.png" id="2_t8ht2"]
+[ext_resource type="Texture2D" uid="uid://n714v07v38j1" path="res://src/textures/progress_circle.png" id="3_nf8ag"]
 
 [sub_resource type="Shader" id="Shader_t8ht2"]
 code = "shader_type canvas_item;
@@ -37,6 +38,17 @@ mouse_filter = 1
 script = ExtResource("1_nf8ag")
 metadata/_edit_use_anchors_ = true
 
+[node name="bg" type="TextureRect" parent="." unique_id=194476763]
+material = SubResource("ShaderMaterial_lbvpe")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_t8ht2")
+expand_mode = 1
+
 [node name="Icon" type="TextureRect" parent="." unique_id=278008831]
 material = SubResource("ShaderMaterial_lbvpe")
 layout_mode = 1
@@ -48,12 +60,23 @@ grow_vertical = 2
 texture = ExtResource("1_im0tw")
 expand_mode = 1
 
-[node name="Border" type="TextureRect" parent="." unique_id=1579738260]
+[node name="TextureProgressBar" type="TextureProgressBar" parent="." unique_id=587984662]
+texture_filter = 2
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -21.0
+offset_top = -21.0
+offset_right = 235.0
+offset_bottom = 235.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_nf8ag")
-expand_mode = 1
+scale = Vector2(0.165, 0.165)
+step = 0.001
+value = 100.0
+fill_mode = 5
+texture_progress = ExtResource("3_nf8ag")
+tint_progress = Color(0.47843137, 1, 0, 1)

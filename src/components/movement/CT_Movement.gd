@@ -26,6 +26,13 @@ func _ready() -> void:
 		SimusNetRPCConfig.new().flag_mode_to_server().flag_serialization()
 	)
 	
+	SimusNetRPC.register(
+		[
+			_order_task_server
+		],
+		SimusNetRPCConfig.new().flag_mode_any_peer()
+	)
+	
 	if not unit.is_node_ready(): await unit.ready
 	
 	
@@ -65,6 +72,13 @@ func stop() -> void:
 	unit.velocity = Vector3.ZERO
 	unit.state_machine.switch_by_name("idle")
 
+func order_task(target:Variant, shift:bool = false) -> void:
+	SimusNetRPC.invoke_on_server(_order_task_server, target, shift)
+
+func _order_task_server(target:Variant, shift:bool = false) -> void:
+	var task = MoveTask.new(unit, target)
+	unit.unit_orders.issue_task(task, shift)
+
 func _physics_process(delta: float) -> void:
 	if not multiplayer.is_server() or move_target_reached:
 		return
@@ -94,3 +108,32 @@ func _physics_process(delta: float) -> void:
 	if forward.dot(move_dir) > 0.7: 
 		unit.velocity = direction * unit.resource.get_movespeed()
 		unit.move_and_slide()
+
+
+func rotate_towards(target: Variant, delta: float) -> bool:
+	var target_pos: Vector3
+	
+	if target is Vector3:
+		target_pos = target
+	elif target is Node3D and is_instance_valid(target):
+		target_pos = target.global_position
+	else:
+		return true
+
+	var direction = (target_pos - unit.global_position)
+	direction.y = 0
+	
+	if direction.length_squared() < 0.001:
+		return true
+
+	var target_basis = Basis.looking_at(direction.normalized(), Vector3.UP)
+	
+	unit.global_transform.basis = unit.global_transform.basis.slerp(
+		target_basis, 
+		unit.resource.get_rotation_speed() * delta
+	).orthonormalized()
+
+	var current_dir = -unit.global_transform.basis.z # В Godot вперед — это -Z
+	var dot = current_dir.dot(direction.normalized())
+	
+	return dot > 0.99
