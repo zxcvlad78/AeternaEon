@@ -2,29 +2,12 @@
 
 [ext_resource type="Texture2D" uid="uid://bjf5r0010tkn3" path="res://icon.svg" id="1_im0tw"]
 [ext_resource type="Script" uid="uid://dhgn7gqoxn2s8" path="res://src/prefabs/effect_icon.gd" id="1_nf8ag"]
+[ext_resource type="Shader" uid="uid://do6fa3or4c31d" path="res://resources/shaders/rounded_control.gdshader" id="2_lbvpe"]
 [ext_resource type="Texture2D" uid="uid://cg5ymko6ka1xk" path="res://src/textures/bg_color.png" id="2_t8ht2"]
 [ext_resource type="Texture2D" uid="uid://n714v07v38j1" path="res://src/textures/progress_circle.png" id="3_nf8ag"]
 
-[sub_resource type="Shader" id="Shader_t8ht2"]
-code = "shader_type canvas_item;
-
-uniform float softness : hint_range(0.0, 0.5) = 0.01;
-
-void fragment() {
-    vec2 center = vec2(0.5, 0.5);
-    
-    float dist = distance(UV, center);
-    
-    vec4 tex_color = texture(TEXTURE, UV);
-    
-    float mask = smoothstep(0.5, 0.5 - softness, dist);
-    
-    COLOR = vec4(tex_color.rgb, tex_color.a * mask);
-}
-"
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lbvpe"]
-shader = SubResource("Shader_t8ht2")
+shader = ExtResource("2_lbvpe")
 shader_parameter/softness = 0.01
 
 [node name="EffectIcon" type="Control" unique_id=388204656]
@@ -63,15 +46,11 @@ expand_mode = 1
 [node name="TextureProgressBar" type="TextureProgressBar" parent="." unique_id=587984662]
 texture_filter = 2
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -21.0
-offset_top = -21.0
-offset_right = 235.0
-offset_bottom = 235.0
+anchors_preset = -1
+anchor_right = 1.0057143
+anchor_bottom = 1.0057143
+offset_right = 213.76
+offset_bottom = 213.76
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.165, 0.165)
@@ -80,3 +59,4 @@ value = 100.0
 fill_mode = 5
 texture_progress = ExtResource("3_nf8ag")
 tint_progress = Color(0.47843137, 1, 0, 1)
+metadata/_edit_use_anchors_ = true

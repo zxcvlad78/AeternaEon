@@ -28,7 +28,7 @@ func _ready() -> void:
 	
 	SimusNetRPC.register(
 		[
-			_order_task_server
+			_net_order_task
 		],
 		SimusNetRPCConfig.new().flag_mode_any_peer()
 	)
@@ -73,9 +73,9 @@ func stop() -> void:
 	unit.state_machine.switch_by_name("idle")
 
 func order_task(target:Variant, shift:bool = false) -> void:
-	SimusNetRPC.invoke_on_server(_order_task_server, target, shift)
+	SimusNetRPC.invoke_all(_net_order_task, target, shift)
 
-func _order_task_server(target:Variant, shift:bool = false) -> void:
+func _net_order_task(target:Variant, shift:bool = false) -> void:
 	var task = MoveTask.new(unit, target)
 	unit.unit_orders.issue_task(task, shift)
 
@@ -83,8 +83,8 @@ func _physics_process(delta: float) -> void:
 	if not multiplayer.is_server() or move_target_reached:
 		return
 	
-	#if unit.is_disabled():
-		#stop()
+	if unit.is_disabled():
+		stop()
 	
 	if is_instance_valid(current_target_node):
 		nav_agent.target_position = current_target_node.global_position

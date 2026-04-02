@@ -6,6 +6,8 @@ var current_target:Variant
 var should_attack:bool = false
 
 var is_attacking: bool = false
+
+var swing_timer:Timer
 var cooldown_timer:Timer
 
 var animation:R_Animation
@@ -18,7 +20,7 @@ func _ready() -> void:
 	
 	SimusNetRPC.register(
 		[
-			_order_task_server,
+			_net_order_task,
 			_local_swing,
 			_local_impact,
 		],
@@ -26,6 +28,11 @@ func _ready() -> void:
 	)
 	
 	if multiplayer.is_server():
+		swing_timer = Timer.new()
+		swing_timer.one_shot = true
+		add_child(swing_timer)
+		swing_timer.timeout.connect(_on_swing_finished)
+		
 		cooldown_timer = Timer.new()
 		cooldown_timer.one_shot = true
 		add_child(cooldown_timer)
@@ -92,35 +99,42 @@ func attack(target:Variant) -> void:
 	#should_attack = false
 	swing(current_target)
 
-func swing(target:Variant) -> void:
-	unit.ct_movement.stop()
-	
-	if is_attacking:
+func stop_attack() -> void:
+	is_attacking = false
+	should_attack = false
+	if swing_timer:
+		swing_timer.stop()
+	unit.animated_model.stop_tree_oneshot() 
+
+func swing(target: Variant) -> void:
+	if is_attacking or in_cooldown():
 		return
 	
 	is_attacking = true
-	
+	unit.ct_movement.stop()
+
 	if unit.resource.attack_animations:
 		animation = unit.resource.attack_animations.pick_random()
 	else:
 		animation = R_Animation.new()
-	SimusNetRPC.invoke_all(_local_swing, target, animation)
 
-func _local_swing(target:Variant, _animation:R_Animation) -> void:
+	SimusNetRPC.invoke_all(_local_swing, target, animation)
+	
+	var swing_duration = unit.resource.get_attack_speed()
+	swing_timer.start(swing_duration)
+	print(swing_timer.wait_time)
+
+func _on_swing_finished() -> void:
+	is_attacking = false
+	if not is_instance_valid(current_target) or not can_reach(current_target):
+		return
+	
+	impact(current_target)
+
+func _local_swing(target: Variant, _animation: R_Animation) -> void:
 	animation = _animation
 	_play_animation(animation.swing)
 	_play_audio(unit.resource.swing_audio)
-	
-	if multiplayer.is_server():
-		if in_cooldown():
-			return
-		await get_tree().create_timer(unit.resource.get_attack_speed()).timeout
-		is_attacking = false
-		if is_instance_valid(current_target):
-			if unit.global_position.distance_to(current_target.global_position) > (unit.resource.base_attack_range * 1.5):
-				return
-			
-			impact(current_target)
 
 func impact(target:Variant) -> void:
 	SimusNetRPC.invoke_all(_local_impact, target)
@@ -138,21 +152,25 @@ func _local_impact(target:Variant) -> void:
 			target.ct_health.apply_diminish(dmg)
 
 func order_task(target:Variant, shift:bool = false) -> void:
-	SimusNetRPC.invoke_on_server(_order_task_server, target, shift)
+	SimusNetRPC.invoke_all(_net_order_task, target, shift)
 
-func _order_task_server(target:Variant, shift:bool = false) -> void:
+func _net_order_task(target:Variant, shift:bool = false) -> void:
 	if target == unit:
 		return
 	var attack_task = AttackTask.new(unit, target)
 	unit.unit_orders.issue_task(attack_task, shift)
 
 func _process(delta: float) -> void:
-	if not multiplayer.is_server():
+	if not multiplayer.is_server() or not should_attack:
 		return
 	
-	if should_attack:
-		if can_reach(current_target):
-			attack(current_target)
-		else:
-			if not is_attacking:
-				unit.ct_movement.goto_target(current_target)
+	if not is_instance_valid(current_target):
+		should_attack = false
+		return
+
+	if can_reach(current_target):
+		if not in_cooldown() and not is_attacking:
+			swing(current_target)
+	else:
+		if not is_attacking:
+			unit.ct_movement.goto_target(current_target)

@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://d2y8bkl2055hx"]
+
+[ext_resource type="Script" uid="uid://cvspix7n3yrvr" path="res://src/prefabs/unit_task_icon.gd" id="1_kjjc1"]
+[ext_resource type="Shader" uid="uid://do6fa3or4c31d" path="res://resources/shaders/rounded_control.gdshader" id="2_gyshi"]
+[ext_resource type="Texture2D" uid="uid://jh71v4na0wbg" path="res://src/models/dead_tree1/model_0.png" id="3_ccou5"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yx7ch"]
+shader = ExtResource("2_gyshi")
+shader_parameter/softness = 0.01
+
+[node name="UnitTaskIcon" type="Control" unique_id=1839059036]
+custom_minimum_size = Vector2(42, 42)
+layout_mode = 3
+anchor_right = 0.0328125
+anchor_bottom = 0.058333334
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_kjjc1")
+metadata/_edit_use_anchors_ = true
+
+[node name="Icon" type="TextureRect" parent="." unique_id=1500845533]
+material = SubResource("ShaderMaterial_yx7ch")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_ccou5")
+expand_mode = 1

@@ -1,5 +1,8 @@
 class_name UnitOrders extends Node
 
+signal queue_added(task:UnitTask)
+signal queue_removed(task:UnitTask)
+
 @export var unit:Unit
 
 var _queue:Array[UnitTask] = []
@@ -17,14 +20,39 @@ func _ready() -> void:
 		SimusNetRPCConfig.new().flag_mode_any_peer()
 	)
 	
-	#SimusNetVars.register(
-		#self,
-		#[
-			#"_queue",
-			#"current_task"
-		#],
-		#SimusNetVarConfig.new().flag_serialization().flag_replication()
-	#)
+	SimusNetRPC.register(
+		[
+			_local_queue_append,
+			_local_queue_remove,
+			_local_queue_pop_front,
+		],
+		SimusNetRPCConfig.new().flag_mode_server_only()
+	)
+
+
+func _local_queue_append(_task:UnitTask) -> void:
+	_queue.append(_task)
+	queue_added.emit(_task)
+
+func queue_append(_task:UnitTask) -> void:
+	if multiplayer.is_server():
+		SimusNetRPC.invoke_all(_local_queue_append, _task)
+
+func _local_queue_remove(_task:UnitTask) -> void:
+	if _queue.has(_task):
+		_queue.erase(_task)
+		queue_removed.emit(_task)
+
+func queue_remove(_task:UnitTask) -> void:
+	if multiplayer.is_server():
+		SimusNetRPC.invoke_all(_local_queue_remove, _task)
+
+func _local_queue_pop_front() -> void:
+	queue_remove(_queue.front())
+
+func queue_pop_front() -> void:
+	if multiplayer.is_server():
+		SimusNetRPC.invoke_all(_local_queue_pop_front)
 
 func issue_task(task:UnitTask, shift:bool = Input.is_action_pressed("shift")) -> void:
 	SimusNetRPC.invoke_on_server(_server_issue_task, task, shift)
@@ -34,7 +62,7 @@ func _server_issue_task(task:UnitTask, shift:bool = false) -> void:
 		interrupt_current()
 		_queue.clear()
 	
-	_queue.append(task)
+	queue_append(task)
 	if _queue.size() == 1:
 		_execute_next()
 
@@ -56,7 +84,7 @@ func _on_task_finished() -> void:
 	if _queue.is_empty():
 		return
 	
-	_queue.pop_front()
+	queue_pop_front()
 	
 	_execute_next.call_deferred()
 
