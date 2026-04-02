@@ -18,9 +18,12 @@ func _on_task_finished() -> void:
 func _update() -> void:
 	if is_instance_valid(task):
 		icon.texture = task.get_icon()
-		if is_inside_tree():
-			if get_index() == 0:
-				scale = Vector2(1.5, 1.5)
-				print(self)
-			else:
-				scale = Vector2.ONE
+		_apply_size.call_deferred()
+
+func _apply_size() -> void:
+	if is_inside_tree():
+		if get_index() == 0:
+			custom_minimum_size = Vector2(64, 64)
+		else:
+			custom_minimum_size = Vector2(42, 42)
+		size = custom_minimum_size

@@ -41,7 +41,7 @@ mouse_filter = 1
 script = ExtResource("1_vpos8")
 
 [node name="UnitOrderContainer" type="HBoxContainer" parent="." unique_id=1609418437 node_paths=PackedStringArray("player_ui")]
-custom_minimum_size = Vector2(0, 42)
+custom_minimum_size = Vector2(0, 64)
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.6527777

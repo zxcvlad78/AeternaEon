@@ -15,6 +15,9 @@ anchor_right = 0.0328125
 anchor_bottom = 0.058333334
 grow_horizontal = 2
 grow_vertical = 2
+pivot_offset = Vector2(21, 21)
+size_flags_horizontal = 4
+size_flags_vertical = 4
 script = ExtResource("1_kjjc1")
 metadata/_edit_use_anchors_ = true
 
@@ -26,5 +29,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+pivot_offset = Vector2(21, 21)
 texture = ExtResource("3_ccou5")
 expand_mode = 1
