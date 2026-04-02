@@ -48,7 +48,9 @@ func queue_remove(_task:UnitTask) -> void:
 		SimusNetRPC.invoke_all(_local_queue_remove, _task)
 
 func _local_queue_pop_front() -> void:
-	queue_remove(_queue.front())
+	if not _queue.is_empty():
+		var task = _queue.pop_front()
+		queue_removed.emit(task)
 
 func queue_pop_front() -> void:
 	if multiplayer.is_server():
