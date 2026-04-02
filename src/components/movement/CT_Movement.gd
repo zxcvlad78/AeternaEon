@@ -133,7 +133,7 @@ func rotate_towards(target: Variant, delta: float) -> bool:
 		unit.resource.get_rotation_speed() * delta
 	).orthonormalized()
 
-	var current_dir = -unit.global_transform.basis.z # В Godot вперед — это -Z
+	var current_dir = -unit.global_transform.basis.z
 	var dot = current_dir.dot(direction.normalized())
 	
 	return dot > 0.99

@@ -31,18 +31,21 @@ var main_unit:Unit :
 		main_unit_changed.emit()
 
 func _enter_tree() -> void:
+	var auth = is_multiplayer_authority()
+	set_process(auth)
+	set_physics_process(auth)
+	set_process_input(auth)
+	
 	if multiplayer.is_server():
 		if not ref_list.has(self):
 			ref_list.append(self)
 	
-	if not is_multiplayer_authority():
-		return
-	
-	camera = get_or_create_camera()
-	camera.current = true
-	
-	if not instance:
-		instance = self
+	if auth:
+		camera = get_or_create_camera()
+		camera.current = true
+		
+		if not instance:
+			instance = self
 
 func _exit_tree() -> void:
 	if multiplayer.is_server():
@@ -151,6 +154,9 @@ func move_backward(delta:float) -> void:
 	global_position.z -= delta * 5.0
 
 func _do_raycast() -> Dictionary:
+	if not is_multiplayer_authority():
+		return {}
+	
 	var mouse_pos = get_viewport().get_mouse_position()
 	var ray_length = 1000.0
 	var from = camera.project_ray_origin(mouse_pos)
