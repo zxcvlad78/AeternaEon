@@ -1,7 +1,7 @@
 class_name MoveTask extends UnitTask
 
 func _get_icon() -> Texture:
-	return load("res://src/textures/action_move_png.png")
+	return load("res://src/textures/action_move.png")
 
 func start() -> void:
 	unit.ct_movement.nav_agent.target_reached.connect(on_finish, CONNECT_ONE_SHOT)

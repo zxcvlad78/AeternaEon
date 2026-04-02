@@ -65,7 +65,7 @@ static func simusnet_deserialize(serializer:SimusNetCustomSerialization) -> void
 #endregion
 
 func get_duration() -> float:
-	return AE.get_leveled_value(level, duration)
+	return AE.get_leveled_value(level, duration, -1)
 
 func is_permanent() -> bool:
 	if duration.is_empty():

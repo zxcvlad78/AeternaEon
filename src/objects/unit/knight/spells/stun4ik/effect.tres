@@ -8,6 +8,6 @@ script = ExtResource("2_nrvbb")
 id = &"stun"
 effect_script = ExtResource("1_owler")
 is_debuff = true
-duration = Array[float]([1.2, 1.4, 1.8, 2.2])
+duration = Array[float]([1.2, 1.4, 1.9, 2.2])
 statusbar_visible = true
 metadata/_custom_type_script = "uid://kn4l7qpuo0ph"

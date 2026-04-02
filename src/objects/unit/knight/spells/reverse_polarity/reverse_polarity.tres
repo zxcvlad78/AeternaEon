@@ -23,6 +23,7 @@ metadata/_custom_type_script = "uid://box4b166sdj7p"
 script = ExtResource("3_hmgch")
 id = &"stun"
 effect_script = ExtResource("4_25a5b")
+is_debuff = true
 duration = Array[float]([2.2, 2.8, 3.5, 4.3])
 statusbar_visible = true
 metadata/_custom_type_script = "uid://kn4l7qpuo0ph"

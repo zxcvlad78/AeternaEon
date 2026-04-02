@@ -13,13 +13,13 @@ func _ready() -> void:
 func _update() -> void:
 	if is_instance_valid(task):
 		icon.texture = task.get_icon()
-		_apply_size.call_deferred()
+		apply_size.call_deferred()
 
-func _apply_size() -> void:
+func apply_size(idx:int = get_index()) -> void:
 	if is_inside_tree():
-		if get_index() == 0:
+		if idx == 0:
 			custom_minimum_size = Vector2(52, 52)
 		else:
 			custom_minimum_size = Vector2(42, 42)
 		
-		set_deferred("size", custom_minimum_size)
+		size = custom_minimum_size

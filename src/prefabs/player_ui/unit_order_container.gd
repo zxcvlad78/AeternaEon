@@ -47,11 +47,14 @@ func _on_queue_removed(task: UnitTask) -> void:
 func _refresh_layout() -> void:
 	_update_visibility.call_deferred()
 	
+	var active_index = 0
 	for child in get_children():
-		if child.is_queued_for_deletion(): continue
+		if child.is_queued_for_deletion(): 
+			continue
 		
-		if child.has_method("_update"):
-			child.call_deferred("_update")
+		if child.has_method("apply_size"):
+			child.apply_size(active_index)
+			active_index += 1
 
 func _update_visibility() -> void:
 	return
