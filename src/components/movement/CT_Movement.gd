@@ -28,7 +28,7 @@ func _ready() -> void:
 	
 	SimusNetRPC.register(
 		[
-			_net_order_task
+			_server_order_task
 		],
 		SimusNetRPCConfig.new().flag_mode_any_peer()
 	)
@@ -73,9 +73,9 @@ func stop() -> void:
 	unit.state_machine.switch_by_name("idle")
 
 func order_task(target:Variant, shift:bool = false) -> void:
-	SimusNetRPC.invoke_all(_net_order_task, target, shift)
+	SimusNetRPC.invoke_on_server(_server_order_task, target, shift)
 
-func _net_order_task(target:Variant, shift:bool = false) -> void:
+func _server_order_task(target:Variant, shift:bool = false) -> void:
 	var task = MoveTask.new(unit, target)
 	unit.unit_orders.issue_task(task, shift)
 

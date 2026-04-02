@@ -39,12 +39,16 @@ static func simusnet_deserialize(serializer:SimusNetCustomSerialization) -> void
 	serializer.set_result(task)
 
 func start() -> void:
+	if not SimusNetConnection.is_server():
+		return
+	
 	if is_instance_valid(spell):
 		spell.precast(target)
 		spell.casted.connect(on_finish, CONNECT_ONE_SHOT)
 
 func cancel() -> void:
-	if is_instance_valid(spell):
-		spell.should_cast = false
-		spell.spell_machine.interrupt_cast()
-		on_finish()
+	if SimusNetConnection.is_server():
+		if is_instance_valid(spell):
+			spell.should_cast = false
+			spell.spell_machine.interrupt_cast()
+	on_finish()

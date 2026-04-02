@@ -29,17 +29,37 @@ func _on_main_unit_changed() -> void:
 	
 	_update_ui()
 
-func _on_queue_added(task:UnitTask) -> void:
+func _on_queue_added(task: UnitTask) -> void:
+	for child in get_children():
+		if child.get("task") == task:
+			return 
+	
 	add_task_icon(task)
-	update_children()
-	_update_visibility()
+	_refresh_layout()
 
-func _on_queue_removed(task:UnitTask) -> void:
-	update_children()
-	_update_visibility()
+func _on_queue_removed(task: UnitTask) -> void:
+	for child in get_children():
+		if child.get("task") == task:
+			child.queue_free()
+			break
+	_refresh_layout()
+
+func _refresh_layout() -> void:
+	_update_visibility.call_deferred()
+	
+	for child in get_children():
+		if child.is_queued_for_deletion(): continue
+		
+		if child.has_method("_update"):
+			child.call_deferred("_update")
 
 func _update_visibility() -> void:
-	visible = get_child_count() > 1
+	return
+	if !is_instance_valid(_current_unit):
+		visible = false
+		return
+	
+	visible = _current_unit.unit_orders._queue.size() > 1
 
 func _clear() -> void:
 	for c in get_children():
@@ -54,13 +74,8 @@ func _update_ui() -> void:
 	for task in _current_unit.unit_orders._queue:
 		add_task_icon(task)
 	
-	update_children()
+	_refresh_layout()
 
-func update_children() -> void:
-	await get_tree().process_frame
-	for c in get_children():
-		if c.has_method("_update"):
-			c.call_deferred("_update")
 
 func add_task_icon(task:UnitTask) -> void:
 	var new_task_icon = task_icon.instantiate()

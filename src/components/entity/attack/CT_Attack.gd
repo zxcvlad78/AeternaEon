@@ -20,7 +20,7 @@ func _ready() -> void:
 	
 	SimusNetRPC.register(
 		[
-			_net_order_task,
+			_server_order_task,
 			_local_swing,
 			_local_impact,
 		],
@@ -152,9 +152,9 @@ func _local_impact(target:Variant) -> void:
 			target.ct_health.apply_diminish(dmg)
 
 func order_task(target:Variant, shift:bool = false) -> void:
-	SimusNetRPC.invoke_all(_net_order_task, target, shift)
+	SimusNetRPC.invoke_on_server(_server_order_task, target, shift)
 
-func _net_order_task(target:Variant, shift:bool = false) -> void:
+func _server_order_task(target:Variant, shift:bool = false) -> void:
 	if target == unit:
 		return
 	var attack_task = AttackTask.new(unit, target)

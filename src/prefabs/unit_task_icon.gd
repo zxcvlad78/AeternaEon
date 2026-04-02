@@ -8,12 +8,7 @@ func _ready() -> void:
 	if not task:
 		return
 	
-	task.finished.connect(_on_task_finished)
-	
 	_update()
-
-func _on_task_finished() -> void:
-	queue_free()
 
 func _update() -> void:
 	if is_instance_valid(task):
@@ -27,6 +22,4 @@ func _apply_size() -> void:
 		else:
 			custom_minimum_size = Vector2(42, 42)
 		
-		if !is_node_ready():
-			await ready
-		size = custom_minimum_size
+		set_deferred("size", custom_minimum_size)

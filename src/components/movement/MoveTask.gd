@@ -9,4 +9,3 @@ func start() -> void:
 
 func cancel() -> void:
 	unit.ct_movement.request_stop()
-	on_finish()
