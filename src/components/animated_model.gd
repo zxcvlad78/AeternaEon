@@ -51,27 +51,37 @@ func set_blend_tree() -> void:
 		var _property_path = "parameters/%s/%s/blend_position" % [state_machine_name, i]
 		tree.set(_property_path, target.get(state_machine_properties[i]))
 
+func set_oneshot_parameter(oneshot_name:StringName, param:StringName,  value:Variant) -> void:
+	var tree_root = tree.tree_root
+	if tree_root is AnimationNodeBlendTree:
+		var oneshot = tree_root.get_node(oneshot_name)
+		if oneshot is AnimationNodeOneShot:
+			oneshot.set(param, value)
+
 func play_tree_oneshot_by_name(anim_name:StringName, speed_scale:float = 1.0) -> void:
 	SimusNetRPC.invoke_all(_local_play_tree_oneshot_by_name, anim_name, speed_scale)
 
-func _local_play_tree_oneshot_by_name(anim_name:StringName, speed_scale:float = 1.0) -> void:
+func _local_play_tree_oneshot_by_name(anim_name:StringName, speed_scale:float = 1.0, fadein_time:float = 0.05, fadeout_time:float = 0.05) -> void:
 	if not anim_name:
 		return
 	if not library.has_animation(anim_name):
 		return
 	
+	var tree_root = (tree.tree_root as AnimationNodeBlendTree)
+	
 	set_oneshot_animation_speed(speed_scale)
+	
+	set_oneshot_parameter("OneShot", "fadein_time", fadein_time)
+	set_oneshot_parameter("OneShot", "fadeout_time", fadeout_time)
 	
 	var lib_name:StringName = library.resource_name
 	if lib_name.is_empty():
 		lib_name = library.resource_path.get_file().get_basename()
 	
-	var tree_root = (tree.tree_root as AnimationNodeBlendTree)
 	var animation_node:AnimationNodeAnimation = tree_root.get_node("OneshotAnimation")
 	animation_node.animation = "%s/%s" % [lib_name, anim_name]
 	
 	tree.set("parameters/OneShot/request", AnimationNodeOneShot.OneShotRequest.ONE_SHOT_REQUEST_FIRE)
-
 
 func play_tree_oneshot_by_array(array:Array[StringName], speed_scale:float = 1.0) -> void:
 	if array.is_empty():
@@ -97,6 +107,7 @@ func set_oneshot_animation_speed(value:float = 1.0) -> void:
 func switch_state(state:SD_State) -> void:
 	if state.name in state_exceptions:
 		return
+	
 	
 	var state_machine_path = "parameters/%s/playback" % state_machine_name
 	var tree_state_machine = tree.get("parameters/%s" % state_machine_name) as AnimationNodeStateMachine

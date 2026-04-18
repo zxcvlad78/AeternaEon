@@ -19,13 +19,15 @@ func _ready() -> void:
 	button.pressed.connect(_on_button_pressed)
 	
 	rect_ability_type.texture = get_type_texture()
-	if spell.res.ability_type == R_Spell.AbilityType.ACTIVE:
-		var label = rect_ability_type.get_node_or_null("HotKey")
-		if label:
-			var events = InputMap.action_get_events("cast_spell_%s" % spell.get_index())
-			if not events.is_empty():
-				label.text = events[0].as_text().split(" ")[0]
-				label.show()
+
+	if spell:
+		if spell.res.ability_type == R_Spell.AbilityType.ACTIVE:
+			var label = rect_ability_type.get_node_or_null("HotKey")
+			if label:
+				var events = InputMap.action_get_events("cast_spell_%s" % spell.get_index())
+				if not events.is_empty():
+					label.text = events[0].as_text().split(" ")[0]
+					label.show()
 	
 
 

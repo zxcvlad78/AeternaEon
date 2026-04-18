@@ -59,8 +59,9 @@ func _process(delta: float) -> void:
 			
 			if is_server():
 				_is_connected = true
+				SimusNetEvents.event_connected_pre.publish()
 				SimusNetEvents.event_connected.publish()
-			
+				
 			
 
 

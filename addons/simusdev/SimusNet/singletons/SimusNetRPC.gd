@@ -9,7 +9,7 @@ enum TRANSFER_MODE {
 
 static var _instance: SimusNetRPC
 
-@export var _processor: SimusNetRPCProccessor
+@export var transport: SimusNetTransport
 
 const RPC_BYTE_SIZE: int = 2
 
@@ -29,7 +29,11 @@ static func register(callables: Array[Callable], config: SimusNetRPCConfig = CON
 
 func initialize() -> void:
 	_instance = self
-	singleton.api.peer_packet.connect(_on_peer_packet_received)
+	transport.config = singleton.settings.transport_rpc_config
+	if !transport.config:
+		transport.config = SimusNetTransportConfig.new()
+	
+	SimusNetPacketProcessor.get_instance().packet_received.connect(_on_peer_packet_received)
 
 func _validate_callable(callable: Callable, on_recieve: bool = false, peer: int = -1) -> SimusNetRPCConfig:
 	var object: Object = callable.get_object()
@@ -123,11 +127,19 @@ func _invoke_on_without_validating(peer: int, callable: Callable, args: Array, c
 		#print("SimusNet:", bytes.size())
 		#print("Godot:", var_to_bytes(bytes).size())
 	
-	singleton.api.send_bytes(bytes, 
-	peer, config.flag_get_transfer_mode_multiplayer_peer(), 
-	config.flag_get_channel_id())
 	
-	SimusNetProfiler.get_instance()._put_up_traffic(bytes.size() + 1)
+	transport.send_packet(
+		bytes,
+		peer,
+		config.flag_get_transfer_mode_multiplayer_peer(),
+		config.flag_get_channel_id(),
+		config._immediate
+	)
+	
+	#singleton.api.send_bytes(bytes, 
+	#peer, config.flag_get_transfer_mode_multiplayer_peer(), 
+	#config.flag_get_channel_id())
+	
 	SimusNetProfiler.get_instance()._put_rpc_traffic(
 		bytes.size() + 1,
 		identity,
@@ -135,26 +147,17 @@ func _invoke_on_without_validating(peer: int, callable: Callable, args: Array, c
 		false
 	)
 	
-	SimusNetProfiler.get_instance()._put_up_packet()
 	_start_cooldown(callable)
 	
 
 var PACKET_AND_METHOD: Dictionary[SimusNet.PACKET, Callable] = {
 	SimusNet.PACKET.RPC: _on_packet_rpc,
-	SimusNet.PACKET.RPC_DEFLATE: _on_packet_rpc,
-	SimusNet.PACKET.RPC_ZSTD: _on_packet_rpc,
-	SimusNet.PACKET.RPC_ASYNC: _on_packet_rpc,
-	SimusNet.PACKET.RPC_ASYNC_DELFATE: _on_packet_rpc,
-	SimusNet.PACKET.RPC_ASYNC_ZSTD: _on_packet_rpc,
 }
 
 func _on_peer_packet_received(id: int, packet: PackedByteArray) -> void:
-	SimusNetProfiler._put_down_packet()
-	SimusNetProfiler.get_instance()._put_down_traffic(packet.size() + 1)
-	
 	var deserialized: Array = SimusNet.deserialize_packet(packet)
-	#var deserialized: Variant = bytes_to_var(packet)
-	#print('received packet(%s, size: %s): %s' % [id, packet.size(), deserialized])
+	
+	#var deserialized: Variant = bytes_to_var(packet)\
 	var packet_id: SimusNet.PACKET = deserialized[0]
 	var raw_data: PackedByteArray = deserialized[1]
 	deserialized.pop_front()
@@ -165,14 +168,17 @@ func _on_peer_packet_received(id: int, packet: PackedByteArray) -> void:
 	
 
 func _on_packet_rpc(original_packet_size: int, type: SimusNet.PACKET, peer: int, args: Array) -> void:
-	var metadata: Dictionary = {}
+	if null in args:
+		push_error(type, ":", peer, ":", args)
+		return
+	
 	var i: int = args[0]
 	var m: int = args[1]
 	for c in 2:
 		args.pop_front()
 	_receive_rpc(original_packet_size, peer, i, m, args)
 
-func _receive_rpc(original_packet_size: int, peer: int, identity_id: int, method_id: int, args: Array, metadata: Dictionary = {}) -> void:
+func _receive_rpc(original_packet_size: int, peer: int, identity_id: int, method_id: int, args: Array) -> void:
 	SimusNetRemote.sender_id = peer
 	#print('received rpc: %s, %s, %s, %s' % [peer, identity_id, method_id, args])
 	var identity: SimusNetIdentity = SimusNetIdentity.get_dictionary_by_unique_id().get(identity_id)
@@ -206,7 +212,7 @@ func _receive_rpc(original_packet_size: int, peer: int, identity_id: int, method
 	)
 	
 	var validated_config: SimusNetRPCConfig = await _validate_callable(callable, true)
-	if !validated_config and peer != SimusNet.SERVER_ID:
+	if !validated_config:
 		return
 	
 	var parsed_args: Array = []

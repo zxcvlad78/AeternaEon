@@ -8,6 +8,9 @@ var _data: Dictionary[String, Variant] = {}
 var _identities_by_generated_id: Dictionary[Variant, SimusNetIdentity]
 var _identities_by_unique_id: Dictionary[int, SimusNetIdentity]
 
+var _hashed_values: Dictionary[Variant, int] = {}
+var _hashed_values_id: Dictionary[int, Variant] = {}
+
 static func get_data() -> Dictionary[String, Variant]:
 	return instance._data
 
@@ -30,6 +33,8 @@ func initialize() -> void:
 	process_mode = Node.NOTIFICATION_DISABLED
 	SimusNetEvents.event_connected.listen(_on_connected)
 	SimusNetEvents.event_disconnected.listen(_on_disconnected)
+	
+
 
 func _on_connected() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
@@ -71,6 +76,7 @@ func _unique_id_request_rpc(serialized: Variant) -> void:
 		_unique_id_request_receive.rpc_id(multiplayer.get_remote_sender_id(), SimusNetCompressor.parse_if_necessary(packet))
 	
 	#print(id_list, " - ", "compressed: ", serialized.size(), ", uncompressed: ", var_to_bytes(id_list).size())
+
 
 @rpc("authority", "call_remote", "reliable", SimusNetChannels.BUILTIN.IDENTITY)
 func _unique_id_request_receive(serialized: Variant) -> void:

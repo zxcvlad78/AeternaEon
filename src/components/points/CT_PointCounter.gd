@@ -5,8 +5,11 @@ signal max_points_changed()
 
 @export var root:Node
 
+var prev_points:float = -1.0
+
 @export var points:float = 100.0 :
 	set(val):
+		prev_points = points
 		points = val
 		points = clamp(points, 0.0, max_points)
 		points_changed.emit()

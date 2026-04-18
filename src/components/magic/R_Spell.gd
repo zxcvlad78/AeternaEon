@@ -53,8 +53,8 @@ func get_mana_cost() -> float:
 	return AE.get_leveled_value(level, base_mana_cost)
 
 @export_category("Animation")
-@export var swing_animation_names:Array[StringName]
-@export var backswing_animation_names:Array[StringName]
+@export var swing_animations:Array[R_SpellAnimation]
+@export var backswing_animations:Array[R_SpellAnimation]
 
 @export_group("Level")
 var level:int = 0
@@ -84,13 +84,13 @@ func simusnet_serialize(serialization:SimusNetCustomSerialization) -> void:
 	serialization.pack(base_radius)
 	serialization.pack(base_cooldown)
 	serialization.pack(base_mana_cost)
-	serialization.pack(swing_animation_names)
-	serialization.pack(backswing_animation_names)
+	serialization.pack(swing_animations)
+	serialization.pack(backswing_animations)
 	serialization.pack(level)
 	serialization.pack(max_level)
 	serialization.pack(required_level)
 
-func simusnet_deserialize(serialization:SimusNetCustomSerialization) -> void:
+static func simusnet_deserialize(serialization:SimusNetCustomSerialization) -> void:
 	var r_spell = R_Spell.new()
 	var is_copy:bool = serialization.unpack()
 	
@@ -98,26 +98,26 @@ func simusnet_deserialize(serialization:SimusNetCustomSerialization) -> void:
 		var res_path = serialization.unpack()
 		r_spell = load(res_path)
 	else:
-		name = serialization.unpack()
-		icon = serialization.unpack()
-		description = serialization.unpack()
-		spell_data = serialization.unpack()
-		effects = serialization.unpack()
-		particles = serialization.unpack()
-		precast_sound = serialization.unpack()
-		cast_sound = serialization.unpack()
-		spell_script = serialization.unpack()
-		target_type = serialization.unpack()
-		base_cast_point = serialization.unpack()
-		base_cast_range = serialization.unpack()
-		base_radius = serialization.unpack()
-		base_cooldown = serialization.unpack()
-		base_mana_cost = serialization.unpack()
-		swing_animation_names = serialization.unpack()
-		backswing_animation_names = serialization.unpack()
-		level = serialization.unpack()
-		max_level = serialization.unpack()
-		required_level = serialization.unpack()
+		r_spell.name = serialization.unpack()
+		r_spell.icon = serialization.unpack()
+		r_spell.description = serialization.unpack()
+		r_spell.spell_data = serialization.unpack()
+		r_spell.effects = serialization.unpack()
+		r_spell.particles = serialization.unpack()
+		r_spell.precast_sound = serialization.unpack()
+		r_spell.cast_sound = serialization.unpack()
+		r_spell.spell_script = serialization.unpack()
+		r_spell.target_type = serialization.unpack()
+		r_spell.base_cast_point = serialization.unpack()
+		r_spell.base_cast_range = serialization.unpack()
+		r_spell.base_radius = serialization.unpack()
+		r_spell.base_cooldown = serialization.unpack()
+		r_spell.base_mana_cost = serialization.unpack()
+		r_spell.swing_animations = serialization.unpack()
+		r_spell.backswing_animations = serialization.unpack()
+		r_spell.level = serialization.unpack()
+		r_spell.max_level = serialization.unpack()
+		r_spell.required_level = serialization.unpack()
 	
 	serialization.set_result(r_spell)
 #endregion

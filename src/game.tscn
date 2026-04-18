@@ -6,6 +6,7 @@
 [ext_resource type="Resource" uid="uid://byprm4cq8wq0h" path="res://src/objects/unit/knight/knight.tres" id="4_kc8ui"]
 [ext_resource type="Script" uid="uid://bkkb8n7he5xo7" path="res://src/components/spawn/CT_SpawnPoint.gd" id="5_bs6l1"]
 [ext_resource type="Script" uid="uid://imhh1kugqh4m" path="res://addons/simusdev/SimusNet/SimusNetNodePlayerSpawner.gd" id="7_wqvko"]
+[ext_resource type="Resource" uid="uid://dhukmueray1qw" path="res://src/objects/unit/skeleton/skeleton.tres" id="8_cdx1q"]
 [ext_resource type="Script" uid="uid://b50n6cwhbx034" path="res://src/components/spawn/CT_SpawnPointUnit.gd" id="10_aikvj"]
 
 [node name="Game" type="Node3D" unique_id=444972124]
@@ -35,12 +36,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0)
 script = ExtResource("10_aikvj")
 root = NodePath("../NetworkedObjects")
 unit = ExtResource("4_kc8ui")
+custom_name = &"Knight"
 metadata/_custom_type_script = "uid://b50n6cwhbx034"
 
 [node name="CT_SpawnPointUnit2" type="Node3D" parent="." unique_id=374380579 node_paths=PackedStringArray("root")]
 script = ExtResource("10_aikvj")
 root = NodePath("../NetworkedObjects")
 unit = ExtResource("4_kc8ui")
+custom_name = &"Knight"
 metadata/_custom_type_script = "uid://b50n6cwhbx034"
 
 [node name="CT_SpawnPointUnit3" type="Node3D" parent="." unique_id=1815624253 node_paths=PackedStringArray("root")]
@@ -48,6 +51,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
 script = ExtResource("10_aikvj")
 root = NodePath("../NetworkedObjects")
 unit = ExtResource("4_kc8ui")
+custom_name = &"Knight"
 metadata/_custom_type_script = "uid://b50n6cwhbx034"
 
 [node name="CT_SpawnPointUnit4" type="Node3D" parent="." unique_id=275327099 node_paths=PackedStringArray("root")]
@@ -55,6 +59,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 0)
 script = ExtResource("10_aikvj")
 root = NodePath("../NetworkedObjects")
 unit = ExtResource("4_kc8ui")
+custom_name = &"Knight"
 metadata/_custom_type_script = "uid://b50n6cwhbx034"
 
 [node name="CT_SpawnPointUnit5" type="Node3D" parent="." unique_id=942053737 node_paths=PackedStringArray("root")]
@@ -62,9 +67,50 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 0)
 script = ExtResource("10_aikvj")
 root = NodePath("../NetworkedObjects")
 unit = ExtResource("4_kc8ui")
+custom_name = &"Knight"
 metadata/_custom_type_script = "uid://b50n6cwhbx034"
 
 [node name="PlayerCameraSpawnPoint" type="Node3D" parent="." unique_id=116812279]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0017328, 6.8, -1.0017328)
 script = ExtResource("5_bs6l1")
 metadata/_custom_type_script = "uid://bkkb8n7he5xo7"
+
+[node name="CT_SpawnPointUnit6" type="Node3D" parent="." unique_id=917976643 node_paths=PackedStringArray("root")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -8, 0, -2)
+script = ExtResource("10_aikvj")
+root = NodePath("../NetworkedObjects")
+unit = ExtResource("8_cdx1q")
+custom_name = &"Skeleton"
+metadata/_custom_type_script = "uid://b50n6cwhbx034"
+
+[node name="CT_SpawnPointUnit7" type="Node3D" parent="." unique_id=25617982 node_paths=PackedStringArray("root")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -8, 0, -4)
+script = ExtResource("10_aikvj")
+root = NodePath("../NetworkedObjects")
+unit = ExtResource("8_cdx1q")
+custom_name = &"Skeleton"
+metadata/_custom_type_script = "uid://b50n6cwhbx034"
+
+[node name="CT_SpawnPointUnit8" type="Node3D" parent="." unique_id=1578983639 node_paths=PackedStringArray("root")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -8, 0, -6)
+script = ExtResource("10_aikvj")
+root = NodePath("../NetworkedObjects")
+unit = ExtResource("8_cdx1q")
+custom_name = &"Skeleton"
+metadata/_custom_type_script = "uid://b50n6cwhbx034"
+
+[node name="CT_SpawnPointUnit9" type="Node3D" parent="." unique_id=1255661655 node_paths=PackedStringArray("root")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -8, 0, -8)
+script = ExtResource("10_aikvj")
+root = NodePath("../NetworkedObjects")
+unit = ExtResource("8_cdx1q")
+custom_name = &"Skeleton"
+metadata/_custom_type_script = "uid://b50n6cwhbx034"
+
+[node name="CT_SpawnPointUnit10" type="Node3D" parent="." unique_id=876394260 node_paths=PackedStringArray("root")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -8, 0, -10)
+script = ExtResource("10_aikvj")
+root = NodePath("../NetworkedObjects")
+unit = ExtResource("8_cdx1q")
+custom_name = &"Skeleton"
+metadata/_custom_type_script = "uid://b50n6cwhbx034"

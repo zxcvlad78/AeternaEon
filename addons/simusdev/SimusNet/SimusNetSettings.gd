@@ -1,14 +1,18 @@
 extends Resource
 class_name SimusNetSettings
 
+@export_group("Transports", "transport")
+@export var transport_rpc_config: SimusNetTransportConfig = SimusNetTransportConfig.new()
+@export var transport_var_config: SimusNetTransportConfig = SimusNetTransportConfig.new()
+
 @export_group("Server", "server")
 @export var server_info:SimusNetServerInfo = null
 
 @export_group("Synchronization", "synchronization")
 @export var synchronization_transform_batch_count: int = 25
-#@export var synchronization_var_replicate_batch_count: int = 25
-#@export var synchronization_var_send_batch_count: int = 10
 
+@export_group("Hashing", "hashing")
+@export var hashing_resource_folders_to_hash: PackedStringArray
 
 #@export_group("Time", "time")
 #@export var time_tickrate: float = 48.0 : set = set_time_tickrate

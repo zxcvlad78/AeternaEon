@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://bi7hjnvrrh47x"]
+
+[ext_resource type="PackedScene" uid="uid://7arywqvet7ru" path="res://src/prefabs/Unit.tscn" id="1_0nyd5"]
+[ext_resource type="Script" uid="uid://bt7y70x0v0561" path="res://src/components/magic/R_Spell.gd" id="2_0cfyr"]
+[ext_resource type="PackedScene" uid="uid://djlnelowb05hc" path="res://src/models/skeleton/animated_model.tscn" id="2_wy5il"]
+[ext_resource type="Resource" uid="uid://c0r6kg6p0lilk" path="res://resources/spells/reverse_polarity/reverse_polarity.tres" id="3_ek82y"]
+
+[node name="Unit" unique_id=907328648 node_paths=PackedStringArray("animated_model") instance=ExtResource("1_0nyd5")]
+animated_model = NodePath("AnimatedModel")
+
+[node name="CT_Health" parent="." index="1" unique_id=1232407360]
+metadata/simusnet_var_config = Object(RefCounted,"script":Resource("res://addons/simusdev/SimusNet/SimusNetVarConfigHandler.gd"),"_object_weak_ref":Object(WeakRef,"script":null)
+,"_identity_weak_ref":Object(WeakRef,"script":null)
+,"_list":Dictionary[StringName, Resource("res://addons/simusdev/SimusNet/SimusNetVarConfig.gd")]({
+&"max_points": Object(RefCounted,"script":Resource("res://addons/simusdev/SimusNet/SimusNetVarConfig.gd"),"_channel":0,"_reliable":true,"_replication":true,"_replicate_on_spawn":true,"_serialize":true,"_mode":1,"_tickrate":0.0,"__send_to_owner":false,"_serializer_blocked_methods":Array[StringName]([]),"_immediate":false)
+,
+&"points": Object(RefCounted,"script":Resource("res://addons/simusdev/SimusNet/SimusNetVarConfig.gd"),"_channel":0,"_reliable":true,"_replication":true,"_replicate_on_spawn":true,"_serialize":true,"_mode":1,"_tickrate":0.0,"__send_to_owner":false,"_serializer_blocked_methods":Array[StringName]([]),"_immediate":false)
+
+}),"_properties_for":Dictionary[Resource("res://addons/simusdev/SimusNet/SimusNetVarConfig.gd"), PackedStringArray]({
+Object(RefCounted,"script":Resource("res://addons/simusdev/SimusNet/SimusNetVarConfig.gd"),"_channel":0,"_reliable":true,"_replication":true,"_replicate_on_spawn":true,"_serialize":true,"_mode":1,"_tickrate":0.0,"__send_to_owner":false,"_serializer_blocked_methods":Array[StringName]([]),"_immediate":false)
+: PackedStringArray("points", "max_points")
+}),"_properties_time":Dictionary[int, float]({}),"current_received_property":"","current_received_value":null,"current_peer":1)
+
+
+[node name="SpellMachine" parent="." index="5" unique_id=832120988]
+spells = Array[ExtResource("2_0cfyr")]([ExtResource("3_ek82y")])
+
+[node name="AnimatedModel" parent="." index="12" unique_id=670523129 node_paths=PackedStringArray("target") instance=ExtResource("2_wy5il")]
+target = NodePath("..")
+state_exceptions = Array[String]([])

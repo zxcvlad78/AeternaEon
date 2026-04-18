@@ -26,6 +26,7 @@ static var __type_and_method: Dictionary[SimusNetSerializer.TYPE, Callable] = {
 	SimusNetSerializer.TYPE.ARRAY_TYPED: parse_array,
 	SimusNetSerializer.TYPE.DICTIONARY: parse_dictionary,
 	SimusNetSerializer.TYPE.CUSTOM: parse_custom,
+	SimusNetSerializer.TYPE.CUSTOM_HASHED: parse_custom,
 	SimusNetSerializer.TYPE.NULL: parse_null,
 	SimusNetSerializer.TYPE.STRING_NAME : parse_string_name,
 	SimusNetSerializer.TYPE.VAR: parse_var,
@@ -34,13 +35,25 @@ static var __type_and_method: Dictionary[SimusNetSerializer.TYPE, Callable] = {
 static func parse_custom(data: PackedByteArray) -> Variant:
 	_buffer.data_array = data
 	var type: SimusNetSerializer.TYPE = _buffer.get_u8()
-	var uid: String = _buffer.get_utf8_string()
-	var variant: Array = parse_arguments(_buffer.get_data(_buffer.get_size())[1])
+	
+	var static_script: Script = null
+	var error: String = ""
+	
+	if type == SimusNetSerializer.TYPE.CUSTOM_HASHED:
+		var hash_id: int = _buffer.get_64()
+		error = str(hash_id)
+		var file: String = SimusNetResources.get_hash().get_value_from_hash_id(hash_id, "")
+		static_script = load(file)
+	else:
+		var uid: String = _buffer.get_utf8_string()
+		var path: String = "uid://" + uid
+		error = path
+		static_script = load(path)
+	
+	var variant: Array = parse_arguments(_buffer.get_data(_buffer.get_available_bytes())[1])
 	var result: SimusNetCustomSerialization = SimusNetCustomSerialization.new()
-	var path: String = "uid://" + uid
-	var static_script: Script = load(path)
 	if !static_script:
-		_throw_error("_parse_custom(): failed to load script %s!" % [path])
+		_throw_error("_parse_custom(): failed to load script! %s" % error)
 		return result._result
 	
 	result._data = variant
@@ -86,10 +99,11 @@ static func parse_resource(data: PackedByteArray) -> Resource:
 	var type: SimusNetSerializer.TYPE = _buffer.get_u8()
 	var result: Resource = null
 	if type == SimusNetSerializer.TYPE.RESOURCE_CACHED:
-		var id: int = _buffer.get_u16()
-		result = load(SimusNetResources.get_cached().get(id))
+		var hash_id: int = _buffer.get_64()
+		var path: String = SimusNetResources.get_hash().get_value_from_hash_id(hash_id, "")
+		result = load(path)
 		if !is_instance_valid(result):
-			_throw_error("deserialized resource is null! ID: %s" % id)
+			_throw_error("deserialized resource is null! ID: %s" % hash_id)
 	else:
 		var str: String = _buffer.get_string()
 		result = load(str)

@@ -20,7 +20,10 @@ func get_method_unique_id(method: StringName) -> int:
 	return _list_by_name.keys().find(method)
 
 func get_method_name_by_unique_id(id: int) -> StringName:
-	return _list_by_name.keys().get(id)
+	var r: Variant = _list_by_name.keys().get(id)
+	if r == null:
+		return &""
+	return r
 
 func get_callable_by_method_name(name: StringName) -> Variant:
 	return _callables.get(name, null)

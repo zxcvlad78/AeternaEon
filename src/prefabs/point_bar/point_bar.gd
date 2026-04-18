@@ -11,9 +11,12 @@ static func get_default_prefab() -> PackedScene:
 			fill.set("bg_color", color)
 
 var point_counter:CT_PointCounter
-var fill: StyleBoxFlat
+var fill:StyleBoxFlat
 
 @onready var label: Label = $Label
+@onready var tail_rect: ProgressBar = $tail_rect
+
+var tween:Tween
 
 func _ready() -> void:
 	var original_style = get_theme_stylebox("fill", "ProgressBar")
@@ -29,12 +32,32 @@ func _ready() -> void:
 	if not point_counter:
 		return
 	
+	if not point_counter.points_changed.is_connected(_animate_white_rect):
+		point_counter.points_changed.connect(_animate_white_rect)
+	
 	if not point_counter.points_changed.is_connected(_update):
 		point_counter.points_changed.connect(_update)
 	if not point_counter.max_points_changed.is_connected(_update):
 		point_counter.max_points_changed.connect(_update)
 	
 	_update()
+	_animate_white_rect()
+
+func _animate_white_rect() -> void:
+	if not tail_rect:
+		return
+	
+	if tween and tween.is_running():
+		tween.kill()
+	
+	tween = create_tween()
+	tween.tween_property(
+		tail_rect,
+		"value",
+		point_counter.points,
+		0.5,
+	).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
 
 func _update() -> void:
 	if not point_counter:
@@ -43,5 +66,8 @@ func _update() -> void:
 	
 	max_value = point_counter.max_points
 	value = point_counter.points
+	
+	tail_rect.max_value = max_value
+	
 	if label:
-		label.text = str(snappedf(value, 0.1))
+		label.text = str(int(value))

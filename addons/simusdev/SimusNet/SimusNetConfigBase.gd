@@ -3,6 +3,12 @@ class_name SimusNetConfigBase
 
 var _serializer_blocked_methods: Array[StringName] = []
 
+var _immediate: bool = false
+
+func flag_immediate(value: bool = true) -> SimusNetConfigBase:
+	_immediate = value
+	return self
+
 func flag_serializer_block_method(method: StringName) -> SimusNetConfigBase:
 	if !SimusNetSerializer.get_instance().has_method(method):
 		push_error("cant find method %s" % method)

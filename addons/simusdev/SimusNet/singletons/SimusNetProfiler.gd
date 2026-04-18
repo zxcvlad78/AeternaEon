@@ -3,8 +3,11 @@ class_name SimusNetProfiler
 
 static var _instance: SimusNetProfiler
 
-var _up_packets: int = 0
-var _down_packets: int = 0
+var _up_packets: Array[int] = []
+var _down_packets: Array[int] = []
+
+var _up_packets_count: int = 0
+var _down_packets_count: int = 0
 
 var _total_traffic: int = 0
 
@@ -35,6 +38,22 @@ signal on_rpc_profiler_change(key: String)
 
 signal on_var_profiler_add(key: String, data: Dictionary)
 signal on_var_profiler_change(key: String)
+
+func _array_get_average(values: Array[int]) -> float:
+	if values.is_empty():
+		return 0.0
+	
+	var sum: int = 0
+	for value in values:
+		sum += value
+	
+	return float(sum) / values.size()
+
+func _append_to_traffic_array(array: Array[int], value: int) -> void:
+	if array.size() > 10:
+		array.pop_front()
+	
+	array.append(value)
 
 func _ready() -> void:
 	_instance = self
@@ -90,10 +109,12 @@ func _put_visibility_down_traffic(size: int) -> void:
 	_put_down_traffic(size)
 
 static func _put_up_packet() -> void:
-	_instance._up_packets += 1
+	_instance._up_packets_count += 1
+	_instance._append_to_traffic_array(_instance._up_packets, _instance._up_packets_count)
 
 static func _put_down_packet() -> void:
-	_instance._down_packets += 1
+	_instance._down_packets_count += 1
+	_instance._append_to_traffic_array(_instance._down_packets, _instance._down_packets_count)
 
 func _put_rpc_traffic(size: int, identity: Variant, method: Variant, receive: bool) -> void:
 	#var identity_name: String = str(identity)
@@ -177,12 +198,13 @@ func _put_var_traffic(size: int, identity: Variant, property: Variant, receive: 
 
 func _timer_tick() -> void:
 	_timer.wait_time = _timer_tickrate
-	_up_packets /= 2
-	_down_packets /= 2
 	_down_traffic /= 2
 	_up_traffic /= 2
 	_transform_down_traffic /= 2
 	_transform_up_traffic /= 2
+	
+	_down_packets_count /= 2
+	_up_packets_count /= 2
 
 static func get_instance() -> SimusNetProfiler:
 	return _instance
@@ -203,10 +225,10 @@ static func get_transform_down_traffic_per_second() -> int:
 	return _instance._transform_down_traffic
 
 static func get_up_packets_count() -> int:
-	return _instance._up_packets
+	return _instance._array_get_average(_instance._up_packets)
 
 static func get_down_packets_count() -> int:
-	return _instance._down_packets
+	return _instance._array_get_average(_instance._down_packets)
 
 static func get_visibility_up_traffic() -> int:
 	return _instance._visibility_up_traffic

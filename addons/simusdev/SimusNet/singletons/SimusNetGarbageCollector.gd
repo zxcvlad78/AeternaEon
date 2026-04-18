@@ -25,27 +25,39 @@ func _collect_threaded() -> void:
 	var identites: Dictionary[int, SimusNetIdentity] = SimusNetIdentity.get_dictionary_by_unique_id()
 	var identites_generated: Dictionary[Variant, SimusNetIdentity] = SimusNetIdentity.get_dictionary_by_generated_id()
 	
+	var collected_identites: int = 0
+	
 	for i: int in identites:
 		var identity: SimusNetIdentity = identites[i]
 		if is_instance_valid(identity):
 			if !is_instance_valid(identity.owner):
 				identites.erase(i)
+				collected_identites += 1
 				
 				while identity.get_reference_count() > 0:
 					identity.unreference()
 		else:
 			identites.erase(i)
+			collected_identites += 1
 	
 	for i: Variant in identites_generated:
 		var identity: SimusNetIdentity = identites_generated[i]
 		if is_instance_valid(identity):
 			if !is_instance_valid(identity.owner):
 				identites_generated.erase(i)
+				collected_identites += 1
 				
 				while identity.get_reference_count() > 0:
 					identity.unreference()
 		else:
 			identites_generated.erase(i)
+			collected_identites += 1
+	
+	if !singleton.settings.debug_enable:
+		return
+	
+	if collected_identites > 0:
+		push_warning("Cleared %s Identites." % collected_identites)
 
 func _exit_tree() -> void:
 	if _thread.is_alive():

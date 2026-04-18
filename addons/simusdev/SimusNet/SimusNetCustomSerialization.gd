@@ -1,3 +1,4 @@
+@static_unload
 extends RefCounted
 class_name SimusNetCustomSerialization
 
@@ -15,6 +16,8 @@ var _data: Array = []
 
 var _result: Variant
 var _result_def: Variant
+
+static var config: SimusNetCustomSerializationConfig = SimusNetCustomSerializationConfig.new()
 
 static func find_base_script(script: Script, recursive: bool = true) -> Script:
 	if not script:
@@ -37,12 +40,8 @@ func get_result() -> Variant:
 	return _result
 
 func pack(value: Variant) -> SimusNetCustomSerialization:
-	if !_data is Array:
-		_data = []
 	_data.append(value)
 	return self
 
 func unpack() -> Variant:
-	if _data is Array:
-		return _data.pop_front()
-	return null
+	return _data.pop_front()

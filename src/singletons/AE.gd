@@ -51,7 +51,7 @@ func spawn_unit(resource:R_Unit, root, pos:Vector3) -> void:
 		return
 	
 	var inst = resource.prefab.instantiate()
-	inst.set("resource", resource)#.duplicate())
+	inst.set("resource", resource.duplicate())
 	root.add_child(inst)
 	
 	if inst is Node3D:

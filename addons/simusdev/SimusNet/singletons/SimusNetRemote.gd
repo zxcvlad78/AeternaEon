@@ -6,4 +6,4 @@ static var sender_id: int = SimusNetConnection.SERVER_ID
 #static var sender_channel: String = SimusNetChannels.DEFAULT
 #static var sender_channel_id: int = 0
 
-static var receiver_id: int = SimusNetConnection.SERVER_ID
+#static var receiver_id: int = SimusNetConnection.SERVER_ID

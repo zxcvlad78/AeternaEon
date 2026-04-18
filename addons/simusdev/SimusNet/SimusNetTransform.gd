@@ -106,8 +106,10 @@ func _process(delta: float) -> void:
 	var i: float = interpolate_speed * delta
 	
 	node.position = node.position.lerp(p, i)
-	node.rotation.x = lerp_angle(node.rotation.x, r.x, i)
-	node.rotation.y = lerp_angle(node.rotation.y, r.y, i)
+	if node is Node3D:
+		node.rotation.x = lerp_angle(node.rotation.x, r.x, i)
+	else:
+		node.rotation = lerp_angle(node.rotation, r, i)
 	
 	if typeof(node.rotation) == TYPE_VECTOR3:
 		node.rotation.z = lerp_angle(node.rotation.z, r.z, i)

@@ -50,9 +50,7 @@ func _add_player(peer: int) -> void:
 		if "transform" in spawnpoint and "transform" in instance:
 			await instance.tree_entered
 			instance.global_transform = spawnpoint.global_transform
-	
-	
-	
+
 
 func _remove_player(peer: int) -> void:
 	var founded: Node = _players.get(peer)

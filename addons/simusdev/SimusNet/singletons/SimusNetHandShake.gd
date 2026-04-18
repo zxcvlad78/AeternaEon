@@ -9,6 +9,7 @@ signal on_received(peer: int, data: Dictionary)
 
 func initialize() -> void:
 	_instance = self
+	
 
 static func _api_connected_to_server() -> void:
 	_instance._on_connected_to_server()
@@ -40,4 +41,5 @@ func _client_recieve(bytes: Variant, handshake_bytes: Variant) -> void:
 	on_received.emit(multiplayer.get_remote_sender_id(), handshake)
 	
 	SimusNetConnection._instance._is_connected = true
+	SimusNetEvents.event_connected_pre.publish()
 	SimusNetEvents.event_connected.publish()

@@ -17,6 +17,12 @@ signal update()
 var resource:R_Unit = R_Unit.new():
 	set(val):
 		resource = val
+		
+		resource.base_health_changed.connect(update_health)
+		resource.base_strength_changed.connect(update_health)
+		
+		resource.base_mana_changed.connect(update_mana)
+		resource.base_intelligence_changed.connect(update_mana)
 
 @export var state_machine:SD_NodeStateMachine
 @export var animated_model:AnimatedModel
@@ -41,14 +47,32 @@ func _ready() -> void:
 	SimusNetVars.register(
 		self,
 		["velocity"], 
-		SimusNetVarConfig.new().flag_mode_server_only().flag_replication()
+		SimusNetVarConfig.new().flag_mode_server_only().flag_replication().flag_tickrate(16.0)
 	)
+	
+	update_hero()
+	ct_health.apply_replenish(R_PointValue.new(ct_health.max_points))
+	ct_mana.apply_replenish(R_PointValue.new(ct_mana.max_points))
 
 func is_disabled() -> bool:
 	if unit_effects.find_effect_by_id(&"stun"):
 		return true
 	
 	return false
+
+func update_hero() -> void:
+	update_health()
+	update_mana()
+
+func update_health() -> void:
+	if not resource or not ct_health:
+		return
+	ct_health.max_points = resource.get_max_health()
+
+func update_mana() -> void:
+	if not resource or not ct_mana:
+		return
+	ct_mana.max_points = resource.get_max_mana()
 
 func _physics_process(_delta: float) -> void:
 	unit_velocity = velocity.normalized() * transform.basis

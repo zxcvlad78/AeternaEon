@@ -27,7 +27,6 @@ func initialize() -> void:
 	SimusNetEvents.event_disconnected.listen(_on_disconnected)
 	
 
-
 func _on_connected() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 

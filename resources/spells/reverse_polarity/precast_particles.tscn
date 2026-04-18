@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://brrg8ynwrodvn"]
 
-[ext_resource type="Script" uid="uid://dissx1gsl4inn" path="res://src/objects/unit/knight/spells/reverse_polarity/precast_particles.gd" id="1_b5li3"]
+[ext_resource type="Script" uid="uid://dissx1gsl4inn" path="res://resources/spells/reverse_polarity/precast_particles.gd" id="1_b5li3"]
 [ext_resource type="Shader" uid="uid://hnnv0sqgvd87" path="res://resources/shaders/distorted_matter.gdshader" id="2_1uepk"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_b5li3"]

@@ -8,15 +8,8 @@ static var _stream_buffer: StreamPeerBuffer = StreamPeerBuffer.new()
 
 enum PACKET {
 	RPC,
-	RPC_DEFLATE,
-	RPC_ZSTD,
-	RPC_ASYNC,
-	RPC_ASYNC_DELFATE,
-	RPC_ASYNC_ZSTD,
 	VARIABLE_REPLICATE,
 	VARIABLES,
-	VARIABLES_DEFLATE,
-	VARIABLES_ZSTD,
 }
 
 static func serialize_packet(type: PACKET, data: PackedByteArray) -> PackedByteArray:

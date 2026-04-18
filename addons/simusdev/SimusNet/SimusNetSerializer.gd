@@ -53,6 +53,7 @@ enum TYPE {
 	ARRAY_TYPED,
 	DICTIONARY,
 	CUSTOM,
+	CUSTOM_HASHED,
 	STRING_NAME,
 	VAR,
 }
@@ -112,13 +113,21 @@ static func parse_custom(variant: Object) -> PackedByteArray:
 	_current_blocked_methods.clear()
 	if variant.has_method(SimusNetCustomSerialization.METHOD_SERIALIZE):
 		variant.call(SimusNetCustomSerialization.METHOD_SERIALIZE, serialization)
+	
 	var script: Script = variant.get_script()
 	#SimusNetResources.cache(script)
 	var bytes: PackedByteArray = PackedByteArray()
 	var buffer: StreamPeerBuffer = StreamPeerBuffer.new()
 	buffer.data_array = bytes
-	buffer.put_u8(TYPE.CUSTOM)
-	buffer.put_utf8_string(ResourceUID.path_to_uid(script.resource_path).replacen("uid://", ""))
+	
+	var hash_id: int = SimusNetResources.get_hash().get_hash_id_for(script.resource_path, -1)
+	if hash_id != -1:
+		buffer.put_u8(TYPE.CUSTOM_HASHED)
+		buffer.put_64(hash_id)
+	else:
+		buffer.put_u8(TYPE.CUSTOM)
+		buffer.put_utf8_string(ResourceUID.path_to_uid(script.resource_path).replacen("uid://", ""))
+	
 	buffer.put_data(parse_arguments(serialization._data))
 	return buffer.data_array
 
@@ -169,11 +178,11 @@ static func parse_resource(variant: Resource) -> PackedByteArray:
 	if cls in _resource_class_and_method:
 		return _resource_class_and_method[cls].call(variant)
 	
-	var id: int = SimusNetResources.get_unique_id(variant)
-	if id > -1:
+	var hash_id: int = SimusNetResources.get_hash().get_hash_id_for(variant.resource_path)
+	if hash_id != -1:
 		_buffer.clear()
 		_buffer.put_u8(TYPE.RESOURCE_CACHED)
-		_buffer.put_u16(id)
+		_buffer.put_64(hash_id)
 		return _buffer.data_array
 	
 	_buffer.clear()
@@ -289,7 +298,7 @@ static func parse_var(variant: Variant) -> PackedByteArray:
 	return _buffer.data_array
 
 static func test() -> void:
-	var simusnet_packet: PackedByteArray = SimusNet.serialize_packet(SimusNet.PACKET.RPC_DEFLATE, var_to_bytes(34))
+	var simusnet_packet: PackedByteArray = SimusNet.serialize_packet(SimusNet.PACKET.RPC, var_to_bytes(34))
 	print(SimusNet.deserialize_packet(simusnet_packet))
 	
 	var variant: PackedByteArray = SimusNetSerializer.parse_var(Transform3D())

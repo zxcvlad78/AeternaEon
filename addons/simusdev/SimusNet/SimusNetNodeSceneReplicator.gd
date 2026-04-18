@@ -62,14 +62,12 @@ func serialize_node(node: Node) -> Variant:
 		result[KEY.NETWORK_PARAMETERS] = network_parameters
 	
 	serialize_custom(node, result)
-	return SimusNetCompressor.parse_if_necessary(result)
+	return result
 
 func scene_deserialized(scene: PackedScene) -> PackedScene:
 	return client_replace.get(scene, scene)
 
-func deserialize_node(bytes: Variant) -> Node:
-	var data: Dictionary = SimusNetDecompressor.parse_if_necessary(bytes)
-	
+func deserialize_node(data: Dictionary) -> Node:
 	var scene: PackedScene = SimusNetDeserializer.parse_resource(data[KEY.SCENE])
 	scene = scene_deserialized(scene)
 	
@@ -111,7 +109,6 @@ func deserialize_nodes_to_delete(bytes: Variant, _root: Node) -> Array[Node]:
 	var data: Array = SimusNetDecompressor.parse_if_necessary(bytes)
 	var result: Array[Node] = []
 	for path: String in data:
-		print("path: %s" % path)
 		var node: Node = _root.get_node(path)
 		if node:
 			result.append(node)

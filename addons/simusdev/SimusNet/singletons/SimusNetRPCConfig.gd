@@ -69,21 +69,11 @@ func flag_set_channel(channel: Variant) -> SimusNetRPCConfig:
 
 func _f_s_c_async(channel: Variant) -> void:
 	_channel = await SimusNetChannels.async_parse_and_get_id(channel)
-	_cache_rpc_processor_callable()
 
 func flag_set_transfer_mode(mode: SimusNetRPC.TRANSFER_MODE) -> SimusNetRPCConfig:
 	_transfer_mode = mode
-	_cache_rpc_processor_callable()
 	return self
 
-var _cached_processor_callable: Callable
-
-func _cache_rpc_processor_callable() -> void:
-	var function: String = SimusNetRPCProccessor._parse_and_get_function(flag_get_channel_id(), flag_get_transfer_mode())
-	_cached_processor_callable = Callable(SimusNetRPC._instance._processor, function)
-
-func get_cached_processor_callable() -> Callable:
-	return _cached_processor_callable
 
 #//////////////////////////////////////////////////////////////
 

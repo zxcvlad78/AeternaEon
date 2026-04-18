@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b3lvleae5stmg" path="res://src/player/Player.gd" id="1_tehm3"]
 [ext_resource type="Script" uid="uid://brvlvq8ymg5y5" path="res://src/components/ui/MP_CanvasLayer.gd" id="2_g641l"]
-[ext_resource type="PackedScene" uid="uid://dh3a7r6wittsl" path="res://src/prefabs/player_ui/player_ui.tscn" id="3_3ojaj"]
+[ext_resource type="PackedScene" uid="uid://dh3a7r6wittsl" path="res://src/prefabs/player_ui/player_ui.tscn" id="3_g641l"]
 
 [node name="PlayerCamera" type="Node3D" unique_id=2033446005]
 script = ExtResource("1_tehm3")
@@ -13,7 +13,7 @@ transform = Transform3D(-0.50000006, -0.6730282, 0.5450074, 0, 0.6293204, 0.7771
 
 [node name="MP_CanvasLayer" type="CanvasLayer" parent="." unique_id=2009014144 node_paths=PackedStringArray("root_node")]
 script = ExtResource("2_g641l")
-ui_prefab = ExtResource("3_3ojaj")
+ui_prefab = ExtResource("3_g641l")
 root_node = NodePath("..")
 properties = Dictionary[StringName, StringName]({
 &"self": &"player"

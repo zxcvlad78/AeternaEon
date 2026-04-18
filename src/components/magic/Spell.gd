@@ -66,13 +66,19 @@ func can_reach(target:Variant) -> bool:
 	
 	return get_unit().global_position.distance_to(target.global_position) < res.get_cast_range()
 
-func _play_animation(anim_names:Array[StringName]) -> void:
-	if anim_names.is_empty():
+func _play_animation(animations:Array[R_SpellAnimation]) -> void:
+	if animations.is_empty():
 		return
 	var model = spell_machine.unit.animated_model
 	
 	if model:
-		model._local_play_tree_oneshot_by_name(anim_names.pick_random())
+		var rand_anim = animations.pick_random() as R_SpellAnimation
+		model._local_play_tree_oneshot_by_name(
+			rand_anim.name,
+			1.0,
+			rand_anim.fadein_time,
+			rand_anim.fadeout_time
+			)
 
 func _spawn_partilces(particles:R_Particles) -> void:
 	s_Particles.spawn(self, particles, spell_machine.global_position)
@@ -88,6 +94,8 @@ func _apply_effects(target:Variant, _effects:Array[R_Effect] = res.effects) -> v
 func _play_audio(audio:R_Audio) -> void:
 	if !multiplayer.is_server():
 		return
+	if not audio:
+		return
 	
 	if audio.stream_list.is_empty():
 		return
@@ -100,7 +108,7 @@ func _play_audio(audio:R_Audio) -> void:
 		)
 
 func _local_precast(target:Variant = null) -> void:
-	_play_animation(res.swing_animation_names)
+	_play_animation(res.swing_animations)
 	_spawn_partilces(res.particles.precast)
 	_play_audio(res.precast_sound)
 	
@@ -152,7 +160,7 @@ func _cast(target:Variant = null) -> void:
 	casted.emit()
 	
 	
-	_play_animation(res.backswing_animation_names)
+	_play_animation(res.backswing_animations)
 	_spawn_partilces(res.particles.cast)
 	_play_audio(res.cast_sound)
 
